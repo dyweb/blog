@@ -1,10 +1,10 @@
 site:
-    title: "东岳工作室团队博客"
+    title: "东岳网络工作室团队博客"
     subtitle: "分享我们所得"
     limit: 10
     theme: theme
     lang: zh
-    url: "http://www.dongyueweb.com/blog"
+    url: "http://blog.dongyueweb.com"
     comment: dong-yue-gong-zuo-shi-tuan-dui-bo-ke
     logo: "-/images/logo.png"
     root: "/blog"
@@ -13,7 +13,7 @@ site:
 authors:
     dongyue:
         name: "东岳"
-        intro: "东岳工作室团队"
+        intro: "东岳网络工作室团队"
         avatar: "-/images/avatars/dongyue.png"
     gaocegege:
         name: "gaocegege"
