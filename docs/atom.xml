@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2016-12-22T18:02:35+08:00</updated>
+  <updated>2016-12-22T18:44:17+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
-  <entry>
-    <title>你好，世界</title>
-    <updated>2016-12-22T11:10:08+08:00</updated>
-    <id>tag:blog.dongyueweb.com,2016-12-22:/hello-world.html</id>
-    <content type="html"></content>
-    <link href="http://blog.dongyueweb.com/hello-world.html"></link>
-    <author>
-      <name>gaocegege</name>
-    </author>
-  </entry>
   <entry>
     <title>简洁的静态博客构建工具 —— 纸小墨（InkPaper）</title>
     <updated>2016-07-11T17:00:00+08:00</updated>
