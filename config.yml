@@ -22,7 +22,7 @@ authors:
 
 build:
     # output: "public"
-    port: 8000
+    port: 8123
     # Copied files to public folder when build
     copy:
         - "source/images"
