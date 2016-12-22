@@ -1,0 +1,33 @@
+site:
+    title: "东岳工作室团队博客"
+    subtitle: "分享我们所得"
+    limit: 10
+    theme: theme
+    lang: zh
+    url: "http://www.dongyueweb.com/blog"
+    comment: username
+    logo: "-/images/logo.png"
+    # link: "{category}/{year}/{month}/{day}/{title}.html"
+    # root: "/blog"
+
+authors:
+    dongyue:
+        name: "东岳"
+        intro: "东岳工作室团队"
+        avatar: "-/images/avatars/dongyue.png"
+    gaocegege:
+        name: "gaocegege"
+        intro: "MOS 组的小哥哥"
+        avatar: "-/images/avatars/gaocegege.jpg"
+
+build:
+    # output: "public"
+    port: 8000
+    # Copied files to public folder when build
+    copy:
+        - "source/images"
+    # Excuted command when use 'ink publish'
+    publish: |
+        git add . -A
+        git commit -m "update"
+        git push origin
