@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Usage: scripts/pre-deploy.sh
+# Build a new version of blog.
+
 set -e
 set -o nounset
 set -o pipefail
