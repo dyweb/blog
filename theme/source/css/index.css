@@ -107,6 +107,10 @@ a.name {
   }
   .copyright {
     float: left;
+    a {
+      color: $greyLight;
+      text-decoration: none;
+    }
   }
   .publish {
     float: right;
