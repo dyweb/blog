@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳工作室团队博客</title>
   <id>http://www.dongyueweb.com/blog</id>
-  <updated>2016-12-22T10:24:30+08:00</updated>
+  <updated>2016-12-22T10:26:09+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://www.dongyueweb.com/blog"></link>
   <author>
@@ -13,12 +13,5 @@
     <id>tag:www.dongyueweb.com,2016-07-11:/blog/ink-blog-tool.html</id>
     <content type="html">&lt;p&gt;纸小墨（InkPaper）是一个GO语言编写的开源静态博客构建工具，可以快速搭建博客网站。它无依赖跨平台，配置简单构建快速，注重简洁易用与更优雅的排版。&lt;/p&gt;&#xA;</content>
     <link href="http://www.dongyueweb.com/blog/ink-blog-tool.html"></link>
-  </entry>
-  <entry>
-    <title>An Elegant Static Blog Generator —— InkPaper</title>
-    <updated>2016-07-11T17:00:00+08:00</updated>
-    <id>tag:www.dongyueweb.com,2016-07-11:/blog/ink-blog-tool-en.html</id>
-    <content type="html">&lt;p&gt;InkPaper is an static blog generator developed by Golang, No dependencies, Cross platform, Easy use, Fast build, Elegant theme.&lt;/p&gt;&#xA;</content>
-    <link href="http://www.dongyueweb.com/blog/ink-blog-tool-en.html"></link>
   </entry>
 </feed>
