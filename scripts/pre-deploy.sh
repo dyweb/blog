@@ -14,5 +14,6 @@ rm -rf public
 rm -rf docs
 ink build
 mv public docs
+cp CNAME ./docs
 echo "Finished to rename public folder."
 cd - > /dev/null
