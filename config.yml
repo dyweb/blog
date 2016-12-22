@@ -7,8 +7,8 @@ site:
     url: "http://www.dongyueweb.com/blog"
     comment: username
     logo: "-/images/logo.png"
+    root: "/blog"
     # link: "{category}/{year}/{month}/{day}/{title}.html"
-    # root: "/blog"
 
 authors:
     dongyue:

@@ -2,7 +2,7 @@ title: "An Elegant Static Blog Generator —— InkPaper"
 date: 2015-03-01 17:00:00 +0800
 update: 2016-07-11 17:00:00 +0800
 author: me
-cover: "-/images/example-en.png"
+cover: "-/images/posts/example-en.png"
 tags:
     - 设计
     - 写作
