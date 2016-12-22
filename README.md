@@ -13,6 +13,12 @@ ink preview .
 ## Deploy
 
 ```bash
-ink build
+./scripts/pre-deploy.sh
 # push to github mannually.
+```
+
+## Create a new post
+
+```bash
+./scripts/create-post.sh
 ```
