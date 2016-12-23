@@ -5,6 +5,16 @@ Built using [ink](https://github.com/InkProject/ink).
 
 ## Installation
 
+### Quick install
+
+- download binary from http://www.chole.io/
+- extract and put the binary in your `PATH`
+- clone this project, ssh is preferred, i.e. `git clone git@github.com:dyweb/blog.git`
+
+### The Gopher way
+
+tl;dr `go get -u github.com/InkProject/ink`
+
 - [install golang](https://golang.org/doc/install)
 - [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) (NOTE: install GitHub client != install git)
 - config your `GOPATH` and workspace properly, remember to add `$GOPATH/bin` to your `PATH`
