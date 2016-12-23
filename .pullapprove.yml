@@ -30,7 +30,6 @@ groups:
       - gaocegege
       - arrowrowe
       - ComMouse
-      - JasonQSY
   blog-review:
     required: 3
     conditions:
