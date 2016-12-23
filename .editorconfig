@@ -1,0 +1,14 @@
+root = true
+
+[*]
+charset = utf-8
+
+# use lf
+[*.{sh,md,yml,.gitignore,.gitattributes}]
+end_of_line = lf
+
+[{.travis.yml,.pullapprove.yml}]
+indent_style = space
+indent_size = 2
+
+

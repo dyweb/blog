@@ -1,0 +1,9 @@
+# force lf for sh, yml
+*.sh text eol=lf
+.gitignore eol=lf
+.gitattributes eol=lf
+*.yml eol=lf
+
+# force encoding for sh, yml
+*.sh encoding=utf-8
+*.yml encoding=utf-8
