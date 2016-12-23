@@ -5,7 +5,7 @@ requirements:
     required: false
 
 always_pending:
-  title_regex: 'WIP'
+  title_regex: 'WIP|wip'
   explanation: 'Work in progress...'
 
 always_approved:
@@ -15,7 +15,7 @@ always_approved:
 group_defaults:
   approve_by_comment:
     enabled: true
-    approve_regex: '^:\+1:|^LGTM|^lgtm|^Approved|^mie|^\+1s'
+    approve_regex: '^:\+1:|^LGTM|^lgtm|^Approved|^mie|^\+1s|吼啊'
   reset_on_push:
     enabled: true
 
