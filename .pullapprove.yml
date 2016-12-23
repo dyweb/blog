@@ -1,0 +1,40 @@
+version: 2
+
+requirements:
+  signed_off_by:
+    required: false
+
+always_pending:
+  title_regex: 'WIP'
+  explanation: 'Work in progress...'
+
+always_approved:
+  title_regex: 'NO REVIEW|SKIP REVIEW'
+  explanation: 'This PR does not need approval'
+
+group_defaults:
+  approve_by_comment:
+    enabled: true
+    approve_regex: '^:\+1:|^LGTM|^lgtm|^Approved|^mie|^+1s'
+  reset_on_push:
+    enabled: true
+
+groups:
+  util-review:
+    required: 2
+    conditions:
+      labels:
+        - util
+    users:
+      - at15
+      - gaocegege
+      - arrowrowe
+      - ComMouse
+      - JasonQSY
+  blog-review:
+    required: 3
+    conditions:
+      files:
+        - "source/*"
+    # TODO: currently, only core team is added as collbarator, maybe create a blog team
+    users: all
