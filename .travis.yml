@@ -6,7 +6,7 @@ go:
   - 1.7
   - tip
 
-before_install:
+install:
   - go get -u github.com/InkProject/ink
 
 script:
