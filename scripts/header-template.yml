@@ -2,11 +2,8 @@ title: "${title}"
 date: ${create_time}
 update: ${update_time}
 author: ${author}
-cover: "TODO: put your cover here, or remove this line if you don't have one"
+# NOTE: the image locate in `source` folder
+# cover: "-/images/posts/example.png"
 tags:
-    - "TODO: write your tage here"
+    - "TODO: write your tag here"
 preview: "TODO: write your blog abstract here"
-
----
-
-## Ha Ha Ha
