@@ -54,6 +54,15 @@ def generate_filename(post_title):
 def check_write(filename, content):
     # TODO: check before overwrite
     path = os.path.join(source_folder(), filename)
+    if os.path.isfile(path):
+        choice = input("file `{}` already exist, do you want to overwrite [Y/N]:".format(filename))
+        choice = choice.lower()
+        if choice not in ["y", "yes", "ok", "hao", "en"]:
+            print("You chose not to overwrite, abort")
+            exit(1)
+            return
+        else:
+            print("overwrite existing file")
     f = open(path, 'w')
     f.write(content)
     f.close()
@@ -83,3 +92,4 @@ if __name__ == "__main__":
     }
     rendered = render_template(read_template(lang), d)
     check_write(generate_filename(title), rendered)
+    print("new post created")
