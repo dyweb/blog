@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""Command line for creating post
+"""
+
+import argparse
+import os
+from datetime import datetime, timezone
+from string import Template
+
+__author__ = "at15"
+
+
+def current_folder():
+    return os.path.dirname(os.path.realpath(__file__))
+
+
+def source_folder():
+    return os.path.realpath(os.path.join(current_folder(), "..", "source"))
+
+
+def read_template():
+    template_path = os.path.join(current_folder(), "template.md")
+    f = open(template_path, 'r')
+    template_str = f.read()
+    f.close()
+    return template_str
+
+
+def render_template(template_str, data):
+    # print(template_str)
+    template = Template(template_str)
+    return template.safe_substitute(data)
+
+
+def generate_filename(post_title):
+    filename = post_title.lower()
+    # TODO: what about 'How do  you handle two spaces'
+    filename = filename.replace(" ", "_")
+    if not filename.endswith(".md"):
+        filename += ".md"
+    return filename
+
+
+def check_write(filename, content):
+    # TODO: check before overwrite
+    path = os.path.join(source_folder(), filename)
+    f = open(path, 'w')
+    f.write(content)
+    f.close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Create a new post')
+    parser.add_argument('title', nargs=1, type=str, help='Title of the new post')
+    args = parser.parse_args()
+    now = datetime.now()
+    print(now)
+    now = datetime.utcnow()
+    print(now)
+    now = datetime.now(timezone.utc)
+    print(now)
+    # print(now.isoformat())
+    print(now.strftime("%Y-%m-%d %H:%M:%S %z"))
+    # print(now.ctime())
+    title = args.title[0]
+    current_time = now.strftime("%Y-%m-%d %H:%M:%S %z")
+    d = {
+        "title": title,
+        "author": "dongyue",
+        "create_time": current_time,
+        "update_time": current_time
+    }
+    rendered = render_template(read_template(), d)
+    # print(source_folder())
+    print(rendered)
+    check_write(generate_filename(title), rendered)
