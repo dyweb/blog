@@ -1,5 +1,7 @@
 # Blog
 
+[![Build Status](https://travis-ci.org/dyweb/blog.svg)](https://travis-ci.org/dyweb/blog)
+
 This is [Dongyue Studio](http://www.dongyueweb.com)'s team blog.
 Built using [ink](https://github.com/InkProject/ink).
 
