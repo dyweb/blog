@@ -19,6 +19,10 @@ authors:
         name: "gaocegege"
         intro: "MOS 组的小哥哥"
         avatar: "-/images/avatars/gaocegege.jpg"
+    at15:
+        name: "at15"
+        intro: "开坑不填的婶婶"
+        avatar: "https://avatars1.githubusercontent.com/u/5621298"
 
 build:
     # output: "public"

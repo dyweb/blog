@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Usage: scripts/pre-deploy
+# Build a new version of blog.
+
+# get the script path http://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
+pushd `dirname $0` > /dev/null
+SCRIPTPATH=`pwd -P`
+popd > /dev/null
+# get current working directory
+ORIGINAL_WD=${PWD}
+# switch to script directory
+cd ${SCRIPTPATH}
+# switch to blog root
+cd ..
+
+rm -rf public
+rm -rf docs
+ink build
+mv public docs
+cp CNAME ./docs
+echo "Finished to rename public folder."
+
+# go back to the old working directory
+cd ${ORIGINAL_WD}

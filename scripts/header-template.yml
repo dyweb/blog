@@ -1,0 +1,9 @@
+title: "${title}"
+date: ${create_time}
+update: ${update_time}
+author: ${author}
+# NOTE: the image locate in `source` folder
+# cover: "-/images/posts/example.png"
+tags:
+    - "TODO: write your tag here"
+preview: "TODO: write your blog abstract here"

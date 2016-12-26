@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2016-12-22T18:44:17+08:00</updated>
+  <updated>2016-12-25T18:52:43-08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
   <entry>
-    <title>简洁的静态博客构建工具 —— 纸小墨（InkPaper）</title>
-    <updated>2016-07-11T17:00:00+08:00</updated>
-    <id>tag:blog.dongyueweb.com,2016-07-11:/ink-blog-tool.html</id>
-    <content type="html">&lt;p&gt;纸小墨（InkPaper）是一个GO语言编写的开源静态博客构建工具，可以快速搭建博客网站。它无依赖跨平台，配置简单构建快速，注重简洁易用与更优雅的排版。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/ink-blog-tool.html"></link>
+    <title>Ayi</title>
+    <updated>2016-12-24T08:18:08Z</updated>
+    <id>tag:blog.dongyueweb.com,2016-12-24:/ayi.html</id>
+    <content type="html">&lt;p&gt;Ayi 跨平台的工具库&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/ayi.html"></link>
     <author>
-      <name>东岳</name>
+      <name>at15</name>
     </author>
   </entry>
 </feed>

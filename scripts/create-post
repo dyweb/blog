@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""Command line for creating post
+"""
+
+import argparse
+import os
+from datetime import datetime, timezone
+from string import Template
+
+__author__ = "at15"
+
+supported_languages = ['zh-cn', 'en-us']
+
+
+def current_folder():
+    return os.path.dirname(os.path.realpath(__file__))
+
+
+def source_folder():
+    return os.path.realpath(os.path.join(current_folder(), "..", "source"))
+
+
+def read_file(filename):
+    f = open(os.path.join(current_folder(), filename), 'r')
+    s = f.read()
+    f.close()
+    return s
+
+
+def read_template(lang="en-us"):
+    lang = lang.lower()
+    if lang in ["cn", "chinese"]:
+        lang = "zh-cn"
+    if lang not in supported_languages:
+        raise NotImplementedError("unsupported language, can't find template")
+    header = read_file("header-template.yml")
+    body = read_file("template." + lang + ".md")
+    return header + body
+
+
+def render_template(template_str, data):
+    template = Template(template_str)
+    return template.safe_substitute(data)
+
+
+def generate_filename(post_title):
+    filename = post_title.lower()
+    filename = filename.replace(" ", "_")
+    if not filename.endswith(".md"):
+        filename += ".md"
+    return filename
+
+
+def check_write(filename, content):
+    # TODO: check before overwrite
+    path = os.path.join(source_folder(), filename)
+    if os.path.isfile(path):
+        choice = input("file `{}` already exist, do you want to overwrite [Y/N]:".format(filename))
+        choice = choice.lower()
+        if choice not in ["y", "yes", "ok", "hao", "en"]:
+            print("You chose not to overwrite, abort")
+            exit(1)
+            return
+        else:
+            print("overwrite existing file")
+    f = open(path, 'w')
+    f.write(content)
+    f.close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Create a new post')
+    parser.add_argument('title', type=str, help='Title of the new post')
+    parser.add_argument('-l', type=str, metavar='language', default="en-us",
+                        help='Language for template body, en-us, zh-cn, default is en-us')
+    parser.add_argument('-a', type=str, metavar='author', default="dongyue", help='Author for the post')
+    args = parser.parse_args()
+    now = datetime.now(timezone.utc)
+    title = args.title
+    author = args.a
+    # TODO: maybe auto fetch it from GitHub by username
+    if author != "donyue":
+        print("Remember to add the author information in " +
+              os.path.realpath(os.path.join(current_folder(), "..", "config.yml")))
+    lang = args.l
+    current_time = now.strftime("%Y-%m-%d %H:%M:%S %z")
+    d = {
+        "title": title,
+        "author": author,
+        "create_time": current_time,
+        "update_time": current_time
+    }
+    rendered = render_template(read_template(lang), d)
+    check_write(generate_filename(title), rendered)
+    print("new post created")
