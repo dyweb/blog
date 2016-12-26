@@ -1,6 +1,6 @@
 type: page
 title: "关于我们"
-author: me
+author: dongyue
 
 ---
 
