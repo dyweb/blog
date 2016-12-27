@@ -82,11 +82,16 @@ def check_author_config(config, author):
 
 
 def fetch_github_info(name):
-    res = requests.get("https://api.github.com/users/" + name)
-    if res.status_code != 200:
-        print("can't fetch user {} from github".format(name))
+    try:
+        res = requests.get("https://api.github.com/users/" + name)
+        if res.status_code != 200:
+            print("can't fetch user {} from github".format(name))
+            return {}
+        return res.json()
+    # TODO: During handling of the above exception, another exception occurred:
+    # this except didn't catch the error when the network is down
+    except ConnectionError:
         return {}
-    return res.json()
 
 
 def collect_author_info(author):
@@ -117,7 +122,7 @@ def add_author_to_config(config, author):
     print(yaml.dump(author, default_flow_style=False, allow_unicode=True))
     # TODO: maybe we should not force consistent of authors' key and the name of the author
     authors[author["name"]] = author
-    dumped = yaml.dump(authors, default_flow_style=False, allow_unicode=True)
+    dumped = yaml.dump(authors, default_flow_style=False, allow_unicode=True).rstrip(" \n\r")
     lines = dumped.split("\n")
     indented_lines = ["    " + x for x in lines]
     indented_str = "\n".join(indented_lines)
@@ -133,8 +138,10 @@ def add_author_to_config(config, author):
     f.close()
 
 
-def check_author_page(author):
-    return False
+def create_author_about_page(author_info):
+    template_str = read_file("author.md")
+    rendered = render_template(template_str, author_info)
+    check_write("about.{}.md".format(author_info["name"]), rendered)
 
 
 def read_config():
@@ -159,10 +166,6 @@ def main():
     now = datetime.now(timezone.utc)
     title = args.title
     author = args.a
-    if not check_author_config(config, author):
-        new_author = collect_author_info(author)
-        add_author_to_config(config, new_author)
-        # TODO: create author page
     lang = args.l
     current_time = now.strftime("%Y-%m-%d %H:%M:%S %z")
     d = {
@@ -171,6 +174,10 @@ def main():
         "create_time": current_time,
         "update_time": current_time
     }
+    if not check_author_config(config, author):
+        new_author = collect_author_info(author)
+        add_author_to_config(config, new_author)
+        create_author_about_page(new_author)
     rendered = render_template(read_template(lang), d)
     check_write(generate_filename(title), rendered)
     print("new post created")
