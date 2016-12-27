@@ -4,6 +4,8 @@
 
 import argparse
 import os
+import yaml
+import re
 from datetime import datetime, timezone
 from string import Template
 
@@ -68,20 +70,79 @@ def check_write(filename, content):
     f.close()
 
 
-if __name__ == "__main__":
+def check_author_config(config, author):
+    if author not in config["authors"]:
+        print("author `{}` not in authors".format(author))
+        return False
+    return True
+
+
+def collect_author_info(author):
+    print("adding new author {}".format(author))
+    intro = input("enter intro:")
+    avatar = input("enter avatar url:")
+    print("author: {}\nintro: {}\navatar: {}\n".format(author, intro, avatar))
+    return {
+        "name": author,
+        "intro": intro,
+        "avatar": avatar
+    }
+
+
+def add_author_to_config(config, author):
+    authors = config["authors"]
+    # TODO: maybe we should not force consistent of authors' key and the name of the author
+    authors[author["name"]] = author
+    dumped = yaml.dump(authors, default_flow_style=False, allow_unicode=True)
+    lines = dumped.split("\n")
+    # print(lines)
+    indented_lines = ["    " + x for x in lines]
+    indented_str = "\n".join(indented_lines)
+    # print(indented_str)
+    # replace using the magic
+    f = open(os.path.join(current_folder(), "..", "config.yml"), 'r')
+    original_config = f.read()
+    f.close()
+    # print(original_config)
+    # let's keep the magic
+    new_author_block = "#MAGIC\nauthors:\n" + indented_str + "\n#MAGIC\n"
+    new_config = re.sub("#MAGIC[\w\W]*#MAGIC", new_author_block, original_config)
+    print(new_config)
+    f = open(os.path.join(current_folder(), "..", "config.yml"), 'w')
+    f.write(new_config)
+    f.close()
+
+
+def check_author_page(author):
+    return False
+
+
+def read_config():
+    config_path = os.path.realpath(os.path.join(current_folder(), "..", "config.yml"))
+    with open(config_path, "r") as s:
+        try:
+            return yaml.load(s)
+        except yaml.YAMLError as exc:
+            print("error loading config", exc)
+            exit(1)
+
+
+def main():
+    config = read_config()
     parser = argparse.ArgumentParser(description='Create a new post')
     parser.add_argument('title', type=str, help='Title of the new post')
     parser.add_argument('-l', type=str, metavar='language', default="en-us",
                         help='Language for template body, en-us, zh-cn, default is en-us')
-    parser.add_argument('-a', type=str, metavar='author', default="dongyue", help='Author for the post')
+    parser.add_argument('-a', type=str, metavar='author', default="dongyue",
+                        help='Author for the post, GitHub username is preferred')
     args = parser.parse_args()
     now = datetime.now(timezone.utc)
     title = args.title
     author = args.a
+    if not check_author_config(config, author):
+        new_author = collect_author_info(author)
+        add_author_to_config(config, new_author)
     # TODO: maybe auto fetch it from GitHub by username
-    if author != "donyue":
-        print("Remember to add the author information in " +
-              os.path.realpath(os.path.join(current_folder(), "..", "config.yml")))
     lang = args.l
     current_time = now.strftime("%Y-%m-%d %H:%M:%S %z")
     d = {
@@ -93,3 +154,7 @@ if __name__ == "__main__":
     rendered = render_template(read_template(lang), d)
     check_write(generate_filename(title), rendered)
     print("new post created")
+
+
+if __name__ == "__main__":
+    main()

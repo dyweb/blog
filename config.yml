@@ -10,19 +10,22 @@ site:
     # root: "/blog"
     # link: "{category}/{year}/{month}/{day}/{title}.html"
 
+#MAGIC
 authors:
-    dongyue:
-        name: "dongyue"
-        intro: "东岳网络工作室团队"
-        avatar: "-/images/avatars/dongyue.png"
-    gaocegege:
-        name: "gaocegege"
-        intro: "MOS 组的小哥哥"
-        avatar: "-/images/avatars/gaocegege.jpg"
     at15:
-        name: "at15"
-        intro: "开坑不填的婶婶"
-        avatar: "https://avatars1.githubusercontent.com/u/5621298"
+      avatar: https://avatars1.githubusercontent.com/u/5621298
+      intro: 开坑不填的婶婶
+      name: at15
+    dongyue:
+      avatar: -/images/avatars/dongyue.png
+      intro: 东岳网络工作室团队
+      name: dongyue
+    gaocegege:
+      avatar: -/images/avatars/gaocegege.jpg
+      intro: MOS 组的小哥哥
+      name: gaocegege
+#MAGIC
+
 
 build:
     # output: "public"
