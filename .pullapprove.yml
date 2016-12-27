@@ -31,9 +31,8 @@ groups:
       - arrowrowe
       - ComMouse
   blog-review:
-    required: 3
+    required: 2
     conditions:
       files:
         - "source/*"
-    # TODO: currently, only core team is added as collbarator, maybe create a blog team
     users: all
