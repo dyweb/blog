@@ -35,8 +35,10 @@ def read_file(filename):
 
 def read_template(lang="en-us"):
     lang = lang.lower()
-    if lang in ["cn", "chinese"]:
+    if lang in ["cn", "chinese", "zh", "zh-han", "zh-hans", "han", "zhongwen"]:
         lang = "zh-cn"
+    if lang in ["en", "english", "eng", "yingyu", "us"]:
+        lang = "en-us"
     if lang not in supported_languages:
         raise NotImplementedError("unsupported language, can't find template")
     header = read_file("header-template.yml")
