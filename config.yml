@@ -26,7 +26,6 @@ authors:
       name: gaocegege
 #MAGIC
 
-
 build:
     # output: "public"
     port: 8123

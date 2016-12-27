@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Command line for creating post
+- fetch new author info from github via author name
+- add new author to `config.yml`
+- add new author's about page
 """
 
 import argparse
 import os
 import yaml
 import re
+import requests
 from datetime import datetime, timezone
 from string import Template
 
@@ -77,8 +81,26 @@ def check_author_config(config, author):
     return True
 
 
+def fetch_github_info(name):
+    res = requests.get("https://api.github.com/users/" + name)
+    if res.status_code != 200:
+        print("can't fetch user {} from github".format(name))
+        return {}
+    return res.json()
+
+
 def collect_author_info(author):
     print("adding new author {}".format(author))
+    # try to fetch from github
+    github_info = fetch_github_info(author)
+    if "login" in github_info:
+        print("found user info from github")
+        return {
+            "name": github_info["login"],
+            "intro": github_info["bio"],
+            "avatar": github_info["avatar_url"]
+        }
+    print("can't get github info, please enter required info manually")
     intro = input("enter intro:")
     avatar = input("enter avatar url:")
     print("author: {}\nintro: {}\navatar: {}\n".format(author, intro, avatar))
@@ -91,23 +113,21 @@ def collect_author_info(author):
 
 def add_author_to_config(config, author):
     authors = config["authors"]
+    print("following author info will be added, you can change it later\n")
+    print(yaml.dump(author, default_flow_style=False, allow_unicode=True))
     # TODO: maybe we should not force consistent of authors' key and the name of the author
     authors[author["name"]] = author
     dumped = yaml.dump(authors, default_flow_style=False, allow_unicode=True)
     lines = dumped.split("\n")
-    # print(lines)
     indented_lines = ["    " + x for x in lines]
     indented_str = "\n".join(indented_lines)
-    # print(indented_str)
     # replace using the magic
     f = open(os.path.join(current_folder(), "..", "config.yml"), 'r')
     original_config = f.read()
     f.close()
-    # print(original_config)
     # let's keep the magic
-    new_author_block = "#MAGIC\nauthors:\n" + indented_str + "\n#MAGIC\n"
+    new_author_block = "#MAGIC\nauthors:\n" + indented_str + "\n#MAGIC"
     new_config = re.sub("#MAGIC[\w\W]*#MAGIC", new_author_block, original_config)
-    print(new_config)
     f = open(os.path.join(current_folder(), "..", "config.yml"), 'w')
     f.write(new_config)
     f.close()
@@ -142,7 +162,7 @@ def main():
     if not check_author_config(config, author):
         new_author = collect_author_info(author)
         add_author_to_config(config, new_author)
-    # TODO: maybe auto fetch it from GitHub by username
+        # TODO: create author page
     lang = args.l
     current_time = now.strftime("%Y-%m-%d %H:%M:%S %z")
     d = {
