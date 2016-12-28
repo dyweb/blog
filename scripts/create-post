@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """Command line for creating post
+- fetch new author info from github via author name
+- add new author to `config.yml`
+- add new author's about page
 """
 
 import argparse
 import os
+import yaml
+import re
+import requests
 from datetime import datetime, timezone
 from string import Template
 
@@ -29,8 +35,10 @@ def read_file(filename):
 
 def read_template(lang="en-us"):
     lang = lang.lower()
-    if lang in ["cn", "chinese"]:
+    if lang in ["cn", "chinese", "zh", "zh-han", "zh-hans", "han", "zhongwen"]:
         lang = "zh-cn"
+    if lang in ["en", "english", "eng", "yingyu", "us"]:
+        lang = "en-us"
     if lang not in supported_languages:
         raise NotImplementedError("unsupported language, can't find template")
     header = read_file("header-template.yml")
@@ -68,20 +76,98 @@ def check_write(filename, content):
     f.close()
 
 
-if __name__ == "__main__":
+def check_author_config(config, author):
+    if author not in config["authors"]:
+        print("author `{}` not in authors".format(author))
+        return False
+    return True
+
+
+def fetch_github_info(name):
+    try:
+        res = requests.get("https://api.github.com/users/" + name)
+        if res.status_code != 200:
+            print("can't fetch user {} from github".format(name))
+            return {}
+        return res.json()
+    # TODO: During handling of the above exception, another exception occurred:
+    # this except didn't catch the error when the network is down
+    except ConnectionError:
+        return {}
+
+
+def collect_author_info(author):
+    print("adding new author {}".format(author))
+    # try to fetch from github
+    github_info = fetch_github_info(author)
+    if "login" in github_info:
+        print("found user info from github")
+        return {
+            "name": github_info["login"],
+            "intro": github_info["bio"],
+            "avatar": github_info["avatar_url"]
+        }
+    print("can't get github info, please enter required info manually")
+    intro = input("enter intro:")
+    avatar = input("enter avatar url:")
+    print("author: {}\nintro: {}\navatar: {}\n".format(author, intro, avatar))
+    return {
+        "name": author,
+        "intro": intro,
+        "avatar": avatar
+    }
+
+
+def add_author_to_config(config, author):
+    authors = config["authors"]
+    print("following author info will be added, you can change it later\n")
+    print(yaml.dump(author, default_flow_style=False, allow_unicode=True))
+    # TODO: maybe we should not force consistent of authors' key and the name of the author
+    authors[author["name"]] = author
+    dumped = yaml.dump(authors, default_flow_style=False, allow_unicode=True).rstrip(" \n\r")
+    lines = dumped.split("\n")
+    indented_lines = ["    " + x for x in lines]
+    indented_str = "\n".join(indented_lines)
+    # replace using the magic
+    f = open(os.path.join(current_folder(), "..", "config.yml"), 'r')
+    original_config = f.read()
+    f.close()
+    # let's keep the magic
+    new_author_block = "#MAGIC\nauthors:\n" + indented_str + "\n#MAGIC"
+    new_config = re.sub("#MAGIC[\w\W]*#MAGIC", new_author_block, original_config)
+    f = open(os.path.join(current_folder(), "..", "config.yml"), 'w')
+    f.write(new_config)
+    f.close()
+
+
+def create_author_about_page(author_info):
+    template_str = read_file("author.md")
+    rendered = render_template(template_str, author_info)
+    check_write("about.{}.md".format(author_info["name"]), rendered)
+
+
+def read_config():
+    config_path = os.path.realpath(os.path.join(current_folder(), "..", "config.yml"))
+    with open(config_path, "r") as s:
+        try:
+            return yaml.load(s)
+        except yaml.YAMLError as exc:
+            print("error loading config", exc)
+            exit(1)
+
+
+def main():
+    config = read_config()
     parser = argparse.ArgumentParser(description='Create a new post')
     parser.add_argument('title', type=str, help='Title of the new post')
     parser.add_argument('-l', type=str, metavar='language', default="en-us",
                         help='Language for template body, en-us, zh-cn, default is en-us')
-    parser.add_argument('-a', type=str, metavar='author', default="dongyue", help='Author for the post')
+    parser.add_argument('-a', type=str, metavar='author', default="dongyue",
+                        help='Author for the post, GitHub username is preferred')
     args = parser.parse_args()
     now = datetime.now(timezone.utc)
     title = args.title
     author = args.a
-    # TODO: maybe auto fetch it from GitHub by username
-    if author != "donyue":
-        print("Remember to add the author information in " +
-              os.path.realpath(os.path.join(current_folder(), "..", "config.yml")))
     lang = args.l
     current_time = now.strftime("%Y-%m-%d %H:%M:%S %z")
     d = {
@@ -90,6 +176,14 @@ if __name__ == "__main__":
         "create_time": current_time,
         "update_time": current_time
     }
+    if not check_author_config(config, author):
+        new_author = collect_author_info(author)
+        add_author_to_config(config, new_author)
+        create_author_about_page(new_author)
     rendered = render_template(read_template(lang), d)
     check_write(generate_filename(title), rendered)
     print("new post created")
+
+
+if __name__ == "__main__":
+    main()
