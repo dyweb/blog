@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2016-12-26T14:15:00+08:00</updated>
+  <updated>2016-12-28T12:07:59+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>在32位 Ubuntu 16.04.1 LTS 上安装饥荒服务器</title>
+    <updated>2016-12-28T03:33:15Z</updated>
+    <id>tag:blog.dongyueweb.com,2016-12-28:/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html</id>
+    <content type="html">&lt;p&gt;今天为东岳搭建了一个饥荒的服务器，并不是特别复杂。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Ayi</title>
     <updated>2016-12-24T08:18:08Z</updated>
