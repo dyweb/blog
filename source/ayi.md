@@ -159,7 +159,7 @@ scripts:
 - 使用 `git log -reverse` 可以反过来看log, 可以用来找第一个提交。
 - shell 在 windows 下基本不会有问题，因为为了使用 git，东岳所有的 windows 用户都安装了
 msysgit (现在叫 git for windows)，它自带了 bash 和一些基本的工具。
-- 周报的功能作为 MOS 的一个项目交给了 @codewarm96, 进度见[这个issue](https://github.com/dyweb/mos/issues/1)
+- 周报的功能作为 MOS 的一个项目交给了 @codeworm96, 进度见[这个issue](https://github.com/dyweb/mos/issues/1)
 - [所有带 `backlog` 标签的 issue](https://github.com/dyweb/Ayi/issues?q=is%3Aissue+label%3Abacklog+is%3Aclosed)
 
 第一个提交
