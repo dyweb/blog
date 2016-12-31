@@ -74,9 +74,360 @@
                     
                     <span class="tags"><a class="tag" href="/tag/golang/index.html">golang</a></span>
                 </section>
-                <article class="content"><h2>阿姨呀咿呀</h2>
+                <article class="content"><h2>简介</h2>
 
-<h2>嘿呀</h2>
+<p><a href="https://github.com/dyweb/Ayi">Ayi</a> 是一个跨平台的命令行工具，类似于<a href="https://busybox.net/about.html">busybox</a>。
+开始于 2015 年 7 月。主要目的是为了方便配置环境和解决各种由于配置环境导致的问题，比如:</p>
+
+<blockquote>
+<ul>
+<li>我这里跑的好好的，怎么到了你那(服务器上)就挂了</li>
+<li>我用 Mac 自带的 PHP 和 Apache 就挺好，我不用 Vagrant 和 Nginx</li>
+<li>我就想用 Windows 下的一键安装包</li>
+</ul>
+</blockquote>
+
+<p>考虑到没钱给大家每人配个 Mac，以及东岳的男女比例。
+我们需要一个跨平台的配置环境和收集环境信息的工具，用于<strong>快速</strong>的解决上述问题。</p>
+
+<h2>技术选型</h2>
+
+<p>在选择 Ayi 使用的技术时主要考虑的是以下几个问题</p>
+
+<ul>
+<li>跨平台</li>
+<li>可维护性</li>
+<li>对于东岳其他项目的帮助</li>
+</ul>
+
+<!-- TODO:找不到是哪个 issue 了，倒是找到了 commit https://github.com/dyweb/Ayi/commit/3a96921ccb6b5edb7c294e2a1eab2b9e63cc130b -->
+
+<p>最开始和咩的考虑是使用 shell 来进行操作， 但是 shell 的问题在于很难维护，基本不可能测试。
+东岳 shell 用的很少，并且 shell 对于其他项目帮助十分有限。</p>
+
+<p>之后考虑到 PHP, python, java 都需要运行时，C/C++ 写起来太累， Rust 没人会 (那会还没有 Ivan 和 Codeworm)，
+就选择了 Golang，当时版本是 1.5。</p>
+
+<p>Golang 的主要优点是</p>
+
+<ul>
+<li>跨平台 &amp; 交叉编译</li>
+<li>简洁的包管理</li>
+<li>性能好，可以用来改进东岳现有的纯 PHP 服务端体系</li>
+<li>一个活跃的社区，PHP 沉浸在 CMS 和抄 Rails 中不能自拔，JS 日新月异</li>
+<li>Google 老爹</li>
+</ul>
+
+<h2>主要问题</h2>
+
+<ul>
+<li>人太少，基本只有 @at15 (我) 一个人</li>
+<li>需求不是很明确</li>
+<li>对 Golang 语言本身很不熟悉</li>
+<li>Golang 的一些工具链不是很成熟，比如不支持依赖的 vendor 。</li>
+</ul>
+
+<p>但是由于项目拖了很长时间，后面三个问题基本都解决了</p>
+
+<ul>
+<li>主要需求是
+
+<ul>
+<li>生成器</li>
+<li>环境检查</li>
+<li><a href="https://github.com/dyweb/Ayi/tree/master/app/git">git 操作的简化</a></li>
+<li><a href="https://github.com/dyweb/Ayi/tree/master/util/runner">makefile 类似的自动化工具</a></li>
+<li><a href="https://github.com/dyweb/Ayi/tree/master/app/web">静态 web 服务器</a></li>
+<li><a href="https://github.com/dyweb/Ayi/pull/64">进程管理</a></li>
+<li>waka time 服务器</li>
+<li>文件传输</li>
+</ul></li>
+<li>go 的版本从 1.5 跳到了 1.7。原生支持 vendor 并且有了很多更好的依赖管理工具，比如 <a href="https://github.com/Masterminds/glide">glide</a></li>
+</ul>
+
+<p>第一个问题的话，基本无解，目前东岳经常写 Golang 的人好像只有我和策策。策策有空就要去陪妹子，自然不可能陪我来填坑。
+(要有妹子的话我还会去填坑么?)</p>
+
+<h2>实现的功能</h2>
+
+<h3>Git 操作的简化</h3>
+
+<p>前提是：你习惯使用 Golang 的 workspace，有关 workspace 我在以前东岳的讲座中<a href="http://dongyueweb.com/course/web/2016_Spring/environment/slide.html#/4">有提到</a> (btw: 按方向键<code>下</code>而不是<code>右</code>)。我个人的工作区是这样的 (<code>cd ~/workspace &amp;&amp; tree -L 4</code>)。</p>
+
+<pre><code>├── bin
+│   ├── Ayi
+│   ├── glide
+│   └── ink
+├── pkg
+│   └── linux_amd64
+│       └── github.com
+│           └── dyweb
+└── src
+    └── github.com
+        ├── at15
+        │   └── at15.github.io
+        ├── dyweb
+        │   ├── Ayi
+        │   └── blog
+        └── xephonhq
+            └── xephon-b
+</code></pre>
+
+<p>当使用 <code>git clone</code> 时后面必须跟完整的 remote 地址，并且默认 clone 到当前文件夹下，而使用
+<code>Ayi git clone</code> 地址可以是浏览器地址，并且根据配置文件，可以支持非默认端口的 ssh，比如东岳的 GitLab。
+从下面的输出可以看到 <code>Ayi git clone github.com/at15/at15.gihub.io</code> 被展开成了
+<code>git clone git@github.com:at15/at15.github.io.git /home/at15/workspace/src/github.com/at15/at15.github.io</code>。</p>
+
+<pre><code>at15@pc4038:~/workspace|⇒  Ayi git clone github.com/at15/at15.github.io
+INFO[0000] git clone git@github.com:at15/at15.github.io.git /home/at15/workspace/src/github.com/at15/at15.github.io pkg=a.a.git
+Cloning into '/home/at15/workspace/src/github.com/at15/at15.github.io'...
+remote: Counting objects: 435, done.
+remote: Total 435 (delta 0), reused 0 (delta 0), pack-reused 435
+Receiving objects: 100% (435/435), 3.56 MiB | 1.64 MiB/s, done.
+Resolving deltas: 100% (234/234), done.
+Checking connectivity... done.
+INFO[0002] Sucessfully cloned to: /home/at15/workspace/src/github.com/at15/at15.github.io pkg=a.cmd
+</code></pre>
+
+<p>btw: <code>Ayi</code> 的 log 组件看上去很像 <a href="https://github.com/sirupsen/logrus">logrus</a>，但其实是<a href="https://github.com/dyweb/Ayi/pull/60">自己的轮子</a></p>
+
+<h3>自动化</h3>
+
+<p>自动化部分很类似 <code>npm run</code>，但是主要有以下区别</p>
+
+<ul>
+<li>使用 yaml 而不是 json, json 不支持注释，而且即使使用支持注释的 parser，编辑器也会有提示</li>
+<li>支持一个指令对应一系列命令, 类似 Travis 等 CI 的配置文件</li>
+<li>目前<a href="https://github.com/dyweb/Ayi/pull/64">新的重构</a>可能会把它改成类似 + 的工具</li>
+</ul>
+
+<pre><code>debug: true
+dep-install:
+    - go get github.com/at15/go.rice/rice
+    - go get github.com/mitchellh/gox
+    - glide install
+install:
+    - go build -o Ayi
+    - rice append -i github.com/dyweb/Ayi/app/web --exec Ayi
+    - sh -c &quot;mv Ayi $GOPATH/bin/Ayi&quot;
+test:
+    - go install
+    - sh -c &quot;go test -v -cover $(glide novendor)&quot;
+scripts:
+    build: gox -output=&quot;build/Ayi_{{.OS}}_{{.Arch}}&quot;
+</code></pre>
+
+<p>内置指令如<code>install</code>, <code>test</code> 跟 <code>Ayi run &lt;script-name&gt;</code> 都是使用 <code>util/runner</code>。
+目前准备把 runner 做成一个通用的 package，
+因此<a href="https://github.com/dyweb/Ayi/pull/64">又在重构</a>来增加如下的功能</p>
+
+<ul>
+<li>类似 <a href="https://www.ansible.com/">Ansible</a> 的更丰富的配置</li>
+<li>类似<a href="http://pm2.keymetrics.io/"> PM2</a> 和 <a href="https://github.com/ddollar/foreman">Foreman</a> 的进程管理</li>
+</ul>
+
+<h3>静态服务器</h3>
+
+<p>双击一个 html 文件多半会看不了，经典的解决方案是 <code>python -m SimpleHTTPServer &lt;port&gt;</code>，
+然而 windows 并不预装 py，而且有时候我想侧边栏显示文件树，markdown 高亮，
+遇到学习文件夹自动播放并且在没有插耳机的情况下静音。
+以前自己挖了一个坑 <a href="https://github.com/at15/doc-viewer">doc-viewer</a> 。
+Ayi 里目前只实现了基本的静态服务器 <code>Ayi web static</code>（不要被 help 骗了，根本没有 highlight)。</p>
+
+<pre><code>⇒  Ayi web static -h
+serve static file like python's SimpleHTTPServer, support highlight and markdown render inspired by https://github.com/at15/doc-viewer
+
+Usage:
+  Ayi web static [flags]
+
+Global Flags:
+      --config string   config file (default is $HOME/.ayi.yaml)
+  -n, --dry-run         show commands to execute
+  -p, --port int        port to listen on (default 3000)
+      --root string     server root folder
+  -v, --verbose         verbose output
+</code></pre>
+
+<h2>使用开源库中遇到的问题</h2>
+
+<p>虽然我们要站在巨人的肩膀上，但是站的久了就会发现有些巨人其实也有点 low，比如</p>
+
+<ul>
+<li>不支持 windows 的 <a href="https://github.com/go-playground/overalls">overall</a>，<a href="https://github.com/at15/overalls">fork</a></li>
+<li>不支持 ignore 的 <a href="https://github.com/GeertJohan/go.rice">go.rice</a>, <a href="https://github.com/at15/go.rice/tree/feature/ignore">fork</a> 和 <a href="https://github.com/GeertJohan/go.rice/issues/83">issue</a></li>
+<li>不支持 filter 的 <a href="https://github.com/sirupsen/logrus">logrus</a>，还自带<a href="https://github.com/sirupsen/logrus/issues/457">统计运行时间的 bug</a></li>
+</ul>
+
+<p>一些库虽然 star 很高，但是其实如果仔细看代码的话会发现很多问题，同时看别人的代码可以学到一些自己以前忽略的问题，比如 Golang 里 struct 的方法的 thread safe。
+相关的 issue <a href="https://github.com/dyweb/Ayi/issues/59">dyweb/Ayi#59</a> <a href="https://github.com/at15/go-learning/issues/3">at15/go-learning#3</a>。
+logrus 里对应的代码如下，作为<strong>读者的练习</strong>。</p>
+
+<!-- TODO: no highlight -->
+
+<pre><code class="language-golang">// This function is not declared with a pointer value because otherwise
+// race conditions will occur when using multiple goroutines
+func (entry Entry) log(level Level, msg string) {
+        var buffer *bytes.Buffer
+	entry.Time = time.Now()
+	entry.Level = level
+	entry.Message = msg
+</code></pre>
+
+<p>一些(很多)开源库都维护状态都是很不乐观的，上面提到的几个开 PR 和 Feature Request 的 issue
+都是没人鸟的，既然已经看了那么多了，为什么不自己写呢？ 所以就开始造轮子了(其实还是想造轮子)。</p>
+
+<p>btw: 在使用开源项目的过程中完全没有必要去埋怨作者无视你的各种请求和贡献，换位思考一下，
+你是愿意陪妹子玩一晚上呢，还是愿意改 Gayhub 上某个不认识的人反馈的 bug 呢 (没有妹子的人表示思考不出来，我选择去改 bug)。</p>
+
+<h2>通用库 (轮子)</h2>
+
+<p>自己造轮子有以下几个优点:</p>
+
+<ul>
+<li>方便维护</li>
+<li>代码风格一致，比如 <a href="https://github.com/spf13/">spf13</a> 的 <a href="https://github.com/spf13/viper">viper</a> 和 <a href="https://github.com/spf13/cobra/">cobra</a></li>
+<li>可以共用很多 code base</li>
+</ul>
+
+<p>当然关键还是程序员的天性，上面的都是借口。</p>
+
+<p>Ayi 里抽出来的库有以下几个</p>
+
+<h3>Log</h3>
+
+<p><a href="https://github.com/dyweb/Ayi/tree/master/common/log">https://github.com/dyweb/Ayi/tree/master/common/log</a> 仿照 <a href="https://github.com/sirupsen/logrus">logrus</a> 实现,
+目标功能类似 log4j (<a href="http://logback.qos.ch/">logback</a>)</p>
+
+<p>有以下几个特点</p>
+
+<ul>
+<li>支持类似 log4j 的按照 package 进行 filter，避免了:
+
+<ul>
+<li>开启 debug 之后大量输出淹没了需要的信息</li>
+<li>为了 debug，把代码里的 debug 改成 info，忘记改回去</li>
+</ul></li>
+<li>支持更多的 Level (你想加个 Hearbreak 什么的 Level 也可以 <code>log.Hearbreak(&quot;got a good man card on New Year's Eve&quot;)</code>)</li>
+<li>减少了 lock (不过没做 benchmark)</li>
+<li>移除了 logger 上与 logEntry 重复的接口</li>
+</ul>
+
+<p>之后计划</p>
+
+<ul>
+<li>改用 generator 生成代码，<code>Debugf</code> 和其他所有 <code>*f</code> 都只差一个单词，为什么要人写呢 (我就不说我拼写错误然后 painc 了)。</li>
+<li>支持 log4j 的 appender, transformer, xml etc.</li>
+</ul>
+
+<h3>Runner</h3>
+
+<p>之前在自动化的部分已经基本说过了，所以就不说了(就是想加个标题)。</p>
+
+<h3>Structure</h3>
+
+<p>Golang 内置的数据结构少的可怜，作为一个用了3天 python 的人当然要加一点数据结构。</p>
+
+<p>目前实现的有</p>
+
+<ul>
+<li><a href="https://github.com/dyweb/Ayi/tree/common-util/runner/common/structure">Set</a>
+(一开始只有 Contains 没有 Add 用了才发现这个 Set 是 immutable 的)。</li>
+<li>没有然后了</li>
+</ul>
+
+<h3>Requests</h3>
+
+<p><code>net/http</code> 很好用，但是 <code>python</code> 的 <code>requests</code> 更简洁，不过这个轮子目前在<a href="https://github.com/xephonhq/xephon-b/tree/master/pkg/util/requests">另一项目(xephon-b)里</a></p>
+
+<p>Before</p>
+
+<pre><code class="language-golang">func (client *KairosDBHTTPClient) Ping() error {
+	res, err := http.Get(client.Config.Host.HostURL() + &quot;/api/v1/version&quot;)
+	if err != nil {
+		log.Warn(&quot;can't get kairosdb version&quot;)
+		log.Debug(err.Error())
+		return err
+	}
+	defer res.Body.Close()
+	resContent, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Warn(&quot;can't read response body&quot;)
+		log.Debug(err.Error())
+		return err
+	}
+	var resData map[string]string
+	if err := json.Unmarshal(resContent, &amp;resData); err != nil {
+		log.Warn(&quot;can't parse json&quot;)
+		log.Debug(err.Error())
+		return err
+	}
+	log.Info(&quot;KairosDB version is &quot; + resData[&quot;version&quot;])
+	return nil
+}
+</code></pre>
+
+<p>After</p>
+
+<pre><code class="language-golang">func (client *KairosDBHTTPClient) Ping() error {
+	versionURL := client.Config.Host.HostURL() + &quot;/api/v1/version&quot;
+	res, err := requests.GetJSON(versionURL)
+	if err != nil {
+		return errors.Wrapf(err, &quot;can't reach KairosDB via %s&quot;, versionURL)
+	}
+	log.Info(&quot;KairosDB version is &quot; + res[&quot;version&quot;])
+	return nil
+}
+</code></pre>
+
+<h2>开发计划</h2>
+
+<p>上面说了那么多，一半都是画饼，可以从 issue 里看最近的进度</p>
+
+<ul>
+<li><a href="https://github.com/dyweb/Ayi/issues?q=is%3Aopen+is%3Aissue+label%3Aworking">正在开发的部分</a></li>
+<li><a href="https://github.com/dyweb/Ayi/issues?utf8=%E2%9C%93&amp;q=is%3Aissue%20label%3Abacklog">想做但是被搁置了的 issue</a></li>
+</ul>
+
+<p><del>欢迎感兴趣的女同学联系我! 我的微信是 <code>uictor</code></del></p>
+
+<p>预计等到国内寒假的时候很多坑可以填完了，到时候欢迎假期想了解一下 Golang 的小伙伴来玩，我会加 <code>help wanted</code> 和难度的 label。</p>
+
+<h2>开发人员</h2>
+
+<p><a href="https://github.com/dyweb/Ayi/graphs/contributors">GitHub 传送门</a></p>
+
+<ul>
+<li>咩在项目开始时提交了一些 shell 脚本，但是由于转到了 Golang 以及咩一向很忙，遂弃婶</li>
+<li>@kdplus (丘) 参与过 <code>Ayi check</code> 的开发，不过那时我 Golang 菜的抠脚，导致丘也在划水。</li>
+<li>@gaocegege (策策) 因为周报的功能，参与过一段时间的开发，
+引入了<code>Godep</code> 交叉编译，不过最后周报的功能并没有投入实用。</li>
+</ul>
+
+<h2>总结</h2>
+
+<ul>
+<li>等有钱了，给大家都配 MBP</li>
+<li>自己开的坑，不能让别人填 (我去开个找妹子的坑先)</li>
+</ul>
+
+<h2>杂项</h2>
+
+<ul>
+<li>使用 <code>git log -reverse</code> 可以反过来看 log, 可以用来找第一个提交。</li>
+<li>shell 在 windows 下基本不会有问题，因为为了使用 git，东岳所有的 windows 用户都安装了
+msysgit (现在叫 git for windows)，它自带了 bash 和一些基本的工具。</li>
+<li>周报的功能作为 MOS 的一个项目交给了 @codeworm96, 进度见<a href="https://github.com/dyweb/mos/issues/1">这个issue</a></li>
+<li><a href="https://github.com/dyweb/Ayi/issues?q=is%3Aissue+label%3Abacklog+is%3Aclosed">所有带 <code>backlog</code> 标签的 issue</a></li>
+</ul>
+
+<p>第一个提交</p>
+
+<pre><code>commit 19858fe3958317da08dc512116c58acbd82b2a35
+Author: At15 &lt;at15@outlook.com&gt;
+Date:   Sun Jul 26 13:24:38 2015 +0800
+
+    Initial commit
+</code></pre>
 
 <h2>更新</h2>
 

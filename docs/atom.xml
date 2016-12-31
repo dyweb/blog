@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2016-12-28T12:07:59+08:00</updated>
+  <updated>2016-12-31T15:42:44-08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
@@ -21,7 +21,7 @@
     <title>Ayi</title>
     <updated>2016-12-24T08:18:08Z</updated>
     <id>tag:blog.dongyueweb.com,2016-12-24:/ayi.html</id>
-    <content type="html">&lt;p&gt;Ayi 跨平台的工具库&lt;/p&gt;&#xA;</content>
+    <content type="html">&lt;p&gt;Ayi 跨平台的命令行工具(库)&lt;/p&gt;&#xA;</content>
     <link href="http://blog.dongyueweb.com/ayi.html"></link>
     <author>
       <name>at15</name>
