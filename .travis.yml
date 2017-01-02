@@ -11,3 +11,7 @@ install:
 
 script:
   - ink build
+
+notifications:
+  email: false
+
