@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="东岳网络工作室团队博客">
+<meta name="twitter:description" content="分享我们所得">
+<meta name="twitter:image:src" content="http://blog.dongyueweb.com/images/logo.png">
+
+<meta property="og:url" content="http://blog.dongyueweb.com">
+<meta property="og:title" content="东岳网络工作室团队博客">
+<meta property="og:description" content="分享我们所得">
+<meta property="og:site_name" content="东岳网络工作室团队博客">
+<meta property="og:image" content="http://blog.dongyueweb.com/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="东岳网络工作室团队博客">
+<meta itemprop="description" content="分享我们所得">
+<meta itemprop="image" content="http://blog.dongyueweb.com/images/logo.png">
+
+<link rel="canonical" href="http://blog.dongyueweb.com">
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-itouch-icon" href="/favicon.png">
+<link rel="stylesheet" href="/bundle/index.css">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+
+        <meta name="keywords" content="site reliability engineering,">
+        <meta name="description" content="Google SRE 阅读笔记(1)-监控">
+        <meta name="author" content="gaocegege">
+        <title>Google SRE 阅读笔记(1)-监控</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    <img class="logo" src="/images/logo.png" />
+    东岳网络工作室团队博客
+  </a>
+  <ul class="menu">
+      <li class="menu-item"><a href="/archive.html">归档</a></li>
+      <li class="menu-item"><a href="/tag.html">标签</a></li>
+      <li class="menu-item"><a href="/atom.xml">订阅</a></li>
+  </ul>
+</header>
+
+            <article class="main article">
+                <h1 class="title">Google SRE 阅读笔记(1)-监控</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></span>
+                    <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                    
+                    <span class="date" data-time="1483345624"><span class="from"></span></span>
+                    
+                    <span class="tags"><a class="tag" href="/tag/site%20reliability%20engineering/index.html">site reliability engineering</a></span>
+                </section>
+                <article class="content"><h4>转载自 <a href="http://gaocegege.com/Blog/%E9%98%85%E8%AF%BB/sre-0">gaocegege 的博客</a></h4>
+
+<h2>SRE 介绍</h2>
+
+<p>SRE，全称是 Site Reilability Engineer，是一个类似于运维，但是跟传统运维不一样的职业，更加偏向于 DevOps。谷歌在 <a href="https://book.douban.com/subject/26875239/">SRE-谷歌运维解密</a> 一书中分享了 SRE 的工作职责，以及谷歌在自己的运维工作中的一些经验。</p>
+
+<h2>本文介绍</h2>
+
+<p>这篇博客是系列文章中的第一篇，主要分享在阅读这本书时的一些感想。这本书在我看来更加适合在分布式领域或者在运维领域工作的工程师阅读，对于一个还在念书，没有完整接触过分布式系统实现的新手来说，有些过早了。因此就当是抛砖引玉，随便写写吧。</p>
+
+<p>这次关注的是书中的第六章，分布式系统的监控。</p>
+
+<h2>关于作者</h2>
+
+<p>第六章的作者是 <a href="https://www.linkedin.com/in/robewaschuk">Rob Ewaschuk</a>。作者主要工作的领域是分布式存储，而且在自我介绍中写道自己在谷歌干的很过瘾，16-17年是不打算换工作的。O&rsquo;Reilly 摘录了他在 SRE 一书中关于分布式监控的部分，做了一本电子书 <a href="http://www.oreilly.com/webops-perf/free/monitoring-distributed-systems.csp">Monitoring Distributed Systems</a>。</p>
+
+<h2>阅读之前</h2>
+
+<p>在读文章之前，我对监控的了解非常浅薄。因为无论是在学校还是在之前实习，都没有涉及到对生产系统进行监控的工作。在念了研究生之后，稍微了解了一些关于分布式监控的知识。<a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/36356.pdf">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a> 是谷歌在 2010 年发表的论文，是关于其内部的分布式 tracing 系统的一个介绍性的论文。Tracing 在我的理解是细粒度监控中很关键的一部分。点评开源了一套这样的系统 <a href="https://github.com/dianping/cat">CAT</a>。这些系统的作用就是跟踪系统相互之间的调用。比如 Web 前端调用了后端，就会生成一个从前端指向后端的 trace 记录。业界比较常见的实现是埋点或者修改字节码，前者更加可行。在阅读之前，对于分布式监控的了解也就仅限于此了。</p>
+
+<p>虽说读过相关论文，但是并没有真实使用过，最多就是去过点评，见过点评的 CAT 的 dashboard 是长什么样子的。</p>
+
+<h2>正文</h2>
+
+<p>全文中提到的一些东西让我非常感兴趣。其中有一句话：</p>
+
+<blockquote>
+<p>我们会避免任何『魔法』系统&ndash;例如视图自动学习阈值或者自动检测故障原因的系统。</p>
+</blockquote>
+
+<p>之前在去大众点评学习 CAT 系统时，听他们说下一步发展规划中，就有利用机器学习来学习阈值和原因的想法。我认为谷歌在为什么要保持监控系统简单时没有说清楚，这可能是跟他们的监控规模和信奉的哲学有关。他们把这类复杂的有各种特性的系统称为『魔法』系统，因为我也没有什么发言权。但是在我看来，随着复杂性的上升，引入机器学习等等是自动化的新阶段。现在可能人工的方式或者硬编码等等方式还是可以操作的，可能谷歌考虑到监控系统要尽可能稳定吧。但是机器学习可以更好地取代人工，就像在容量规划方面，我始终认为机器学习会比经验估计的更准。</p>
+
+<p>书中写了四个谷歌认为的黄金监控指标，分别是延迟、流量、错误和饱和度。对于延迟，他们提到的一点对我来说特别具有启发性，那就是要区分成功请求和错误请求的延迟。这两类请求有着不同的模式，是不能混为一谈的。之前用过的少数几个监控的工具都没有区分正确与错误请求的能力。这一点是在看了这本书后才学到的。</p>
+
+<p>还有一个比较有趣的指标，是饱和度。饱和度是指服务容量有多满，一般是用瓶颈资源的使用率来衡量。这样衡量饱和度的方式很取巧，之前没有过工程经验，都是各种指标全看一遍，最后看哪个资源不够用了，就断定服务满载了。如果事先判断好是 Memory-bound 还是 CPU-bound 类型的服务，然后每次只需要看对应的瓶颈资源就好了。</p>
+
+<p>关于长尾问题，谷歌给出了一种监控的方法，使用直方分布图而不是平均值来进行展示。因为可能一小部分请求导致了长尾，但是平均值是看不出这个问题的。</p>
+
+<p>在监控系统构建后，有一个值得考虑的问题，是短期可用性与长期可用性的冲突。短期的可用性体现在对问题的及时修复上，而长期的可用性在于对系统造成问题的根源的消除上。看起来这两者是统一的，但是其实是冲突的。人的精力是有限的，如果一直在处理 On-Call 的问题，那必然会导致缺少时间投入到根源性问题的解决上，这时需要权衡，放弃一些 On-Call 非核心的问题，去优化系统，提高长期预期的可用性。</p>
+
+<h2>下文预告</h2>
+
+<p>下一篇文章将会谈谈有关发布工程（Releasing Engineering）的事情。</p>
+
+<h2>系列文章</h2>
+
+<ul>
+<li><a href="http://blog.dongyueweb.com/google_sre_%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%281%29-%E7%9B%91%E6%8E%A7.html">Google SRE 阅读笔记(1)-监控</a></li>
+</ul>
+
+<h2>License</h2>
+
+<ul>
+<li>This article is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</li>
+<li>Please contact <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a> for commerical use.</li>
+</ul>
+</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></div>
+                    <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                    <div class="intro">MOS 组的小哥哥</div>
+                </section>
+                <section class="recommend">
+                    
+                    
+                    <section class="nav next">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="/%e5%9c%a832%e4%bd%8d_ubuntu_16.04.1_lts_%e4%b8%8a%e5%ae%89%e8%a3%85%e9%a5%a5%e8%8d%92%e6%9c%8d%e5%8a%a1%e5%99%a8.html">在32位 Ubuntu 16.04.1 LTS 上安装饥荒服务器</a>
+                    </section>
+                    
+                </section>
+                
+    <section id="disqus_thread"></section>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//dong-yue-gong-zuo-shi-tuan-dui-bo-ke.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        
+        <a href="http://dongyueweb.com" target="_blank">DongyueWeb</a> ©
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="http://www.chole.io/" target="_blank">Ink</a></span>
+</footer>
+
+        <script src="/bundle/index.js"></script>
+    </body>
+</html>
