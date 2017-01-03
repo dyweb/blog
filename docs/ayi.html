@@ -55,7 +55,8 @@
             <header class="header-wrap">
   <a class="index" href="/">
     <img class="logo" src="/images/logo.png" />
-    东岳网络工作室团队博客
+    
+    DongyueWeb
   </a>
   <ul class="menu">
       <li class="menu-item"><a href="/archive.html">归档</a></li>
@@ -268,9 +269,9 @@ logrus 里对应的代码如下，作为<strong>读者的练习</strong>。</p>
 // race conditions will occur when using multiple goroutines
 func (entry Entry) log(level Level, msg string) {
         var buffer *bytes.Buffer
-	entry.Time = time.Now()
-	entry.Level = level
-	entry.Message = msg
+    entry.Time = time.Now()
+    entry.Level = level
+    entry.Message = msg
 </code></pre>
 
 <p>一些(很多)开源库都维护状态都是很不乐观的，上面提到的几个开 PR 和 Feature Request 的 issue
@@ -342,40 +343,40 @@ func (entry Entry) log(level Level, msg string) {
 <p>Before</p>
 
 <pre><code class="language-golang">func (client *KairosDBHTTPClient) Ping() error {
-	res, err := http.Get(client.Config.Host.HostURL() + &quot;/api/v1/version&quot;)
-	if err != nil {
-		log.Warn(&quot;can't get kairosdb version&quot;)
-		log.Debug(err.Error())
-		return err
-	}
-	defer res.Body.Close()
-	resContent, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Warn(&quot;can't read response body&quot;)
-		log.Debug(err.Error())
-		return err
-	}
-	var resData map[string]string
-	if err := json.Unmarshal(resContent, &amp;resData); err != nil {
-		log.Warn(&quot;can't parse json&quot;)
-		log.Debug(err.Error())
-		return err
-	}
-	log.Info(&quot;KairosDB version is &quot; + resData[&quot;version&quot;])
-	return nil
+    res, err := http.Get(client.Config.Host.HostURL() + &quot;/api/v1/version&quot;)
+    if err != nil {
+        log.Warn(&quot;can't get kairosdb version&quot;)
+        log.Debug(err.Error())
+        return err
+    }
+    defer res.Body.Close()
+    resContent, err := ioutil.ReadAll(res.Body)
+    if err != nil {
+        log.Warn(&quot;can't read response body&quot;)
+        log.Debug(err.Error())
+        return err
+    }
+    var resData map[string]string
+    if err := json.Unmarshal(resContent, &amp;resData); err != nil {
+        log.Warn(&quot;can't parse json&quot;)
+        log.Debug(err.Error())
+        return err
+    }
+    log.Info(&quot;KairosDB version is &quot; + resData[&quot;version&quot;])
+    return nil
 }
 </code></pre>
 
 <p>After</p>
 
 <pre><code class="language-golang">func (client *KairosDBHTTPClient) Ping() error {
-	versionURL := client.Config.Host.HostURL() + &quot;/api/v1/version&quot;
-	res, err := requests.GetJSON(versionURL)
-	if err != nil {
-		return errors.Wrapf(err, &quot;can't reach KairosDB via %s&quot;, versionURL)
-	}
-	log.Info(&quot;KairosDB version is &quot; + res[&quot;version&quot;])
-	return nil
+    versionURL := client.Config.Host.HostURL() + &quot;/api/v1/version&quot;
+    res, err := requests.GetJSON(versionURL)
+    if err != nil {
+        return errors.Wrapf(err, &quot;can't reach KairosDB via %s&quot;, versionURL)
+    }
+    log.Info(&quot;KairosDB version is &quot; + res[&quot;version&quot;])
+    return nil
 }
 </code></pre>
 
