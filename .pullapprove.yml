@@ -15,7 +15,7 @@ always_approved:
 group_defaults:
   approve_by_comment:
     enabled: true
-    approve_regex: '^:\+1:|^LGTM|^lgtm|^Approved|^:sheep:|^\+1s|吼啊'
+    approve_regex: '^:\+1:|^LGTM|^\!\[LGTM|^lgtm|^Approved|^:sheep:|^\+1s|吼啊'
   reset_on_push:
     enabled: true
 
