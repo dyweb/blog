@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-01-03T14:59:57+08:00</updated>
+  <updated>2017-07-22T00:41:30+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>Google Summer of Code 申请指南</title>
+    <updated>2017-07-11T09:02:34Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-07-11:/google_summer_of_code_申请指南.html</id>
+    <content type="html">&lt;p&gt;本文的受众主要是想在暑假找点事情做，挣点外快的同学，亦或是想积累一下参与真实软件开发经验的同学。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/google_summer_of_code_申请指南.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Google SRE 阅读笔记(1)-监控</title>
     <updated>2017-01-02T08:27:04Z</updated>
