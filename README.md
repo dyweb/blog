@@ -3,6 +3,10 @@
 [![Build Status](https://travis-ci.org/dyweb/blog.svg)](https://travis-ci.org/dyweb/blog)
 [![Issue Stats](https://img.shields.io/issuestats/p/github/dyweb/blog.svg)](https://github.com/dyweb/blog/pulls)
 
+<a href="https://www.netlify.com">
+  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg"/>
+</a>
+
 This is [Dongyue Studio](http://www.dongyueweb.com)'s [team blog](http://blog.dongyueweb.com/).
 Built using [ink](https://github.com/InkProject/ink).
 
