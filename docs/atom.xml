@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-07-22T00:41:30+08:00</updated>
+  <updated>2017-09-04T19:24:43+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>Unikernel: 从不入门到入门</title>
+    <updated>2017-09-04T11:23:26Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-09-04:/unikernel:_从不入门到入门.html</id>
+    <content type="html">&lt;p&gt;Unikernels: Beyond Containers to the Next Generation of Cloud 是 Russ Pavlicek 的一本动物书（虽然是 O&amp;rsquo;Reilly 的，但是封面不是动物，是石榴），这本书对 Unikernel 有着比较全面的介绍，而且电子书是免费的，值得一读。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/unikernel:_从不入门到入门.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Google Summer of Code 申请指南</title>
     <updated>2017-07-11T09:02:34Z</updated>
