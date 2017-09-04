@@ -76,10 +76,7 @@ Unikernel，在我看来，是另一种形式上的容器。在一个 Unikernel 
 
 为了能够让 Unikernel 尽快进入生产环境，有一项工作很值得关注。
 
-<figure>
-	<img src="{{ site.url }}/images/unikernel/docker-on-unikernel.png" alt="Docker on UniKernel" height="500" width="500">
-	<figcaption>Docker on Unikernel</figcaption>
-</figure>
+![](-/images/posts/unikernel/unikernel.png)
 
 在 Unikernel 里运行一个 Docker Container，想法很美好，但是同样也有很多问题。这样其实并没有利用到容器便于分发的优势，也没有完全发挥 Unikernel 的优势，我觉得这不是未来。不过作为一种折中方案值得一看，可惜从 DockerCon 15 之后就没听见什么动静了。
 
