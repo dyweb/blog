@@ -13,47 +13,51 @@ preview: "A shallow introduction of time series database and comparison between 
 ---
 
 This blog is written for fellow students at [dongyueweb](https://github.com/dyweb),
-so its targeted readers are people who have learned database in class and have some interest in time series database (TSDB).
+so its targeted readers are people who have taken database class and want to know about time series database (TSDB).
 
 <!-- TODO: toc -->
 
-## Background
+## What is time series database
 
-**TL;DR** Time series data is immutable so TSDB can solve hard problems like
-concurrency control, distributed consensus as RDBMS, NoSQL in easier way.
+Time series database (TSDB) is relative new compared with RDBMS, NoSQL, even NewSQL.
+However it is becoming trending with the growth of system monitoring and internet of things.
+The [wiki](https://en.wikipedia.org/wiki/Time_series) definition of time series data is *a series of data points indexed (or listed or graphed) in time order*. When it comes to TSDB, I prefer my own definition: **store client history in server for analysis**.
+Time series data is history, it's **immutable**, **unique** and **sortable**. 
+For instance, the CPU usage at 2017-09-03-21:24:44 is 10.02% for machine-01 in us-east region, 
+it won't change overtime like bank account balance, there will be no update on it, 
+the CPU usage at next second, or from different machine are different data points. 
+And the order of arriving at server is not that important since you can remove the duplicate and sort by client timestamp.
+The history is from client and is used for analysis, while RDBMS is treated as single source of truth and effect client's decision making. 
+This lead to very different read and write pattern. 
+For instance, banking application need to query database for user's balance before proceed by reading and updating a single record.
+But most TSDB clients are either write only (collectors) or read only (dashboard and alerting system). And when they read, they read in large batch,
+`show CPU usage of last 1h` is used more often than `show CPU usage at 2017-09-03-21:24:44` because time series data is not that useful without its context.
 
-### What is database
+Time series data is so different from what popular DBMS used to deal with that people are forced to use their favorite DB in unexpected ways (i.e. VividCortex with MySQL, Timescale with Postgres). Some decided for special problem special solution is needed, so many TSDBs are written from scratch (Graphite, InfluxDB etc.) without dependencies to existing databases.
 
-Let's first recap what is database. We know there are different types of databases (RDBMS, NoSQL, NewSQL).
-They have different properties, [ACID](https://en.wikipedia.org/wiki/ACID), horizontal scale etc.
-They use different storage media (memory, flash, hard drive) with different format (row, column, column-family).
+## Time series data model
 
-However, the essence of database is simply persistent your data at somewhere with some guarantee.
-They become complex because they want to offer better guarantee to meet the growing need from users.
-A single json file can be a database when you are the only one modifying it.
-When more processes start modifying it, a server is added so no user touch the file directly,
-concurrency control is also added so users don't see strange things.
-When one machine can no longer hold the data, more machine is added, the database becomes distributed,
-along with all the troubles of distributed system, consensus etc.
-Concurrency control, consensus etc. are all hard problems, many databases promise they did well,
-while they may not ([jepsen](http://jepsen.io/)).
+Time series data can be split into two parts, **series** and **data points**.
+Series is the identifier, like `CPU usage for machine-01 in us-east region`, 
+data points are an array of points where each point is a timestamp and value.
 
-> Don't make a girl a promise if you know you can't keep it (Halo 4)
+For series, the main goal is to make it friendly to post processing (searching, filtering etc.), 
+like `top 10 CPU usage among all machines in us-east region`.
+So `CPU usage for machine-01 in us-east region` becomes `name=cpu.usage machine=machine-01 region=en-us`, 
+and the query becomes `name=cpu.usage machine=* region=en-us order desc limit 10`.
+It order to deal with large amount of series and wildcard matching, (inverted) index is needed, 
+some chose to use external search engine like ElasticSearch (Heroic), Solr (KairosDB).
+Some chose to write their own (InfluxDB, Prometheus).
 
-> Keep the consistency between landing page, documentation and implementation is the new CAP
+For data points there are two models, an array of points `[{t: 2017-09-03-21:24:44, v: 0.1002}, {t: 2017-09-03-21:24:45, v: 0.1012}]` 
+or two arrays for timestamp and values respectively `[2017-09-03-21:24:44, 2017-09-03-21:24:45], [0.1002, 0.1012]`.
+The former is row store, the latter is column store (not to be confused with column family).
+When using existing database ([Cassandra](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=Cassandra), [HBase](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=HBase) etc.) as backend, the former is used more,
+while for TSDB written from scratch, the latter is more popular.
 
-But users are not expecting TSDB to solve those hard problems,
-so what are they expecting exactly?
-To answer this question, we first need to know the use cases of TSDB and its characteristics.
+## Types of Time series databases
 
-### What are Time Series Databases used for
-
-The oldest time series database is round robin database
-[RRDtool](https://oss.oetiker.ch/rrdtool/).
-Its modern successor [Graphite](https://graphiteapp.org/) is widely adopted by
-companies for system monitoring. In fact, almost all time series database were
-<!-- TODO: word ...  -->
-built for monitoring, from computers running in data centers to smart devices in
+Time series databases can be split into two types, existing databases with special schema to store time series data and databases designed to for time series data. We use KairosDB (based on Cassandra) and InfluxDB as example for following discussion.
 
 ## Reference
 
