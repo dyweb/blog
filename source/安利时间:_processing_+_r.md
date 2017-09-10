@@ -67,13 +67,11 @@ void variableEllipse(int x, int y, int px, int py) {
 而 [Processing.R](https://github.com/gaocegege/Processing.R)，就是利用 [renjin](http://www.renjin.org/) 实现的 Processing 在 R 语言上的支持。
 
 <figure>
-	<img src="https://github.com/gaocegege/Processing.R/raw/master/raw-docs/img/editor.png" alt="Processing.R" height="500" width="500">
-	<figcaption>Processing.R</figcaption>
+	<img src="https://github.com/gaocegege/Processing.R/raw/master/raw-docs/img/editor.png" alt="Processing.R" width="500">
 </figure>
 
 <figure>
-	<img src="https://github.com/gaocegege/Processing.R/raw/master/raw-docs/img/demo.gif" alt="Processing.R Demo" height="200" width="200">
-	<figcaption>Processing.R Demo</figcaption>
+	<img src="https://github.com/gaocegege/Processing.R/raw/master/raw-docs/img/demo.gif" alt="Processing.R Demo" width="200">
 </figure>
 
 Processing 在 R 语言上的实现，依赖了一个 JVM 上的 R 解释器，每当 Processing 需要调用 draw 等等函数时，都会转而执行 R 代码中相对的定义。目前，Processing.R 支持了绝大多数 Processing 的语法，与此同时支持 Processing 自身众多的库以及 R 语言的包（两者只测试了部分）。这使得 Processing.R 能够在拥有便捷的图形化能力的同时，使用 R 语言中各种方便的包。
@@ -83,8 +81,7 @@ Processing 在 R 语言上的实现，依赖了一个 JVM 上的 R 解释器，�
 Processing 本身下载和安装都特别简单，而且是多平台的，在[此处](https://processing.org/download/)即可找到适合你的版本。而在 Processing 的 Contribution Manager 中的 Modes 一栏中，可以下载 Processing.R。随后在主界面右上角的下拉框中选择 R 即可。
 
 <figure>
-	<img src="https://user-images.githubusercontent.com/5100735/29493417-df2b614e-85c7-11e7-98c5-d9f20cf780a4.PNG" alt="下载与使用" height="500" width="500">
-	<figcaption>下载与使用</figcaption>
+	<img src="https://user-images.githubusercontent.com/5100735/29493417-df2b614e-85c7-11e7-98c5-d9f20cf780a4.PNG" alt="下载与使用" width="500">
 </figure>
 
 目前 Processing.R 仍然会积极地进行维护，如果你感兴趣，可以与我联系，还有很多坑等着呢，而且也可以以这个项目为蓝本，拿去申请下一年的 Google Summer of Code，总而言之欢迎各种形式的贡献。原本想做个标题党，发现自己没有 UC 小编的能力，只好找了这么一个不明所以的标题，谢谢你还不辞辛劳地点进来看看 :)
