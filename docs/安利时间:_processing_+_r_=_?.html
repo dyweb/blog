@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="东岳网络工作室团队博客">
+<meta name="twitter:description" content="分享我们所得">
+<meta name="twitter:image:src" content="http://blog.dongyueweb.com/images/logo.png">
+
+<meta property="og:url" content="http://blog.dongyueweb.com">
+<meta property="og:title" content="东岳网络工作室团队博客">
+<meta property="og:description" content="分享我们所得">
+<meta property="og:site_name" content="东岳网络工作室团队博客">
+<meta property="og:image" content="http://blog.dongyueweb.com/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="东岳网络工作室团队博客">
+<meta itemprop="description" content="分享我们所得">
+<meta itemprop="image" content="http://blog.dongyueweb.com/images/logo.png">
+
+<link rel="canonical" href="http://blog.dongyueweb.com">
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-itouch-icon" href="/favicon.png">
+<link rel="stylesheet" href="/bundle/index.css">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+
+        <meta name="keywords" content="Processing,R 语言,Google Summer of Code,">
+        <meta name="description" content="安利时间: Processing &#43; R = ?">
+        <meta name="author" content="gaocegege">
+        <title>安利时间: Processing &#43; R = ?</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    <img class="logo" src="/images/logo.png" />
+    
+    DongyueWeb
+  </a>
+  <ul class="menu">
+      <li class="menu-item"><a href="/archive.html">归档</a></li>
+      <li class="menu-item"><a href="/tag.html">标签</a></li>
+      <li class="menu-item"><a href="/atom.xml">订阅</a></li>
+  </ul>
+</header>
+
+            <article class="main article">
+                <h1 class="title">安利时间: Processing &#43; R = ?</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></span>
+                    <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                    
+                    <span class="date" data-time="1505052425"><span class="from"></span></span>
+                    
+                    <span class="tags"><a class="tag" href="/tag/Processing/index.html">Processing</a><a class="tag" href="/tag/R%20%e8%af%ad%e8%a8%80/index.html">R 语言</a><a class="tag" href="/tag/Google%20Summer%20of%20Code/index.html">Google Summer of Code</a></span>
+                </section>
+                <article class="content"><p><a href="https://github.com/gaocegege/Processing.R">Processing.R</a> 是我在 <a href="http://jeremydouglass.com/">Jeremy Douglass</a> 指导下，为 <a href="https://processing.org/">Processing</a> 实现的一个 R 语言模式，这是一个 <a href="https://summerofcode.withgoogle.com/projects/">Google Summer of Code 2017</a> 项目。这篇文章会讲一讲它的应用，以及实现。</p>
+
+<p>至于这篇文章的受众，我也不是很清楚 ┑(￣Д ￣)┍ 爱看就看看吧 =。=</p>
+
+<h2>Processing 是什么</h2>
+
+<p>这里有一篇文章：<a href="https://zhuanlan.zhihu.com/p/25432507">Processing是干嘛的？艺术家学编程能做什么？</a>，我个人觉得介绍的很到位。我这里就再稍微说一下，我对 Processing 的看法。</p>
+
+<p>Processing 从功能上而言，是一个做 creative coding 的编程语言，Processing 的 IDE 也直接被称作 Processing Development Environment（缩写 PDE）。</p>
+
+<p>从一个软件工程师的角度来讲，Processing 跟传统的编程语言最大的不同在于，一个完整的 Processing 程序（在 Processing 的语境中，完整的程序被称作 Sketch），一定会有一个图形化的输出。这个输出可以是 2D 图形，3D 图形，也可以是动画，等等。Processing 本身是用 Java 实现了一个编译器，其本身的语法也是跟 Java 几乎一致，因此可以把它当做 Java 的一个 DSL（对语言学不是很懂啦）。Processing 为了使得用户能够更好地进行图形化编程，实现了很多简练的函数，使得寥寥数行就可以实现一个非常简单的图形化应用。</p>
+
+<p>从一个艺术家的角度来讲，因为我不是一个艺术家，我也不知道怎么讲，所以就随便讲讲。绝大多数艺术家，在我看来，在写代码的能力上可能稍微有所欠缺（希望没有冒犯到你）。因此，Processing 对于他们而言，最吸引人的点应该是在于其简单易用。</p>
+
+<h3>一个简单的例子</h3>
+
+<p>这里以一个非常简单的例子介绍 Processing 可以做的事情。</p>
+
+<pre><code>void setup() {
+  size(640, 360);
+  background(102);
+}
+
+void draw() {
+  // Call the variableEllipse() method and send it the
+  // parameters for the current mouse position
+  // and the previous mouse position
+  variableEllipse(mouseX, mouseY, pmouseX, pmouseY);
+}
+
+
+// The simple method variableEllipse() was created specifically 
+// for this program. It calculates the speed of the mouse
+// and draws a small ellipse if the mouse is moving slowly
+// and draws a large ellipse if the mouse is moving quickly 
+
+void variableEllipse(int x, int y, int px, int py) {
+  float speed = abs(x-px) + abs(y-py);
+  stroke(speed);
+  ellipse(x, y, speed, speed);
+}
+</code></pre>
+
+<p>先讲效果，这段代码会根据鼠标的位置和鼠标移动的速度在画布上不停的画圆。</p>
+
+<p>在代码中可以看到三个函数，其中 <code>setup</code> 和 <code>draw</code> 是内置函数，就像是传统编程语言中的 main 函数一样，是整个程序的入口。<code>setup</code> 会进行一些设定，比如画布的大小，以及背景颜色。而每当需要绘制新的一帧时，Processing 就会调用 <code>draw</code> 函数。因此如果 <code>draw</code> 函数每次调用结果都一样，那就是一个静态的图形，如果是不一样的，得到的就是动态的效果。<code>variableEllipse</code> 是负责绘制圆形的函数。其参数是鼠标的当前坐标和上一帧的坐标，它会根据坐标计算速度，随后去绘制圆形。如果你感兴趣的话，可以去 <a href="https://processing.org/examples/pattern.html">Examples - Pattern</a> 亲自试试效果 :)</p>
+
+<h2>Processing.R 是什么</h2>
+
+<p>之前提到 Processing 是基于 Java 的 DSL，而且是运行在 JVM 上的。而诸如 Python, Ruby, R 等等语言，也都有在 JVM 上的实现，因此 Processing 也可以通过切换模式的方式来使用其他语言来写 Sketch 的逻辑。</p>
+
+<p>而 <a href="https://github.com/gaocegege/Processing.R">Processing.R</a>，就是利用 <a href="http://www.renjin.org/">renjin</a> 实现的 Processing 在 R 语言上的支持。</p>
+
+<figure>
+    <img src="https://github.com/gaocegege/Processing.R/raw/master/raw-docs/img/editor.png" alt="Processing.R" height="500" width="500">
+    <figcaption>Processing.R</figcaption>
+</figure>
+
+<figure>
+    <img src="https://github.com/gaocegege/Processing.R/raw/master/raw-docs/img/demo.gif" alt="Processing.R Demo" height="200" width="200">
+    <figcaption>Processing.R Demo</figcaption>
+</figure>
+
+<p>Processing 在 R 语言上的实现，依赖了一个 JVM 上的 R 解释器，每当 Processing 需要调用 draw 等等函数时，都会转而执行 R 代码中相对的定义。目前，Processing.R 支持了绝大多数 Processing 的语法，与此同时支持 Processing 自身众多的库以及 R 语言的包（两者只测试了部分）。这使得 Processing.R 能够在拥有便捷的图形化能力的同时，使用 R 语言中各种方便的包。</p>
+
+<h2>下载与安装</h2>
+
+<p>Processing 本身下载和安装都特别简单，而且是多平台的，在<a href="https://processing.org/download/">此处</a>即可找到适合你的版本。而在 Processing 的 Contribution Manager 中的 Modes 一栏中，可以下载 Processing.R。随后在主界面右上角的下拉框中选择 R 即可。</p>
+
+<figure>
+    <img src="https://user-images.githubusercontent.com/5100735/29493417-df2b614e-85c7-11e7-98c5-d9f20cf780a4.PNG" alt="下载与使用" height="500" width="500">
+    <figcaption>下载与使用</figcaption>
+</figure>
+
+<p>目前 Processing.R 仍然会积极地进行维护，如果你感兴趣，可以与我联系，还有很多坑等着呢，而且也可以以这个项目为蓝本，拿去申请下一年的 Google Summer of Code，总而言之欢迎各种形式的贡献。原本想做个标题党，发现自己没有 UC 小编的能力，只好找了这么一个不明所以的标题，谢谢你还不辞辛劳地点进来看看 :)</p>
+
+<h2>许可协议</h2>
+
+<ul>
+<li>本文遵守<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/">创作共享CC BY-NC-SA 3.0协议</a></li>
+<li>网络平台转载请联系 <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a></li>
+</ul>
+</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></div>
+                    <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                    <div class="intro">MOS 组的小哥哥</div>
+                </section>
+                <section class="recommend">
+                    
+                    
+                    <section class="nav next">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="/unikernel:_%e4%bb%8e%e4%b8%8d%e5%85%a5%e9%97%a8%e5%88%b0%e5%85%a5%e9%97%a8.html">Unikernel: 从不入门到入门</a>
+                    </section>
+                    
+                </section>
+                
+    <section id="disqus_thread"></section>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//dong-yue-gong-zuo-shi-tuan-dui-bo-ke.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        
+        <a href="http://dongyueweb.com" target="_blank">DongyueWeb</a> ©
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="http://www.chole.io/" target="_blank">Ink</a></span>
+</footer>
+
+        <script src="/bundle/index.js"></script>
+    </body>
+</html>
