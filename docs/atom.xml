@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-09-04T19:33:17+08:00</updated>
+  <updated>2017-09-10T22:16:43+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>安利时间: Processing + R = ?</title>
+    <updated>2017-09-10T14:07:05Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-09-10:/安利时间:_processing_+_r.html</id>
+    <content type="html">&lt;p&gt;Processing.R 是我在 Jeremy Douglass 指导下，为 Processing 实现的一个 R 语言模式，这是一个 Google Summer of Code 2017 项目。这篇文章会讲一讲它的应用，以及实现。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/安利时间:_processing_+_r.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Unikernel: 从不入门到入门</title>
     <updated>2017-09-04T11:23:26Z</updated>
