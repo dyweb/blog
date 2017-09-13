@@ -10,7 +10,7 @@ tags:
     - "time series database"
     - database
     - introduction
-preview: "A shallow introduction of time series database and comparison between popular time series databases"
+preview: "An introduction to time series database basic concepts and hot topics"
 
 ---
 
@@ -19,7 +19,7 @@ so its targeted readers are people who have taken database class and want to kno
 
 Table of content
 
-- What is time series database
+- What is time series database (TSDB)
 - Time series data model
 - Evolve of time series database
 - Types of time series database
@@ -31,7 +31,7 @@ Table of content
   - Meta data indexing
   - Tracing
 
-## What is time series database
+## What is time series database (TSDB)
 
 Time series database (TSDB) is relative new compared with RDBMS, NoSQL, even NewSQL.
 However it is becoming trending with the growth of system monitoring and internet of things.
@@ -42,20 +42,24 @@ it won't change overtime like bank account balance, there will be no update on i
 the CPU usage at next second, or from different machine are different data points. 
 And the order of data arriving at server is not that important since you can remove the duplicate and sort by client timestamp.
 Clients of TSDB send their history to sever and is still functional when the server is down, 
-while RDBMS is treated as single source of truth and effect client's decision making. 
+**sending data to TSDB is not critical for many clients**;
+A http server's main job is serving content instead of reporting status code to TSDB.
+However, RDBMS is treated as single source of truth and effect client's critical decision making. 
 This lead to very different read and write pattern. 
 For instance, banking application need to query database for user's balance before proceed by reading and updating a single record.
 But most TSDB clients are either write only (collectors) or read only (dashboard and alerting system). 
 And when they read, they read in large batch, `show CPU usage of last 1h` is used more often than `show CPU usage at 2017-09-03-21:24:44` 
 because time series data is not that useful without its context.
 
-Time series data is so different from what popular DBMS used to deal with that people are forced to use their favorite DB in very different ways (i.e. VividCortex with MySQL, Timescale with Postgres). 
-Some decided for special problem special solution is needed, so many TSDBs are written from scratch (Graphite, InfluxDB etc.) without dependencies to existing databases.
+Time series data is so different from what popular DBMS used to deal with that people are forced to use their favorite DB in very different ways (i.e. [VividCortex with MySQL](https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/), [Timescale with Postgres](http://www.timescale.com/)). 
+Some decided for special problem special solution is needed, so many TSDBs are written from scratch ([Graphite](https://graphiteapp.org/), 
+[InfluxDB](https://github.com/influxdata/influxdb) etc.) without dependencies to existing databases.
 
 ## Evolve of time series database
 
-There are too many time series databases so we can't list them all, I just list databases that can be considered as milestone in the evolving of
-time series database, feel free to comment the pieces I missed, I can't find the real initial release of many databases so I just use the oldest on github.
+There are [too many time series databases](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=All),
+so I just list databases that I personally considered as milestone in the evolving of time series database, 
+feel free to comment the pieces I missed, I can't find the real initial release of many databases so I just use the oldest on github.
 
 - 1999/07/16 [RRDTool First release](https://en.wikipedia.org/wiki/RRDtool)
 - 2009/12/30 [Graphite 0.9.5](https://github.com/graphite-project/graphite-web/releases/tag/0.9.5)
@@ -67,7 +71,7 @@ time series database, feel free to comment the pieces I missed, I can't find the
 
 [RRDTool](https://oss.oetiker.ch/rrdtool/) was created to graph network traffic, it ships with graphing tool while modern TSDB normally depends on [Grafana](https://github.com/grafana/grafana) for graphing. 
 [Graphite](https://graphiteapp.org/) was created later using python instead of C like RRDTool, its storage engine is called [Whisper](https://github.com/graphite-project/whisper), it's much powerful when it comes to data processing and query, however it does not scale well.
-[OpenTSDB](http://opentsdb.net/) solves the scale problem by using HBase.
+[OpenTSDB](http://opentsdb.net/) from Yahoo! solves the scale problem by using HBase.
 [KairosDB](https://kairosdb.github.io/) was a fork for OpenTSDB to support Cassandra as an alternative backend, but then they found being compatible with HBase limit the potential of Cassandra, so they dropped HBase and use Cassandra only. 
 Ironically, [recent release of OpenTSDB](http://opentsdb.net/docs/build/html/new.html) added support for Cassandra.
 Then [Heroic](https://github.com/spotify/heroic) came out because they are [not satisfied with KairosDB's performance and direction](https://labs.spotify.com/2015/11/16/monitoring-at-spotify-the-story-so-far/).
@@ -256,6 +260,15 @@ they will be covered in future blogs.
 ## Reference
 
 - [Awesome Time Series Database](https://github.com/xephonhq/awesome-time-series-database)
+- [Grafana](https://github.com/grafana/grafana)
+- [Graphite](https://graphiteapp.org/)
+- [Heroic](https://github.com/spotify/heroic)
+- [InfluxDB](https://github.com/influxdata/influxdb)
+- [KairosDB](https://kairosdb.github.io/)
+- [OpenTSDB](http://opentsdb.net/)
+- [RRDTool](https://oss.oetiker.ch/rrdtool/)
+- [Timescale - TSDB using Postgres](http://www.timescale.com/)
+- [VividCortex - TSDB using MySQL](https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/)
 
 ## License
 
