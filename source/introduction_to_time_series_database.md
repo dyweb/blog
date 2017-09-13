@@ -17,7 +17,19 @@ preview: "A shallow introduction of time series database and comparison between 
 This blog is written for fellow students at [dongyueweb](https://github.com/dyweb),
 so its targeted readers are people who have taken database class and want to know about time series database (TSDB).
 
-<!-- TODO: toc -->
+Table of content
+
+- What is time series database
+- Time series data model
+- Evolve of time series database
+- Types of time series database
+  - KairosDB
+  - InfluxDB
+- Hot topics in time series database
+  - Fast response
+  - Retention
+  - Meta data indexing
+  - Tracing
 
 ## What is time series database
 
@@ -40,6 +52,29 @@ because time series data is not that useful without its context.
 Time series data is so different from what popular DBMS used to deal with that people are forced to use their favorite DB in very different ways (i.e. VividCortex with MySQL, Timescale with Postgres). 
 Some decided for special problem special solution is needed, so many TSDBs are written from scratch (Graphite, InfluxDB etc.) without dependencies to existing databases.
 
+## Evolve of time series database
+
+There are too many time series databases so we can't list them all, I just list databases that can be considered as milestone in the evolving of
+time series database, feel free to comment the pieces I missed, I can't find the real initial release of many databases so I just use the oldest on github.
+
+- 1999/07/16 [RRDTool First release](https://en.wikipedia.org/wiki/RRDtool)
+- 2009/12/30 [Graphite 0.9.5](https://github.com/graphite-project/graphite-web/releases/tag/0.9.5)
+- 2011/12/23 [OpenTSDB 1.0.0](https://github.com/OpenTSDB/opentsdb/releases/tag/v1.0.0)
+- 2013/05/24 [KairosDB 1.0.0-beta](https://github.com/kairosdb/kairosdb/releases/tag/v1.0.0-beta2a)
+- 2013/10/24 [InfluxDB 0.0.1](https://github.com/influxdata/influxdb/releases/tag/v0.0.1)
+- 2014/08/25 [Heroic 0.3.0](https://github.com/spotify/heroic/releases/tag/0.3.0)
+- 2017/03/27 [TimescaleDB 0.0.1-beta](https://github.com/timescale/timescaledb/releases/tag/0.0.1-beta)
+
+[RRDTool](https://oss.oetiker.ch/rrdtool/) was created to graph network traffic, it ships with graphing tool while modern TSDB normally depends on [Grafana](https://github.com/grafana/grafana) for graphing. 
+[Graphite](https://graphiteapp.org/) was created later using python instead of C like RRDTool, its storage engine is called [Whisper](https://github.com/graphite-project/whisper), it's much powerful when it comes to data processing and query, however it does not scale well.
+[OpenTSDB](http://opentsdb.net/) solves the scale problem by using HBase.
+[KairosDB](https://kairosdb.github.io/) was a fork for OpenTSDB to support Cassandra as an alternative backend, but then they found being compatible with HBase limit the potential of Cassandra, so they dropped HBase and use Cassandra only. 
+Ironically, [recent release of OpenTSDB](http://opentsdb.net/docs/build/html/new.html) added support for Cassandra.
+Then [Heroic](https://github.com/spotify/heroic) came out because they are [not satisfied with KairosDB's performance and direction](https://labs.spotify.com/2015/11/16/monitoring-at-spotify-the-story-so-far/).
+[InfluxDB](https://github.com/influxdata/influxdb) started with full open source, 
+but then close sourced their cluster version because they need to keep the company running, there is a interesting talk called [The Open Source Database Business Model is Under Siege](https://www.youtube.com/watch?v=Kvf5jWZjw0U) during Percona Live which features [a time series session](https://www.percona.com/live/17/program/schedule/time-series).
+[TimeScaleDB](http://www.timescale.com/) is based on PostgreSQL with a plugin instead of special schema. 
+
 ## Time series data model
 
 Time series data can be split into two parts, **series** and **data points**.
@@ -60,21 +95,18 @@ The former is row store, the latter is column store (not to be confused with col
 When building TSDB on top of existing databases ([Cassandra](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=Cassandra), [HBase](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=HBase) etc.), the former is used more,
 while for TSDB written from scratch, the latter is more popular.
 
-## Evolve of Time series database
+## Types of time series databases
 
-## Types of Time series databases
+Time series databases can be split into two types, existing databases with time series specific special schema or databases designed to for time series data. We use KairosDB and InfluxDB as example for following discussion.
 
-Time series databases can be split into two types, existing databases with time series specific special schema or databases designed to for time series data. We use Xephon-K (based on Cassandra modeled after KairosDB) and InfluxDB as example for following discussion.
+### KairosDB
 
-### Xephon-K
-
-[Xephon-K](https://github.com/xephonhq/xephon-k) is a multi backend time series database 
-I wrote for testing out different mechanism of building TSDB.
-Its immature Cassandra backend is simple and modeled after [KairosDB](https://kairosdb.github.io/).
+Before dive into KairosDB, let's warm up using a simplified version called [Xephon-K](https://github.com/xephonhq/xephon-k).
+[Xephon-K](https://github.com/xephonhq/xephon-k) is a multi backend time series database I wrote for testing out different mechanism of building TSDB. Its immature Cassandra backend is simple and modeled after [KairosDB](https://kairosdb.github.io/).
 
 Cassandra (C*) is a column family NoSQL database modeled after BigTable, people sometimes call it **wide column**. 
-You can think column family as a map of map of map. 
-We can match some concept of it to RDBMS.
+You can think column family as a map of map of map. It's a row store, not a column store.
+We can match some concept of Cassandra with RDBMS's.
 `Keyspace` in C* is database in RDBMS, i.e. you create different database for you blog and ecommerce application for isolation.
 `Table` in C* is a map and `Partition Key` is its key, also known as (physical) row key, which is used to partition data to different nodes.
 The value of the top level map is also map, and its key is the `Cluster key` (column), its value is also a map.
