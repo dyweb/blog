@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="东岳网络工作室团队博客">
+<meta name="twitter:description" content="分享我们所得">
+<meta name="twitter:image:src" content="http://blog.dongyueweb.com/images/logo.png">
+
+<meta property="og:url" content="http://blog.dongyueweb.com">
+<meta property="og:title" content="东岳网络工作室团队博客">
+<meta property="og:description" content="分享我们所得">
+<meta property="og:site_name" content="东岳网络工作室团队博客">
+<meta property="og:image" content="http://blog.dongyueweb.com/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="东岳网络工作室团队博客">
+<meta itemprop="description" content="分享我们所得">
+<meta itemprop="image" content="http://blog.dongyueweb.com/images/logo.png">
+
+<link rel="canonical" href="http://blog.dongyueweb.com">
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-itouch-icon" href="/favicon.png">
+<link rel="stylesheet" href="/bundle/index.css">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+
+        <meta name="keywords" content="tsdb,time series,time series database,database,introduction,">
+        <meta name="description" content="Introduction to Time Series Database">
+        <meta name="author" content="at15">
+        <title>Introduction to Time Series Database</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    <img class="logo" src="/images/logo.png" />
+    
+    DongyueWeb
+  </a>
+  <ul class="menu">
+      <li class="menu-item"><a href="/archive.html">归档</a></li>
+      <li class="menu-item"><a href="/tag.html">标签</a></li>
+      <li class="menu-item"><a href="/atom.xml">订阅</a></li>
+  </ul>
+</header>
+
+            <article class="main article">
+                <h1 class="title">Introduction to Time Series Database</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(https://avatars1.githubusercontent.com/u/5621298);"></span>
+                    <a class="name" href="/about.at15.html">at15</a>
+                    
+                    <span class="date" data-time="1499562207"><span class="from"></span></span>
+                    
+                    <span class="tags"><a class="tag" href="/tag/tsdb/index.html">tsdb</a><a class="tag" href="/tag/time%20series/index.html">time series</a><a class="tag" href="/tag/time%20series%20database/index.html">time series database</a><a class="tag" href="/tag/database/index.html">database</a><a class="tag" href="/tag/introduction/index.html">introduction</a></span>
+                </section>
+                <article class="content"><p>This blog is written for fellow students at <a href="https://github.com/dyweb">dongyueweb</a>,
+so its targeted readers are people who have taken database class and want to know about time series database (TSDB).</p>
+
+<p>Table of content</p>
+
+<ul>
+<li>What is time series database (TSDB)</li>
+<li>Time series data model</li>
+<li>Evolve of time series database</li>
+<li>Types of time series database
+
+<ul>
+<li>KairosDB</li>
+<li>InfluxDB</li>
+</ul></li>
+<li>Hot topics in time series database
+
+<ul>
+<li>Fast response</li>
+<li>Retention</li>
+<li>Meta data indexing</li>
+<li>Tracing</li>
+</ul></li>
+</ul>
+
+<h2>What is time series database (TSDB)</h2>
+
+<p>Time series database (TSDB) is relative new compared with RDBMS, NoSQL, even NewSQL.
+However it is becoming trending with the growth of system monitoring and internet of things.
+The <a href="https://en.wikipedia.org/wiki/Time_series">wiki</a> definition of time series data is <em>a series of data points indexed (or listed or graphed) in time order</em>. When it comes to TSDB, I prefer my own definition: <strong>store client history in server for analysis</strong>.
+Time series data is history, it&rsquo;s <strong>immutable</strong>, <strong>unique</strong> and <strong>sortable</strong>.
+For instance, <code>the CPU usage at 2017-09-03-21:24:44 is 10.02% for machine-01 in us-east region</code>,
+it won&rsquo;t change overtime like bank account balance, there will be no update once it&rsquo;s generated,
+the CPU usage at next second, or from different machine are different data points.
+And <strong>the order of data arriving at server does not effect correctness</strong> because you can remove the duplicate and sort by client timestamp.
+Clients of TSDB send their history to sever and is still functional when the server is down,
+<strong>sending data to TSDB is not critical for many clients</strong>;
+A http server&rsquo;s main job is serving content instead of reporting status code to TSDB.
+However, RDBMS is treated as single source of truth and effect client&rsquo;s critical decision making.
+This lead to very different read and write pattern.
+For instance, banking application need to query database for user&rsquo;s balance before proceed by reading and updating a single record.
+But most TSDB clients are either write only (collectors) or read only (dashboard and alerting system).
+And when they read, they read in large batch, <code>show CPU usage of last 1h</code> is used more often than <code>show CPU usage at 2017-09-03-21:24:44</code>
+because time series data is not that useful without its context.</p>
+
+<p>Time series data is so different from what popular DBMS used to deal with that people are forced to use their favorite DB in very different ways (i.e. <a href="https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/">VividCortex with MySQL</a>, <a href="http://www.timescale.com/">Timescale with Postgres</a>).
+Some decided for special problem special solution is needed, so many TSDBs are written from scratch (<a href="https://graphiteapp.org/">Graphite</a>,
+<a href="https://github.com/influxdata/influxdb">InfluxDB</a> etc.) without dependencies to existing databases.</p>
+
+<h2>Evolve of time series database</h2>
+
+<p>There are <a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=All">too many time series databases</a>,
+so I just list databases that I personally considered as milestone in the evolving of time series database,
+feel free to comment the pieces I missed, I can&rsquo;t find the real initial release of many databases so I just use the oldest on github.</p>
+
+<ul>
+<li>1999/07/16 <a href="https://en.wikipedia.org/wiki/RRDtool">RRDTool First release</a></li>
+<li>2009/12/30 <a href="https://github.com/graphite-project/graphite-web/releases/tag/0.9.5">Graphite 0.9.5</a></li>
+<li>2011/12/23 <a href="https://github.com/OpenTSDB/opentsdb/releases/tag/v1.0.0">OpenTSDB 1.0.0</a></li>
+<li>2013/05/24 <a href="https://github.com/kairosdb/kairosdb/releases/tag/v1.0.0-beta2a">KairosDB 1.0.0-beta</a></li>
+<li>2013/10/24 <a href="https://github.com/influxdata/influxdb/releases/tag/v0.0.1">InfluxDB 0.0.1</a></li>
+<li>2014/08/25 <a href="https://github.com/spotify/heroic/releases/tag/0.3.0">Heroic 0.3.0</a></li>
+<li>2017/03/27 <a href="https://github.com/timescale/timescaledb/releases/tag/0.0.1-beta">TimescaleDB 0.0.1-beta</a></li>
+</ul>
+
+<p><a href="https://oss.oetiker.ch/rrdtool/">RRDTool</a> was created to graph network traffic, it ships with graphing tool while modern TSDB normally depends on <a href="https://github.com/grafana/grafana">Grafana</a> for graphing.
+<a href="https://graphiteapp.org/">Graphite</a> was created later using python instead of C like RRDTool, its storage engine is called <a href="https://github.com/graphite-project/whisper">Whisper</a>, it&rsquo;s much powerful when it comes to data processing and query, however it does not scale well.
+<a href="http://opentsdb.net/">OpenTSDB</a> from Yahoo! solves the scale problem by using HBase.
+<a href="https://kairosdb.github.io/">KairosDB</a> was a fork for OpenTSDB to support Cassandra as an alternative backend, but then they found being compatible with HBase limit the potential of Cassandra, so they dropped HBase and use Cassandra only.
+Ironically, <a href="http://opentsdb.net/docs/build/html/new.html">recent release of OpenTSDB</a> added support for Cassandra.
+Then <a href="https://github.com/spotify/heroic">Heroic</a> came out because they are <a href="https://labs.spotify.com/2015/11/16/monitoring-at-spotify-the-story-so-far/">not satisfied with KairosDB&rsquo;s performance and direction</a>.
+<a href="https://github.com/influxdata/influxdb">InfluxDB</a> started with full open source,
+but then close sourced their cluster version because they need to keep the company running, there is a interesting talk called <a href="https://www.youtube.com/watch?v=Kvf5jWZjw0U">The Open Source Database Business Model is Under Siege</a> during Percona Live which features <a href="https://www.percona.com/live/17/program/schedule/time-series">a time series session</a>.
+<a href="http://www.timescale.com/">TimeScaleDB</a> is based on PostgreSQL with a plugin instead of special schema.</p>
+
+<h2>Time series data model</h2>
+
+<p>Time series data can be split into two parts, <strong>series</strong> and <strong>data points</strong>.
+Series is the identifier, like <code>CPU usage for machine-01 in us-east region</code>,
+data points are an array of points where each point is a timestamp and value.</p>
+
+<p>For series, the main goal is the extensibility for post processing (searching, filtering etc.).
+i.e. If you want <code>CPU usage of all machines in us-east region</code>,
+the identifier of series <code>CPU usage for machine-01 in us-east region</code> is <code>name=cpu.usage machine=machine-01 region=us-east</code>,
+and the query becomes <code>name=cpu.usage machine=* region=us-east</code>.
+It order to deal with large amount of series and wildcard matching, (inverted) index is needed,
+some chose to use external search engine like <a href="https://github.com/spotify/heroic">Heroic</a> is using Elasticsearch.
+Some chose to write their own like <a href="https://github.com/influxdata/influxdb">InfluxDB</a>, <a href="https://prometheus.io/">Prometheus</a>.</p>
+
+<p>For data points there are two models, an array of points <code>[{t: 2017-09-03-21:24:44, v: 0.1002}, {t: 2017-09-03-21:24:45, v: 0.1012}]</code>
+or two arrays for timestamp and values respectively <code>[2017-09-03-21:24:44, 2017-09-03-21:24:45], [0.1002, 0.1012]</code>.
+The former is row store, the latter is column store (not to be confused with column family).
+When building TSDB on top of existing databases (<a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=Cassandra">Cassandra</a>, <a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=HBase">HBase</a> etc.), the former is used more,
+while for TSDB written from scratch, the latter is more popular, TSDB is actually a subset of OLAP and columnar format brings higher compression ratio and query speed.</p>
+
+<h2>Types of time series databases</h2>
+
+<p>Time series databases can be split into two types, existing databases with time series specific special schema or databases built for time series data from scratch.
+We use KairosDB and InfluxDB as example for following discussion.
+A lot of TSDB are <a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=Cassandra">built on top of Cassandra</a>,
+<a href="https://kairosdb.github.io/">KairosDB</a> is the pioneer of them.
+<a href="https://github.com/influxdata/influxdb">InfluxDB</a> has tried many backends until they came up with their <code>Time Structured Merge Tree</code>.</p>
+
+<h3>KairosDB</h3>
+
+<p>Before dive into KairosDB, let&rsquo;s warm up using a simplified version called <a href="https://github.com/xephonhq/xephon-k">Xephon-K</a>.
+<a href="https://github.com/xephonhq/xephon-k">Xephon-K</a> is a multi backend time series database I wrote for testing out different mechanism of building TSDB. Its immature Cassandra backend is simple and modeled after <a href="https://kairosdb.github.io/">KairosDB</a>.</p>
+
+<p>If you are not familiar with Cassandra, here is a brief introduction.
+Cassandra (C*) is a column family NoSQL database modeled after BigTable, people sometimes call it <strong>wide column</strong>.
+You can think column family as a map of map of map. It&rsquo;s a row store, not a column store.
+We can match some concept of Cassandra with RDBMS&rsquo;s.
+<code>Keyspace</code> in C* is database in RDBMS, i.e. your blog and ecommerce application use same MySQL Server but create different database for isolation.
+<code>Table</code> in C* is a map and <code>Partition Key</code> is its key, also known as (physical) row key, which is used to partition data to different nodes.
+The value of the top level map is also map, and its key is the <code>Cluster key</code> (column), its value is also a map.
+When creating a table in CQL, the first column in primary key is partition key and the second is cluster key. i.e. In the following CQL,
+<code>Keyspace</code> is <code>naive</code>, <code>Table</code> is <code>metrics</code>, <code>Partition Key</code> is <code>metric_name</code>, <code>Cluster Key</code> is <code>metrics_timestamp</code>,
+the inner most map is <code>{value: 10.2}</code>, we can have more than one keys for it if needed, i.e. <code>{value: 10.2, annotation: 'new app deployed'}</code></p>
+
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS naive.metrics (
+    metric_name text, metric_timestamp timestamp, value int, 
+    PRIMARY KEY (metric_name, metric_timestamp))
+INSERT INTO naive.metrics (metric_name, metric_timestamp, value) VALUES (cpu, 2017/03/17:13:24:00:20, 10.2)    
+INSERT INTO naive.metrics (metric_name, metric_timestamp, value) VALUES (mem, 2017/03/17:13:24:00:20, 80.3)   
+</code></pre>
+
+<p><img src="data:image/gif;base64,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" data-src="images/posts/cassandra-tsdb-model.png" alt="Cassandra Time Series Data model" /></p>
+
+<p>The figure above shows a naive schema when using Cassandra to store time series data,
+<code>Cluster key</code> is used to store timestamp and column value is the actual value.
+It is naive because series and Cassandra&rsquo;s physical row is a one-to-one mapping, it won&rsquo;t scale when a single series grows larger than the hard limit of Cassandra (2 billion columns).</p>
+
+<p>A more mature schema would partition a single series by time range (might not be fixed, KairosDB use fixed 3 week time range) into several physical rows, an extra table is needed to keep this partition info.
+Also the series name in naive schema is just a simple string, in order to filter series by different criteria, attributes (tags) need to be stored, and another table as index is needed to avoid iterate all the series.</p>
+
+<p>KairosDB&rsquo;s schema is listed below, the <code>data_points</code> table is same as <code>metrics</code> table in naive schema except <code>key</code> is
+not for human like <code>metric_name</code> does. The naming of schema looks strange because it is dumped from Cassandra&rsquo;s shell (cqlsh),
+KairosDB didn&rsquo;t use a cql file to create schema like many other does because it was using the old thrift API.</p>
+
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS data_points (
+    key blob,
+    column1 blob,
+    value blob,
+    PRIMARY KEY ((key), column1)
+) WITH COMPACT STORAGE;
+CREATE TABLE IF NOT EXISTS row_key_index (
+    key blob,
+    column1 blob,
+    value blob,
+    PRIMARY KEY ((key), column1)
+) WITH COMPACT STORAGE;
+CREATE TABLE IF NOT EXISTS row_key_time_index (
+    metric text,
+    row_time timestamp,
+    value text,
+    PRIMARY KEY ((metric), row_time)
+)
+CREATE TABLE IF NOT EXISTS row_keys (
+    metric text,
+    row_time timestamp,
+    data_type text,
+    tags frozen&lt;map&lt;text, text&gt;&gt;,
+    value text,
+    PRIMARY KEY ((metric, row_time), data_type, tags)
+)
+CREATE TABLE IF NOT EXISTS string_index (
+    key blob,
+    column1 blob,
+    value blob,
+    PRIMARY KEY ((key), column1)
+) WITH COMPACT STORAGE
+</code></pre>
+
+<p>There are many more Cassandra based time series databases, they share very similar schema, you can find in <a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=Cassandra">awesome time series database</a>. I am writing a new blog for more detailed survey on TSDB using Cassandra and how to write your own in Golang, I will update the link here once it&rsquo;s finished.</p>
+
+<h3>InfluxDB</h3>
+
+<p><a href="https://github.com/influxdata/influxdb">InfluxDB</a> has <a href="https://docs.influxdata.com/influxdb/v1.3/concepts/storage_engine/">struggled a long time for their storage engine</a> (leveldb, rocksdb, boltdb) before they settled with their time structured merge tree (TSM Tree). It can be separate into two parts, index for series identifiers and store for data points, we only focus on data points.</p>
+
+<p>Time structure merge tree (TSM), is a little bit misleading as log structured merge tree (LSM).
+The key concept for both TSM and LSM is nor log or tree or time,
+it&rsquo;s <strong>merge</strong>. When write, data is stored in memory and then flushed to disk in large batch. When read, first read from memory, then read from disk and merge the result. When delete, a tombstone is added, and data with tombstone is not returned when read. In background, small chunks are merged into big chunks and items marked as deleted are truly removed to save disk space and speed up future query, this background procedure is called compaction. For time series data, compaction may increase compression ratio a lot for very regular data.</p>
+
+<p>A simplified version of TSM file is illustrated below, each chunk contains the series identifier, timestamps and values.
+Note that timestamps and values are stored separately instead of interleaved, which is why InfluxDB say they are using column format.
+InfluxDB use adaptive compression for data, it will loop through the data to see if it can be run length encoded, otherwise fallback to
+<a href="https://github.com/dgryski/go-tsz">Gorilla&rsquo;s</a> or variable length encoding. Timestamps and value use different compression codec because
+timestamps are normally very big integers (unix timestamp in millisecond or nanosecond) while value are normally small integer or float.</p>
+
+<pre><code>chunk
+--------------------------------------------------
+| id | compressed timestamps | compressed values |
+--------------------------------------------------
+tsm file
+-------------------------------------------------------------------
+| header | chunk 0 | chunk 1 | ... | chunk 10086 | index | footer |
+-------------------------------------------------------------------
+</code></pre>
+
+<h2>Hot topics in Time series databases</h2>
+
+<h3>Fast response</h3>
+
+<p>Time series database is used for analysis, and people don&rsquo;t want to wait in front of dashboard when production system is failing and
+user&rsquo;s complain phone coming in, so fast response is a base requirement for any production ready time series database.</p>
+
+<p>The most straight forward way is to put data into memory as much as possible.
+Facebook built <a href="http://www.vldb.org/pvldb/vol8/p1816-teller.pdf">Gorilla</a>, now open sourced as <a href="https://github.com/facebookincubator/beringei">Beringei</a>,
+and its main contribution is using time series specific compression to store more data in memory.</p>
+
+<p>Another way for speed up is pre-aggregation, also known as roll up. Because query often involve a long time range with coarse granularity, like
+<code>average daily cpu usage from June 1 to Aug 1</code>, those aggregations (average, min, max) can be computed when ingesting data, <a href="https://github.com/SoftwareDefinedBuildings/btrdb">BtrDB</a> and <a href="https://github.com/akumuli/Akumuli">Akumuli</a> store aggregation in upper level tree nodes so fine grained data won&rsquo;t be loaded when query is coarse grained.</p>
+
+<p>A proper ingest format could also reduce response time for both read and write, JSON is widely used, but Binary format is much better than textual format when a lot of number is involved, <a href="https://github.com/golang/protobuf/">protobuf</a> could be a good choice.</p>
+
+<!-- ### Compression -->
+
+<h3>Retention</h3>
+
+<p>Not all time series data is useful all time, if the system has been working well for the last two month, fine grained data can be dropped and only coarse grained is kept.
+This is the default behavior of <a href="https://oss.oetiker.ch/rrdtool/">RDDTool</a> and <a href="https://graphiteapp.org/">Graphite</a>,
+but not the case for many newer scaled TSDB.
+Delete a file on local disk is easy but update a large amount of data in a distributed environment requires more caution to keep the system up all time, you don&rsquo;t want your monitoring systems failed before the system it is monitoring failed.</p>
+
+<!-- Also should the aggregated data get computed when data comes in or  -->
+
+<h3>Meta data indexing</h3>
+
+<p>Series identifier in general is the only meta data in time series database.
+Databases like <a href="https://github.com/spotify/heroic">Heroic</a> use ElasticSearch to store meta data,
+query first goes to elasticsearch to retrieve the id for series, then data is loaded from Cassandra using id.
+A full search engine as Elasticsearch is powerful for sure, but the overhead of maintain another system and time spent
+coordinating and communicating between two system can&rsquo;t be ignored.
+Also some TSDB specific optimization may not be available when you don&rsquo;t have full control over metadata index building and storage.
+So InfluxDB and Prometheus <a href="https://fabxc.org/blog/2017-04-10-writing-a-tsdb/">wrote their own inverted index for indexing meta data</a>.</p>
+
+<!-- ### Reduce write amplification -->
+
+<!-- ### Streaming -->
+
+<!-- Streaming has been hot for a long time, you must have heard Storm, Spark Streaming, Kafka etc. -->
+
+<h3>Tracing</h3>
+
+<p>Folks from InfluxDB wrote a blog called <a href="https://www.influxdata.com/blog/metrics-are-dead/">Metrics are dead</a>
+because during a conference for monitoring called <a href="http://monitorama.com/">Monitorama</a> people say metrics can&rsquo;t provide enough insight as tracing does.
+(You can go to <a href="http://opentracing.io/">OpenTracing</a> if you want to know more about tracing, and take a look at google&rsquo;s <a href="https://research.google.com/pubs/pub36356.html">Dapper paper</a>)
+Their argument is tracing is for large scale distributed system, but there are many monolithic applications where metrics is enough (so metrics is not dead and you should use InfluxDB).
+I agree with them on the over emphasis of micro services, however my argument is <strong>many time series database can be transfered into a tracing database</strong>.
+Trace is a complex version of time series data points,
+if your value in a point is no longer a float value but a json payload with fields like parent span id, duration, it is a trace.
+Of course schema design, compression all need a lot of change, but many popular tracing solution like <a href="https://github.com/openzipkin/zipkin">Zipkin</a>
+, Uber&rsquo;s <a href="https://uber.github.io/jaeger/">Jaeger</a> is also using Cassandra like many TSDB do, there could be a middle ground.
+<strong>Update:</strong> InfluxDB already <a href="https://www.influxdata.com/blog/tracing-the-journey-of-a-transaction-as-it-propagates-through-a-distributed-system/">tried to integrate Zipkin with their TICK stack</a>
+I spent too much time writing this blog.</p>
+
+<p>Because the length of the blog we can&rsquo;t cover other hot topics like Compression, Pull vs Push, Streaming, Reduce write amplification etc,
+they will be covered in future blogs.</p>
+
+<h2>Reference</h2>
+
+<ul>
+<li><a href="https://github.com/xephonhq/awesome-time-series-database">Awesome Time Series Database</a></li>
+<li><a href="https://github.com/akumuli/Akumuli">Akumuli</a></li>
+<li><a href="https://github.com/facebookincubator/beringei">Beringei</a></li>
+<li><a href="https://github.com/SoftwareDefinedBuildings/btrdb">BtrDB</a></li>
+<li><a href="http://www.vldb.org/pvldb/vol8/p1816-teller.pdf">Gorilla</a></li>
+<li><a href="https://github.com/grafana/grafana">Grafana</a></li>
+<li><a href="https://graphiteapp.org/">Graphite</a></li>
+<li><a href="https://github.com/spotify/heroic">Heroic</a></li>
+<li><a href="https://github.com/influxdata/influxdb">InfluxDB</a></li>
+<li><a href="https://uber.github.io/jaeger/">Jaeger - Tracer</a></li>
+<li><a href="https://kairosdb.github.io/">KairosDB</a></li>
+<li><a href="http://opentsdb.net/">OpenTSDB</a></li>
+<li><a href="https://prometheus.io/">Prometheus</a></li>
+<li><a href="https://oss.oetiker.ch/rrdtool/">RRDTool</a></li>
+<li><a href="http://www.timescale.com/">Timescale - TSDB using Postgres</a></li>
+<li><a href="https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/">VividCortex - TSDB using MySQL</a></li>
+<li><a href="https://github.com/openzipkin/zipkin">Zipkin - Tracer</a></li>
+</ul>
+
+<h2>License</h2>
+
+<ul>
+<li>This article is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</li>
+<li>Please contact <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a> for commerical use.</li>
+</ul>
+</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(https://avatars1.githubusercontent.com/u/5621298);"></div>
+                    <a class="name" href="/about.at15.html">at15</a>
+                    <div class="intro">开坑不填的婶婶</div>
+                </section>
+                <section class="recommend">
+                    
+                    <section class="nav prev more">
+                        <div class="head">上篇文章</div>
+                        <a class="link" href="/%e6%97%b6%e9%97%b4%e5%ba%8f%e5%88%97%e6%95%b0%e6%8d%ae%e5%ba%93%e6%bc%ab%e8%b0%88.html">时间序列数据库漫谈</a>
+                    </section>
+                    
+                    
+                    <section class="nav next more">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="/google_sre_%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%281%29-%e7%9b%91%e6%8e%a7.html">Google SRE 阅读笔记(1)-监控</a>
+                    </section>
+                    
+                </section>
+                
+    <section id="disqus_thread"></section>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//dong-yue-gong-zuo-shi-tuan-dui-bo-ke.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        
+        <a href="http://dongyueweb.com" target="_blank">DongyueWeb</a> ©
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="http://www.chole.io/" target="_blank">Ink</a></span>
+</footer>
+
+        <script src="/bundle/index.js"></script>
+    </body>
+</html>

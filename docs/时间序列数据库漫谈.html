@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="东岳网络工作室团队博客">
+<meta name="twitter:description" content="分享我们所得">
+<meta name="twitter:image:src" content="http://blog.dongyueweb.com/images/logo.png">
+
+<meta property="og:url" content="http://blog.dongyueweb.com">
+<meta property="og:title" content="东岳网络工作室团队博客">
+<meta property="og:description" content="分享我们所得">
+<meta property="og:site_name" content="东岳网络工作室团队博客">
+<meta property="og:image" content="http://blog.dongyueweb.com/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="东岳网络工作室团队博客">
+<meta itemprop="description" content="分享我们所得">
+<meta itemprop="image" content="http://blog.dongyueweb.com/images/logo.png">
+
+<link rel="canonical" href="http://blog.dongyueweb.com">
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-itouch-icon" href="/favicon.png">
+<link rel="stylesheet" href="/bundle/index.css">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+
+        <meta name="keywords" content="时间序列数据库,数据库,">
+        <meta name="description" content="时间序列数据库漫谈">
+        <meta name="author" content="at15">
+        <title>时间序列数据库漫谈</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    <img class="logo" src="/images/logo.png" />
+    
+    DongyueWeb
+  </a>
+  <ul class="menu">
+      <li class="menu-item"><a href="/archive.html">归档</a></li>
+      <li class="menu-item"><a href="/tag.html">标签</a></li>
+      <li class="menu-item"><a href="/atom.xml">订阅</a></li>
+  </ul>
+</header>
+
+            <article class="main article">
+                <h1 class="title">时间序列数据库漫谈</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(https://avatars1.githubusercontent.com/u/5621298);"></span>
+                    <a class="name" href="/about.at15.html">at15</a>
+                    
+                    <span class="date" data-time="1499562765"><span class="from"></span></span>
+                    
+                    <span class="tags"><a class="tag" href="/tag/%e6%97%b6%e9%97%b4%e5%ba%8f%e5%88%97%e6%95%b0%e6%8d%ae%e5%ba%93/index.html">时间序列数据库</a><a class="tag" href="/tag/%e6%95%b0%e6%8d%ae%e5%ba%93/index.html">数据库</a></span>
+                </section>
+                <article class="content"><p>这篇文章是写给<a href="https://github.com/dyweb">东岳网络工作室</a>的小伙伴们的 (广告:欢迎在交大的同学加入)，适用于有一定数据库背景并且想要了解时间序列数据库的同学。
+PS: 中文版是在<a href="/introduction_to_time_series_database.html">英文版</a>之后写的，很生硬，请见谅。</p>
+
+<p>目录</p>
+
+<ul>
+<li>什么是时间序列数据库 (TSDB)</li>
+<li>时间序列数据库数据模型</li>
+<li>时间序列数据库演变</li>
+<li>时间序列数据库类型
+
+<ul>
+<li>KairosDB</li>
+<li>InfluxDB</li>
+</ul></li>
+<li>热点话题
+
+<ul>
+<li>低延迟</li>
+<li>数据</li>
+<li>元数据索引</li>
+<li>Tracing</li>
+</ul></li>
+</ul>
+
+<h2>什么是时间序列数据库 (TSDB)</h2>
+
+<p>时间序列数据库 <code>Time Series Database</code> (TSDB) 相对于关系型数据库 (RDBMS)，NoSQL，NewSQL 还很年轻。
+但是，随着系统监控以及物联网的发展，已经开始受到更多的关注。
+维基百科上对于时间序列的定义是‘一系列数据点按照时间顺序排列’，
+但是我个人的理解是<strong>存储在服务端的客户端历史</strong>。
+时间序列数据就是历史，它具有<strong>不变性</strong>, <strong>唯一性</strong>以及<strong>可排序性</strong>。
+比如<code>在2017年9月3日21点24分44秒，华东区的机器001的CPU使用率是10.02%</code>，
+这个值不会像银行存款一样随着时间发生变化，它一旦产生了就不会有更新。
+下一秒的使用率是一个新的数据点，其他机器的使用率在其他时间序列里。
+并且<strong>数据到达服务器的顺序并不影响正确性</strong>，根据数据本身可以直接进行排序和去重。
+客户端发送本地的历史到服务器端，即使服务器端挂掉了，客户端依旧继续他本来要做的事情而不受到影响。
+对于很多客户端来说，发送数据到 TSDB 跟它的本职工作并没有关联。
+比如一个静态文件服务器的主要职责是传送文件而不是上报 HTTP 状态码。
+关系型数据库则起着完全不一样的作用，它是客户端做决定的主要依据，
+这就导致时间序列数据库和关系型数据库的读写规律有很大的不同。
+比如你取钱之前，银行的程序必须从数据库里找到你的那条存款记录，读出你的余额，确认不会透支才能把钱给你，
+然后更新你的余额。
+然而大多数时间序列数据库的客户端是只读(监控系统)或者只写(被监控的系统)，
+并且读取数据是并不是读取特定的某条，而是读取某个时间区间内的大量数据，比如<code>最近1小时的CPU使用率</code>远比
+<code>2017年9月3日21点24分44秒的CPU使用率</code>有用，脱离上下文的时间序列数据并没有什么作用。</p>
+
+<p>时间序列数据跟关系型数据库有太多不同，但是很多公司并不想放弃关系型数据库。
+于是就产生了一些特殊的用法，比如用 <a href="https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/">MySQL 的 VividCortex</a>,
+用 <a href="http://www.timescale.com/">Postgres 的 Timescale</a>。
+很多人觉得特殊的问题需要特殊的解决方法，于是很多时间序列数据库从头写起，不依赖任何现有的数据库,
+比如 <a href="https://graphiteapp.org/">Graphite</a>，<a href="https://github.com/influxdata/influxdb">InfluxDB</a>。</p>
+
+<h2>时间序列数据库演变</h2>
+
+<p>时间序列数据库有<a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=All">很多</a>，
+下面列出的是一些我个人认为具有里程碑意义的数据库。
+很多数据库主页上并没有最初版本的发布日期，因此以 GitHub 上最早的 tag 作为发布日期。</p>
+
+<ul>
+<li>1999/07/16 <a href="https://en.wikipedia.org/wiki/RRDtool">RRDTool First release</a></li>
+<li>2009/12/30 <a href="https://github.com/graphite-project/graphite-web/releases/tag/0.9.5">Graphite 0.9.5</a></li>
+<li>2011/12/23 <a href="https://github.com/OpenTSDB/opentsdb/releases/tag/v1.0.0">OpenTSDB 1.0.0</a></li>
+<li>2013/05/24 <a href="https://github.com/kairosdb/kairosdb/releases/tag/v1.0.0-beta2a">KairosDB 1.0.0-beta</a></li>
+<li>2013/10/24 <a href="https://github.com/influxdata/influxdb/releases/tag/v0.0.1">InfluxDB 0.0.1</a></li>
+<li>2014/08/25 <a href="https://github.com/spotify/heroic/releases/tag/0.3.0">Heroic 0.3.0</a></li>
+<li>2017/03/27 <a href="https://github.com/timescale/timescaledb/releases/tag/0.0.1-beta">TimescaleDB 0.0.1-beta</a></li>
+</ul>
+
+<p><a href="https://oss.oetiker.ch/rrdtool/">RRDTool</a> 是最早的时间序列数据库，它自带画图功能，现在大部分时间序列数据库都使用<a href="https://github.com/grafana/grafana">Grafana</a>来画图。
+<a href="https://graphiteapp.org/">Graphite</a> 是用 Python 写的 RRD 数据库，它的存储引擎 <a href="https://github.com/graphite-project/whisper">Whisper</a> 也是 Python 写的，
+它画图和聚合能力都强了很多，但是很难水平扩展。
+来自雅虎的 <a href="http://opentsdb.net/">OpenTSDB</a> 使用 HBase 解决了水平扩展的问题。
+<a href="https://kairosdb.github.io/">KairosDB</a> 最初是基于OpenTSDB修改的，但是作者认为兼容HBase导致他们不能使用很多 Cassandra 独有的特性，
+于是就抛弃了HBase仅支持Cassandra。
+有趣的是，在<a href="http://opentsdb.net/docs/build/html/new.html">新发布的</a> OpenTSDB 中也加入了对 Cassandra 的支持。
+故事还没完，Spotify 的人本来想使用 KairosDB，但是觉得<a href="(https://labs.spotify.com/2015/11/16/monitoring-at-spotify-the-story-so-far/)">项目发展方向不对以及性能太差</a>，就自己撸了一个 <a href="https://github.com/spotify/heroic">Heroic</a>。
+<a href="https://github.com/influxdata/influxdb">InfluxDB</a> 早期是完全开源的，后来为了维持公司运营，闭源了集群版本。
+在 Percona Live 上他们做了一个<a href="https://www.youtube.com/watch?v=Kvf5jWZjw0U">开源数据库商业模型正面临危机</a>的演讲，里面调侃红帽的段子很不错。
+并且今年的 Percona Live 还有专门的<a href="https://www.percona.com/live/17/program/schedule/time-series">时间序列数据库单元</a>。</p>
+
+<h2>时间序列数据库数据模型</h2>
+
+<p>时间序列数据可以分成两部分，<strong>序列</strong>和<strong>数据点</strong>。
+序列就是标识符，比如<code>华东区机器001的CPU使用率</code>。
+数据点是时间戳和数值构成的数组。</p>
+
+<p>对于序列，主要的目的是方便使用者进行搜索和筛选。
+比如你需要查询<code>华东区所有机器的CPU使用率</code>。
+序列 <code>华东区机器001的CPU使用率</code> 的标识符是 <code>name=cpu.usage machine=001 region=cn-east</code>，
+查询则是 <code>name=cpu.usage machine=* region=cn-east</code>。
+为了处理大量的序列，需要建立（倒排）索引来提高查询速度。
+一些时间序列数据库选择使用外部搜索引擎来解决这个问题，比如 <a href="https://github.com/spotify/heroic">Heroic</a> 使用了 Elasticsearch,
+另一些则选择自己写索引，比如 <a href="https://github.com/influxdata/influxdb">InfluxDB</a>, <a href="https://prometheus.io/">Prometheus</a>。</p>
+
+<p>对于数据点，有两种模型，一个数组的点  <code>[{t: 2017-09-03-21:24:44, v: 0.1002}, {t: 2017-09-03-21:24:45, v: 0.1012}]</code>
+或者两个数组，一个存时间戳，一个存数值。前者是行存，后者是列存（不是列簇）。
+大部分基于现有数据库( <a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=Cassandra">Cassandra</a>, <a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=HBase">HBase</a> ) 的是第一种。
+对于新的时间序列数据库第二种更为普遍，TSDB 属于 OLAP 的一个子集，列存能有更好的压缩率和查询性能。</p>
+
+<h2>时间序列数据库类型</h2>
+
+<p>时间序列数据库可以分成两类，基于现有的数据库或者专门为时间序列数据写的数据库。
+我们以 <a href="https://kairosdb.github.io/">KairosDB</a> 和 <a href="https://github.com/influxdata/influxdb">InfluxDB</a> 为例来分析。
+有很多时间序列数据库是<a href="https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=Cassandra">基于 Cassandra</a> 的，
+<a href="https://kairosdb.github.io/">KairosDB</a> 是其中比较早的一个。
+<a href="https://github.com/influxdata/influxdb">InfluxDB</a> 是专用于时间序列的数据库，他们尝试了很多存储引擎，最后写了自己的 <code>Time Structured Merge Tree</code>.</p>
+
+<h3>KairosDB</h3>
+
+<p>在看 KairosDB 之前我们先用一个简化版本的预热一下。
+<a href="https://github.com/xephonhq/xephon-k">Xephon-K</a> 是我写的一个有多种存储后端的时间序列数据库(专门用来对付各种课程大作业)。
+它有一个非常 naive 的基于 Cassandra 的实现。</p>
+
+<p>如果你对 Cassandra 不熟的话，这里有个简单的介绍。
+Cassandra 是一个列簇数据库，是谷歌 BigTable 的开源实现。列簇又被称作宽列。
+实质上是一个多层嵌套的哈希表。它是一个行存储，不是列存储。
+一些 Cassandra 的名词可以跟关系型数据库中的对应起来。
+Cassandra 中的 <code>Keyspace</code> 就是指的 <code>database</code>, 比如一个博客和一个网店虽然使用同一个 MySQL 服务器，但是各用一个数据库以进行隔离。
+Cassandra 中的 <code>Table</code> 是一个哈希表，他的 <code>Partition Key</code> 是哈希表的键(也被叫做物理行键)，它的值也是一个哈希表，这个哈希表的键是 <code>Cluster Key</code>，
+它的值还是一个蛤希表。
+当使用 CQL 创建一个 <code>Table</code> 的时候，主键中的第一个列是 <code>Partition Key</code>，第二个列是 <code>Cluster Key</code>。
+比如在下面的 CQL 中， <code>Keyspace</code> 是 <code>naive</code>, <code>Table</code> 是 <code>metrics</code>，<code>Partition Key</code> 是 <code>metric_name</code>,
+<code>Cluster Key</code> 是 <code>metrics_timestamp</code>。
+最内层的哈希表是 <code>{value: 10.2}</code>, 如果需要我们可以存更多的值，比如 <code>{value: 10.2, annotation: '新 bug 上线啦'}</code>。</p>
+
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS naive.metrics (
+    metric_name text, metric_timestamp timestamp, value int,
+    PRIMARY KEY (metric_name, metric_timestamp))
+INSERT INTO naive.metrics (metric_name, metric_timestamp, value) VALUES (cpu, 2017/03/17:13:24:00:20, 10.2)    
+INSERT INTO naive.metrics (metric_name, metric_timestamp, value) VALUES (mem, 2017/03/17:13:24:00:20, 80.3)   
+</code></pre>
+
+<p><img src="data:image/gif;base64,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" data-src="images/posts/cassandra-tsdb-model.png" alt="Cassandra Time Series Data model" /></p>
+
+<p>上图显示了使用 Cassandra 存储时间序列数据时 naive 的表结构，
+<code>Cluster Key</code> 存储时间戳，列的值存储实际的数值。
+它 naive 之处在于序列和 Cassandra 的物理行是一一对应的。
+当单一序列的数据点超过 Cassandra 的限制(20亿)时就会崩溃。</p>
+
+<p>一个更加成熟的表结构是把一个时间序列按时间范围分区，(KairosDB 按照 3 周来划分，但是可以根据数据量进行不定长的划分)。
+为了存储分区的信息，需要一张额外的表。
+同时在 naive 里序列的名称只是一个简单的字符串，如果需要按照多种条件进行筛选的话，需要存储更多的键值对，并且对于这些键值对需要建立索引以提高查询速度。</p>
+
+<p>下面是完整的 KairosDB 的表结构，<code>data_points</code> 表对应的是 naive 里的 <code>metrics</code> 表。
+它看上去不像人写的，因为它就是直接导出的，KairosDB 使用的旧版 Cassandra 的 Thrift API 创建表结构，没有 <code>.cql</code> 文件。</p>
+
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS data_points (
+    key blob,
+    column1 blob,
+    value blob,
+    PRIMARY KEY ((key), column1)
+) WITH COMPACT STORAGE;
+CREATE TABLE IF NOT EXISTS row_key_index (
+    key blob,
+    column1 blob,
+    value blob,
+    PRIMARY KEY ((key), column1)
+) WITH COMPACT STORAGE;
+CREATE TABLE IF NOT EXISTS row_key_time_index (
+    metric text,
+    row_time timestamp,
+    value text,
+    PRIMARY KEY ((metric), row_time)
+)
+CREATE TABLE IF NOT EXISTS row_keys (
+    metric text,
+    row_time timestamp,
+    data_type text,
+    tags frozen&lt;map&lt;text, text&gt;&gt;,
+    value text,
+    PRIMARY KEY ((metric, row_time), data_type, tags)
+)
+CREATE TABLE IF NOT EXISTS string_index (
+    key blob,
+    column1 blob,
+    value blob,
+    PRIMARY KEY ((key), column1)
+) WITH COMPACT STORAGE
+</code></pre>
+
+<p>有很多基于 Cassandra 的时间序列数据库，他们的结构大多相同，你可以看<a href="(https://xephonhq.github.io/awesome-time-series-database/?language=All&amp;backend=Cassandra)">这个列表</a>。
+我最近正在写一个如何用 Cassandra 和 Golang 自己写个时间序列数据库的博客，写好之后会把地址更新在这里。</p>
+
+<h3>InfluxDB</h3>
+
+<p><a href="https://github.com/influxdata/influxdb">InfluxDB</a> 在存储引擎上<a href="https://docs.influxdata.com/influxdb/v1.3/concepts/storage_engine/">纠结了很久</a>，
+leveldb, rocksdb, boltdb 都玩了个遍，最后决定自己造个轮子叫 <code>Time Structured Merge Tree</code>。</p>
+
+<p><code>Time Structured Merge Tree</code> (TSM) 和 <code>Log Structured Merge Tree</code> (LSM) 的名字都有点误导性，关键并不是树，也不是日志或者时间，而是 <code>Merge</code>。
+写入的时候，数据先写入到内存里，之后批量写入到硬盘。读的时候，同时读内存和硬盘然后合并结果。
+删除的时候，写入一个删除标记，被标记的数据在读取时不会被返回。
+后台会把小的块合并成大的块，此时被标记删除的数据才真正被删除，这个过程叫做 <code>Compaction</code>。
+相对于普通数据，有规律的时间序列数据在合并的过程中可以极大的提高压缩比。</p>
+
+<p>下图是一个简化版的 TSM，每个块包含序列标识符，一组时间戳，一组值。
+注意时间戳和值是分开存储的，而不是交替存储的，所以 InflxuDB 是一个列存储。
+InfluxDB 会根据数据来选择压缩的方法，如果可以使用行程编码是最好的，
+否则会使用 <a href="(https://github.com/dgryski/go-tsz)">Gorilla</a> 中提到的浮点数压缩方法以及变长编码。
+时间戳和数值一般会使用不同的压缩方法，因为时间戳大多是非常大的整数而数值是非常小的浮点数。</p>
+
+<pre><code>chunk
+--------------------------------------------------
+| id | compressed timestamps | compressed values |
+--------------------------------------------------
+tsm file
+-------------------------------------------------------------------
+| header | chunk 0 | chunk 1 | ... | chunk 10086 | index | footer |
+-------------------------------------------------------------------
+</code></pre>
+
+<h2>热点话题</h2>
+
+<h3>低延迟</h3>
+
+<p>时间序列数据库主要是用来分析的，所以提高响应速度对于诊断生产环境的问题是十分重要的。</p>
+
+<p>最直接的提速方法就是把所有数据都放在内存，Facebook 写了叫 <a href="http://www.vldb.org/pvldb/vol8/p1816-teller.pdf">Gorilla</a> 的纯内存时间序列数据库发表在 VLDB 上，现在已经开源，改名为 <a href="https://github.com/facebookincubator/beringei">Beringei</a>（都是猩猩&hellip;）。</p>
+
+<p>另一种提速的方法是提前聚合。因为查询中经常需要对一个很长的时间区间取一些粗粒度的值，比如<code>6月到8月每天的平均CPU使用率</code>。
+这些聚合值（均值，最大，最小) 都可以在存储数据的时候计算出来。
+<a href="https://github.com/SoftwareDefinedBuildings/btrdb">BtrDB</a> 和 <a href="https://github.com/akumuli/Akumuli">Akumuli</a>
+都在内部节点中存储聚合值，这样在很多查询中底层的节点不需要被访问就可以得到结果。</p>
+
+<p>同时一个好的数据传输格式也可以提高响应速度，虽然 JSON 被广泛使用，但是二进制的格式对于有大量数字的数据会显著的提升。
+<a href="https://github.com/golang/protobuf/">protobuf</a> 可能会是一个更好的选择。</p>
+
+<h3>处理旧数据</h3>
+
+<p>很多时间序列数据都没有多大用处，特别是当系统长时间正常运行时，完整的历史数据意义并不大。
+所以有些数据库比如 <a href="https://oss.oetiker.ch/rrdtool/">RDDTool</a> 和 <a href="https://graphiteapp.org/">Graphite</a> 会自动删除高精度的数据，只保留低精度的。
+但是对于很多新的时间序列数据库，在聚合和删除大量旧数据的同时保证系统正常运行并不像删除一个本地文件那样简单。
+如果监控系统比被监控系统还不稳定就比较尴尬了。</p>
+
+<h3>元数据索引</h3>
+
+<p>时间序列的标识符是时间序列数据库里主要的元数据。
+<a href="https://github.com/spotify/heroic">Heroic</a> 使用 Elasticsearch 来存储元数据，
+查询首先通过 Elasticsearch 来取得符合要求的序列标识符，之后从 Cassandra 根据标识符来读取对应的数据。
+但是维护一个完整的搜索引擎带来的运维压力和增加的通信时间都是不能忽视的。
+因此 InfluxDB 和 Prometheus 就<a href="(https://fabxc.org/blog/2017-04-10-writing-a-tsdb/)">自己写了倒排索引</a>来索引元数据。</p>
+
+<h3>Tracing</h3>
+
+<p>InfluxDB 的人写了一篇博客 <a href="https://www.influxdata.com/blog/metrics-are-dead/">Metrics are dead</a>，
+起因是在一个关于监控的会议 <a href="http://monitorama.com/">Monitorama</a> 上有人说单纯的监控数据已经不能满足他们复杂的微服务架构了。
+于是 InfluxDB 的人反驳说并不是所有人都在使用大规模的分布式系统，对于很多简单的应用单纯的监控数据已经完全够用了。
+我的看法是<strong>时间序列数据库是可以用来存 Trace 的</strong>。
+Trace 是更加复杂的时间序列数据，把单纯的数值变成一个包含更多信息的对象，它就是一个 Trace。
+并且很多流行的 Tracer 的存储也是使用 Cassandra, 比如 <a href="https://github.com/openzipkin/zipkin">Zipkin</a>，
+Uber 的 <a href="https://uber.github.io/jaeger/">Jaeger</a>。<strong>更新:</strong> InfluxDB 现在<a href="https://www.influxdata.com/blog/tracing-the-journey-of-a-transaction-as-it-propagates-through-a-distributed-system/">已经支持存储 Trace 了</a></p>
+
+<p>由于篇幅限制，有很多话题我们没有涉及，比如压缩，Pull vs Push, 写放大等，在以后的博客中会陆续介绍。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://github.com/xephonhq/awesome-time-series-database">Awesome Time Series Database</a></li>
+<li><a href="https://github.com/akumuli/Akumuli">Akumuli</a></li>
+<li><a href="https://github.com/facebookincubator/beringei">Beringei</a></li>
+<li><a href="https://github.com/SoftwareDefinedBuildings/btrdb">BtrDB</a></li>
+<li><a href="http://www.vldb.org/pvldb/vol8/p1816-teller.pdf">Gorilla</a></li>
+<li><a href="https://github.com/grafana/grafana">Grafana</a></li>
+<li><a href="https://graphiteapp.org/">Graphite</a></li>
+<li><a href="https://github.com/spotify/heroic">Heroic</a></li>
+<li><a href="https://github.com/influxdata/influxdb">InfluxDB</a></li>
+<li><a href="https://uber.github.io/jaeger/">Jaeger - Tracer</a></li>
+<li><a href="https://kairosdb.github.io/">KairosDB</a></li>
+<li><a href="http://opentsdb.net/">OpenTSDB</a></li>
+<li><a href="https://prometheus.io/">Prometheus</a></li>
+<li><a href="https://oss.oetiker.ch/rrdtool/">RRDTool</a></li>
+<li><a href="http://www.timescale.com/">Timescale - TSDB using Postgres</a></li>
+<li><a href="https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/">VividCortex - TSDB using MySQL</a></li>
+<li><a href="https://github.com/openzipkin/zipkin">Zipkin - Tracer</a></li>
+</ul>
+
+<h2>License</h2>
+
+<ul>
+<li>This article is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</li>
+<li>Please contact <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a> for commerical use.</li>
+</ul>
+</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(https://avatars1.githubusercontent.com/u/5621298);"></div>
+                    <a class="name" href="/about.at15.html">at15</a>
+                    <div class="intro">开坑不填的婶婶</div>
+                </section>
+                <section class="recommend">
+                    
+                    <section class="nav prev more">
+                        <div class="head">上篇文章</div>
+                        <a class="link" href="/google_summer_of_code_%e7%94%b3%e8%af%b7%e6%8c%87%e5%8d%97.html">Google Summer of Code 申请指南</a>
+                    </section>
+                    
+                    
+                    <section class="nav next more">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="/introduction_to_time_series_database.html">Introduction to Time Series Database</a>
+                    </section>
+                    
+                </section>
+                
+    <section id="disqus_thread"></section>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//dong-yue-gong-zuo-shi-tuan-dui-bo-ke.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        
+        <a href="http://dongyueweb.com" target="_blank">DongyueWeb</a> ©
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="http://www.chole.io/" target="_blank">Ink</a></span>
+</footer>
+
+        <script src="/bundle/index.js"></script>
+    </body>
+</html>
