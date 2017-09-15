@@ -37,10 +37,10 @@ Time series database (TSDB) is relative new compared with RDBMS, NoSQL, even New
 However it is becoming trending with the growth of system monitoring and internet of things.
 The [wiki](https://en.wikipedia.org/wiki/Time_series) definition of time series data is *a series of data points indexed (or listed or graphed) in time order*. When it comes to TSDB, I prefer my own definition: **store client history in server for analysis**.
 Time series data is history, it's **immutable**, **unique** and **sortable**. 
-For instance, the CPU usage at 2017-09-03-21:24:44 is 10.02% for machine-01 in us-east region, 
-it won't change overtime like bank account balance, there will be no update on it, 
+For instance, `the CPU usage at 2017-09-03-21:24:44 is 10.02% for machine-01 in us-east region`, 
+it won't change overtime like bank account balance, there will be no update once it's generated, 
 the CPU usage at next second, or from different machine are different data points. 
-And the order of data arriving at server is not that important since you can remove the duplicate and sort by client timestamp.
+And **the order of data arriving at server does not effect correctness** because you can remove the duplicate and sort by client timestamp.
 Clients of TSDB send their history to sever and is still functional when the server is down, 
 **sending data to TSDB is not critical for many clients**;
 A http server's main job is serving content instead of reporting status code to TSDB.
@@ -86,35 +86,40 @@ Series is the identifier, like `CPU usage for machine-01 in us-east region`,
 data points are an array of points where each point is a timestamp and value.
 
 For series, the main goal is the extensibility for post processing (searching, filtering etc.).
-i.e. If you want `top 10 CPU usage among all machines in us-east region`,
-the identifier of `CPU usage for machine-01 in us-east region` is `name=cpu.usage machine=machine-01 region=en-us`, 
-and the query becomes `name=cpu.usage machine=* region=en-us order by value desc limit 10`.
+i.e. If you want `CPU usage of all machines in us-east region`,
+the identifier of series `CPU usage for machine-01 in us-east region` is `name=cpu.usage machine=machine-01 region=us-east`, 
+and the query becomes `name=cpu.usage machine=* region=us-east`.
 It order to deal with large amount of series and wildcard matching, (inverted) index is needed,
-some chose to use external search engine like ElasticSearch (Heroic), Solr (KairosDB).
-Some chose to write their own (InfluxDB, Prometheus).
+some chose to use external search engine like [Heroic](https://github.com/spotify/heroic) is using Elasticsearch.
+Some chose to write their own like [InfluxDB](https://github.com/influxdata/influxdb), [Prometheus](https://prometheus.io/).
 
 For data points there are two models, an array of points `[{t: 2017-09-03-21:24:44, v: 0.1002}, {t: 2017-09-03-21:24:45, v: 0.1012}]` 
 or two arrays for timestamp and values respectively `[2017-09-03-21:24:44, 2017-09-03-21:24:45], [0.1002, 0.1012]`.
 The former is row store, the latter is column store (not to be confused with column family).
 When building TSDB on top of existing databases ([Cassandra](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=Cassandra), [HBase](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=HBase) etc.), the former is used more,
-while for TSDB written from scratch, the latter is more popular.
+while for TSDB written from scratch, the latter is more popular, TSDB is actually a subset of OLAP and columnar format brings higher compression ratio and query speed.
 
 ## Types of time series databases
 
-Time series databases can be split into two types, existing databases with time series specific special schema or databases designed to for time series data. We use KairosDB and InfluxDB as example for following discussion.
+Time series databases can be split into two types, existing databases with time series specific special schema or databases built for time series data from scratch. 
+We use KairosDB and InfluxDB as example for following discussion. 
+A lot of TSDB are [built on top of Cassandra](https://xephonhq.github.io/awesome-time-series-database/?language=All&backend=Cassandra), 
+[KairosDB](https://kairosdb.github.io/) is the pioneer of them.
+[InfluxDB](https://github.com/influxdata/influxdb) has tried many backends until they came up with their `Time Structured Merge Tree`.
 
 ### KairosDB
 
 Before dive into KairosDB, let's warm up using a simplified version called [Xephon-K](https://github.com/xephonhq/xephon-k).
 [Xephon-K](https://github.com/xephonhq/xephon-k) is a multi backend time series database I wrote for testing out different mechanism of building TSDB. Its immature Cassandra backend is simple and modeled after [KairosDB](https://kairosdb.github.io/).
 
+If you are not familiar with Cassandra, here is a brief introduction.
 Cassandra (C*) is a column family NoSQL database modeled after BigTable, people sometimes call it **wide column**. 
 You can think column family as a map of map of map. It's a row store, not a column store.
 We can match some concept of Cassandra with RDBMS's.
-`Keyspace` in C* is database in RDBMS, i.e. you create different database for you blog and ecommerce application for isolation.
+`Keyspace` in C* is database in RDBMS, i.e. your blog and ecommerce application use same MySQL Server but create different database for isolation.
 `Table` in C* is a map and `Partition Key` is its key, also known as (physical) row key, which is used to partition data to different nodes.
 The value of the top level map is also map, and its key is the `Cluster key` (column), its value is also a map.
-When creating a table in CQL, the first column is partition key and the second is cluster key. i.e. In the following CQL, 
+When creating a table in CQL, the first column in primary key is partition key and the second is cluster key. i.e. In the following CQL, 
 `Keyspace` is `naive`, `Table` is `metrics`, `Partition Key` is `metric_name`, `Cluster Key` is `metrics_timestamp`, 
 the inner most map is `{value: 10.2}`, we can have more than one keys for it if needed, i.e. `{value: 10.2, annotation: 'new app deployed'}`
 
@@ -128,8 +133,10 @@ INSERT INTO naive.metrics (metric_name, metric_timestamp, value) VALUES (mem, 20
 
 ![Cassandra Time Series Data model](images/posts/cassandra-tsdb-model.png)
 
-The figure above shows a naive schema when using Cassandra to store time series data, it is naive because series and Cassandra's physical row is a one-to-one mapping, it won't scale when a single series grows larger than the hard limit of Cassandra (2 billion columns). 
-Cluster key is used to store timestamp and column value is the actual value. 
+The figure above shows a naive schema when using Cassandra to store time series data, 
+`Cluster key` is used to store timestamp and column value is the actual value.
+It is naive because series and Cassandra's physical row is a one-to-one mapping, it won't scale when a single series grows larger than the hard limit of Cassandra (2 billion columns). 
+ 
 A more mature schema would partition a single series by time range (might not be fixed, KairosDB use fixed 3 week time range) into several physical rows, an extra table is needed to keep this partition info. 
 Also the series name in naive schema is just a simple string, in order to filter series by different criteria, attributes (tags) need to be stored, and another table as index is needed to avoid iterate all the series. 
 
@@ -178,8 +185,9 @@ There are many more Cassandra based time series databases, they share very simil
 
 [InfluxDB](https://github.com/influxdata/influxdb) has [struggled a long time for their storage engine](https://docs.influxdata.com/influxdb/v1.3/concepts/storage_engine/) (leveldb, rocksdb, boltdb) before they settled with their time structured merge tree (TSM Tree). It can be separate into two parts, index for series identifiers and store for data points, we only focus on data points.
 
-Time structure merge tree, is a little bit misleading as log structured merge tree. The key concept for both TSM and LSM is nor log or tree or time,
-it's **merge**. When write, data is stored in memory and then flushed to disk in large batch. When read, first read from memory, then read from disk and merge the result. When delete a tombstone is added, and data with tombstone. In background, small chunks are merged into big chunks and items marked as deleted are truly removed to save disk space and speed up future query, this background procedure is called compaction. For time series data, compaction may increase compression ratio a lot for very regular data.
+Time structure merge tree (TSM), is a little bit misleading as log structured merge tree (LSM). 
+The key concept for both TSM and LSM is nor log or tree or time,
+it's **merge**. When write, data is stored in memory and then flushed to disk in large batch. When read, first read from memory, then read from disk and merge the result. When delete, a tombstone is added, and data with tombstone is not returned when read. In background, small chunks are merged into big chunks and items marked as deleted are truly removed to save disk space and speed up future query, this background procedure is called compaction. For time series data, compaction may increase compression ratio a lot for very regular data.
 
 A simplified version of TSM file is illustrated below, each chunk contains the series identifier, timestamps and values. 
 Note that timestamps and values are stored separately instead of interleaved, which is why InfluxDB say they are using column format.
@@ -206,7 +214,7 @@ Time series database is used for analysis, and people don't want to wait in fron
 user's complain phone coming in, so fast response is a base requirement for any production ready time series database.
 
 The most straight forward way is to put data into memory as much as possible.
-Facebook built Gorilla, now open sourced as [Beringei](https://github.com/facebookincubator/beringei), 
+Facebook built [Gorilla](http://www.vldb.org/pvldb/vol8/p1816-teller.pdf), now open sourced as [Beringei](https://github.com/facebookincubator/beringei), 
 and its main contribution is using time series specific compression to store more data in memory.
 
 Another way for speed up is pre-aggregation, also known as roll up. Because query often involve a long time range with coarse granularity, like
@@ -249,9 +257,8 @@ I agree with them on the over emphasis of micro services, however my argument is
 Trace is a complex version of time series data points, 
 if your value in a point is no longer a float value but a json payload with fields like parent span id, duration, it is a trace. 
 Of course schema design, compression all need a lot of change, but many popular tracing solution like [Zipkin](https://github.com/openzipkin/zipkin)
-, [Uber Jaeger](https://uber.github.io/jaeger/) is also using Cassandra like many TSDB do, there could be a middle ground.
-
-Update: InfluxDB already [tried to integrate Zipkin with their TICK stack](https://www.influxdata.com/blog/tracing-the-journey-of-a-transaction-as-it-propagates-through-a-distributed-system/)
+, Uber's [Jaeger](https://uber.github.io/jaeger/) is also using Cassandra like many TSDB do, there could be a middle ground.
+**Update:** InfluxDB already [tried to integrate Zipkin with their TICK stack](https://www.influxdata.com/blog/tracing-the-journey-of-a-transaction-as-it-propagates-through-a-distributed-system/)
 I spent too much time writing this blog.
 
 Because the length of the blog we can't cover other hot topics like Compression, Pull vs Push, Streaming, Reduce write amplification etc,
@@ -260,15 +267,22 @@ they will be covered in future blogs.
 ## Reference
 
 - [Awesome Time Series Database](https://github.com/xephonhq/awesome-time-series-database)
+- [Akumuli](https://github.com/akumuli/Akumuli)
+- [Beringei](https://github.com/facebookincubator/beringei)
+- [BtrDB](https://github.com/SoftwareDefinedBuildings/btrdb)
+- [Gorilla](http://www.vldb.org/pvldb/vol8/p1816-teller.pdf)
 - [Grafana](https://github.com/grafana/grafana)
 - [Graphite](https://graphiteapp.org/)
 - [Heroic](https://github.com/spotify/heroic)
 - [InfluxDB](https://github.com/influxdata/influxdb)
+- [Jaeger - Tracer](https://uber.github.io/jaeger/)
 - [KairosDB](https://kairosdb.github.io/)
 - [OpenTSDB](http://opentsdb.net/)
+- [Prometheus](https://prometheus.io/)
 - [RRDTool](https://oss.oetiker.ch/rrdtool/)
 - [Timescale - TSDB using Postgres](http://www.timescale.com/)
 - [VividCortex - TSDB using MySQL](https://www.vividcortex.com/blog/2014/12/16/in-case-you-missed-it-building-a-time-series-database-in-mysql/)
+- [Zipkin - Tracer](https://github.com/openzipkin/zipkin)
 
 ## License
 
