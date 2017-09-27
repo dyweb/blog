@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-09-14T23:16:22-07:00</updated>
+  <updated>2017-09-27T10:57:15+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>浅入了解容器编排框架调度器之 Kubernetes</title>
+    <updated>2017-09-27T02:49:49Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-09-27:/浅入了解容器编排框架调度器之_kubernetes.html</id>
+    <content type="html">&lt;p&gt;TODO: write your blog abstract here&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/浅入了解容器编排框架调度器之_kubernetes.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>安利时间: Processing + R = ?</title>
     <updated>2017-09-10T14:07:05Z</updated>
