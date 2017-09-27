@@ -5,8 +5,11 @@ author: gaocegege
 # NOTE: the image locate in `source` folder
 # cover: "-/images/posts/example.png"
 tags:
-    - "TODO: write your tag here"
-preview: "TODO: write your blog abstract here"
+    - "Kubernetes"
+    - "云计算"
+    - "Docker"
+preview: "Kubernetes 是由 Google 捐赠给 CNCF 的一个容器编排框架，也是目前应用最为广泛的编排框架之一。这篇文章是对 Kubernetes 1.8 中的 Scheduler（以下称为 kube-scheduler）的介绍，如果要阅读本文，需要对 Kubernetes 的基本概念如 pod, node 等有所了解。
+"
 
 ---
 
