@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-09-14T23:16:22-07:00</updated>
+  <updated>2017-09-27T11:01:42+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>浅入了解容器编排框架调度器之 Kubernetes</title>
+    <updated>2017-09-27T02:49:49Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-09-27:/浅入了解容器编排框架调度器之_kubernetes.html</id>
+    <content type="html">&lt;p&gt;Kubernetes 是由 Google 捐赠给 CNCF 的一个容器编排框架，也是目前应用最为广泛的编排框架之一。这篇文章是对 Kubernetes 1.8 中的 Scheduler（以下称为 kube-scheduler）的介绍，如果要阅读本文，需要对 Kubernetes 的基本概念如 pod, node 等有所了解。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/浅入了解容器编排框架调度器之_kubernetes.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>安利时间: Processing + R = ?</title>
     <updated>2017-09-10T14:07:05Z</updated>
