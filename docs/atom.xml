@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-09-27T11:01:42+08:00</updated>
+  <updated>2017-10-24T17:15:32+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>Go Hack 17 参赛日记</title>
+    <updated>2017-10-24T07:30:10Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-10-24:/go_hack_17_参赛日记.html</id>
+    <content type="html">&lt;p&gt;2017 年 10 月 21 日，由 Golang Foundation 和 PingCAP 联合举办的 Go Hack 17 在上海心动网络举行，东岳的小哥哥 @gaocegege 和 @codeworm96，以及工作一年的的 Go 工程师 @hawkingrei 一起组成了队伍 ，参加了这次 hackathon，凭借 killy: Play TiDB in Minecraft! 取得了二等奖以及 PingCAP 赞助的专项奖。这篇文章是 @gaocegege 第一人称视角的 hackathon 记录。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/go_hack_17_参赛日记.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>浅入了解容器编排框架调度器之 Kubernetes</title>
     <updated>2017-09-27T02:49:49Z</updated>
