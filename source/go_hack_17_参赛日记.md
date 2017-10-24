@@ -63,7 +63,7 @@ Killy 一共有两部分，前端与后端。前端是一个在 [Cuberite](https
 	<img src="https://raw.githubusercontent.com/prism-river/killy/master/presentation/images/table.png" alt="Table UI" width="500">
 </figure>
 
-这些结束后，就选择了睡觉，这个时候大概是 1 点半，睡前与 [@hawkingrei][] 约定好三点起来。[@hawkingrei][] 在彻夜工作，在 3 点半的时候微信告诉我他负责的监控部分已经准备好了，因为 Prometheus 有延迟，所有方案换成了直接通过 TiKV，PD 的 REST API 拿到状态数据。可是这个时候我还没起来 =。=
+这些结束后，就选择了睡觉，这个时候大概是 1 点半，睡前与 [@hawkingrei][] 约定好三点起来。[@hawkingrei][] 在彻夜工作，在 3 点半的时候微信告诉我他负责的监控部分已经准备好了，因为 Prometheus 不能获得机器的实际状态，而且查询语句比较弱，有些功能短时间内实现比较难，所以方案换成了直接通过 TiKV，PD 的 REST API 拿到状态数据。可是这个时候我还没起来 =。=
 
 4 点 50 分的时候，我终于意识到再睡下去要背锅了，于是艰难地爬了起来。在 5 点 40 分的时候到了心动网络，从旁边的全家里买了一份三明治，走进了 hackathon 场地，发现大多数人都醒着，还在继续写 `_(:з」∠)_` 随后我们进行了联调，并且修改了第一版与数据库表相关的 UI，变成了更像表的结构，这个时候项目的主要功能都已经实现结束了，这个时候大概是早上 9 点。
 
