@@ -30,7 +30,7 @@ preview: "2017 年 10 月 21 日，由 Golang Foundation 和 PingCAP 联合举�
 定下了名字，开始想 idea。在石墨文档上记录着我们当时所有想到的 idea，一共有十二个。[@hawkingrei][] 工作了一年多，想到的很多 idea 是跟他的日常工作息息相关的，都是一些可以解决他的痛点的小 idea。因为我之前做过容器和持续集成方面的工作，因此想到的多是跟 Docker 或者 CI 有关系，偶尔有一些跟 TiDB 搭点边，下面的截图是我们想到一部分 idea。
 
 <figure>
-	<img src="/images/posts/killy/idea.png" alt="Ideas" width="500">
+	<img src="/images/posts/killy/idea.png" alt="Ideas">
 </figure>
 
 在所有的 idea 中，我们确定了两个候选 idea，按照意愿排序是 TiDBcraft 和 Local Travis Runner Based on Docker。后者是我在实现 [caicloud/cyclone](https://github.com/caicloud/cyclone) 的过程中想到的一个工具。在日常的生活中，我比较常用的 CI 工具是 Travis CI，而因为在很多公司里用的多的还是 Jenkins。所以我在想怎么能把 Travis CI 的 build 放在 Jenkins 里跑，一种比较简单的做法，就是保留 Travis CI 的配置，根据配置运行一个容器，把容器放在 Jenkins 的 build 中去跑。Travis CI 自身的设计使得这样的实现变得非常简单，因为它们有专门的一个组件是做 `.travis.yml -> build.sh` 的转换的，得到 bash 脚本之后，放到 Travis CI 对应语言的官方镜像里去跑就好了。通过这样的实现，只要 repo 里有 .travis.yml 配置文件，就可以在任何支持 Docker 的 CI 工具中去运行。
@@ -40,7 +40,7 @@ TiDBcraft 就是我们后来决定实现的 [Killy][]，最初的 idea 来自于
 最后在这两个里投票选一个做的时候，是挺纠结的，最后是 [@codeworm96][] 更倾向于 Just for Fun，于是就拍定了做 TiDBcraft。
 
 <figure>
-	<img src="/images/posts/killy/record.jpg" alt="Record" heighy="400">
+	<img src="/images/posts/killy/record.jpg" alt="Record" height="500">
 </figure>
 
 ## 好的分工是成功的一半的一半的一半
