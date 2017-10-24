@@ -30,7 +30,7 @@ preview: "2017 年 10 月 21 日，由 Golang Foundation 和 PingCAP 联合举�
 定下了名字，开始想 idea。在石墨文档上记录着我们当时所有想到的 idea，一共有十二个。[@hawkingrei][] 工作了一年多，想到的很多 idea 是跟他的日常工作息息相关的，都是一些可以解决他的痛点的小 idea。因为我之前做过容器和持续集成方面的工作，因此想到的多是跟 Docker 或者 CI 有关系，偶尔有一些跟 TiDB 搭点边，下面的截图是我们想到一部分 idea。
 
 <figure>
-	<img src="{{ site.url }}/images/killy/idea.png" alt="Ideas" height="500" width="500">
+	<img src="/images/posts/killy/idea.png" alt="Ideas" width="500">
 </figure>
 
 在所有的 idea 中，我们确定了两个候选 idea，按照意愿排序是 TiDBcraft 和 Local Travis Runner Based on Docker。后者是我在实现 [caicloud/cyclone](https://github.com/caicloud/cyclone) 的过程中想到的一个工具。在日常的生活中，我比较常用的 CI 工具是 Travis CI，而因为在很多公司里用的多的还是 Jenkins。所以我在想怎么能把 Travis CI 的 build 放在 Jenkins 里跑，一种比较简单的做法，就是保留 Travis CI 的配置，根据配置运行一个容器，把容器放在 Jenkins 的 build 中去跑。Travis CI 自身的设计使得这样的实现变得非常简单，因为它们有专门的一个组件是做 `.travis.yml -> build.sh` 的转换的，得到 bash 脚本之后，放到 Travis CI 对应语言的官方镜像里去跑就好了。通过这样的实现，只要 repo 里有 .travis.yml 配置文件，就可以在任何支持 Docker 的 CI 工具中去运行。
@@ -40,7 +40,7 @@ TiDBcraft 就是我们后来决定实现的 [Killy][]，最初的 idea 来自于
 最后在这两个里投票选一个做的时候，是挺纠结的，最后是 [@codeworm96][] 更倾向于 Just for Fun，于是就拍定了做 TiDBcraft。
 
 <figure>
-	<img src="{{ site.url }}/images/killy/record.jpg" alt="Record" height="400" width="500">
+	<img src="/images/posts/killy/record.jpg" alt="Record" heighy="400">
 </figure>
 
 ## 好的分工是成功的一半的一半的一半
@@ -48,7 +48,7 @@ TiDBcraft 就是我们后来决定实现的 [Killy][]，最初的 idea 来自于
 在介绍分工之前，先向大家介绍一下我们的架构。
 
 <figure>
-	<img src="https://github.com/prism-river/killy/raw/master/presentation/images/arch.png" alt="Arch" height="500" width="500">
+	<img src="https://github.com/prism-river/killy/raw/master/presentation/images/arch.png" alt="Arch" width="500">
 </figure>
 
 Killy 一共有两部分，前端与后端。前端是一个在 [Cuberite](https://cuberite.org/) 服务器中的插件。[Cuberite](https://cuberite.org/) 是一个用 C++ 实现的 Minecraft 服务器，支持使用 Lua 语言实现插件来扩展服务器功能，相信玩 Minecraft 的同学一定都接触过。后端是用 Go 实现的服务器，它负责从 TiDB 集群或者是 Prometheus 中定期拿到整个 TiDB 集群状态，然后转发给前端的插件，前端插件会将其绘制在 Minecraft 世界中，前后端通过一个 TCP 连接通信。整体的架构非常简单。
@@ -60,7 +60,7 @@ Killy 一共有两部分，前端与后端。前端是一个在 [Cuberite](https
 第一天下午是我们精力最充沛的时候。这个时候我在构思并实现如何在 Minecraft 中显示数据库的表，而他们两个人在调研如何订阅 TiDB 中数据的变更和感知到整个集群的状态变更。对于前者我个人觉得 binlog 可能是可以用的，但是这样有点麻烦，不是在这个 hackathon 中适合的解决方案，所以提出直接暴力地轮询。在 [@codeworm96][] 认可后他开始着手实现，而我快速地实现了第一版 UI。在第一版中，有很多局限性，比如字段最多只支持 4 个，因为 Minecraft 里一个告示板只能显示 4 行。后来在晚上的时候，[@codeworm96][] 实现了第一版逻辑，暴力轮询数据库表然后转发给前端，然后我们进行了集成。而 [@hawkingrei][] 这时也实现了第一版，可以拿到所有 TiDB 集群上实例的静态信息。在晚上 12 点左右，我跟女朋友先走了，回去后，[@codeworm96][] 告诉我接受 SQL 查询的功能也实现了，于是我对接了这部分逻辑，实现了在 Minecraft Console 中执行 SQL 查询的功能，并且做了一个小 trick，把查到的记录高亮显示，就是原本是蓝色羊毛，查询到会变成绿色羊毛。
 
 <figure>
-	<img src="https://raw.githubusercontent.com/prism-river/killy/master/presentation/images/table.png" alt="Table UI" height="500" width="500">
+	<img src="https://raw.githubusercontent.com/prism-river/killy/master/presentation/images/table.png" alt="Table UI" width="500">
 </figure>
 
 这些结束后，就选择了睡觉，这个时候大概是 1 点半，睡前与 [@hawkingrei][] 约定好三点起来。[@hawkingrei][] 在彻夜工作，在 3 点半的时候微信告诉我他负责的监控部分已经准备好了，因为 Prometheus 有延迟，所有方案换成了直接通过 TiKV，PD 的 REST API 拿到状态数据。可是这个时候我还没起来 =。=
