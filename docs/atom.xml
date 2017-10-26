@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-10-26T14:18:36+08:00</updated>
+  <updated>2017-10-26T16:18:24+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
@@ -11,7 +11,7 @@
     <title>Go: tasks repeated at intervals</title>
     <updated>2017-10-26T05:35:01Z</updated>
     <id>tag:blog.dongyueweb.com,2017-10-26:/go:_tasks_repeated_at_intervals.html</id>
-    <content type="html">&lt;p&gt;Use go to run tasks at intervals.&lt;/p&gt;&#xA;</content>
+    <content type="html">&lt;p&gt;Use Go to run tasks at intervals.&lt;/p&gt;&#xA;</content>
     <link href="http://blog.dongyueweb.com/go:_tasks_repeated_at_intervals.html"></link>
     <author>
       <name>codeworm96</name>

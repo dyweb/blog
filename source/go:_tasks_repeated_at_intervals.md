@@ -5,8 +5,8 @@ author: codeworm96
 # NOTE: the image locate in `source` folder
 # cover: "-/images/posts/example.png"
 tags:
-    - golang
-preview: "Use go to run tasks at intervals."
+    - Go
+preview: "Use Go to run tasks at intervals."
 
 ---
 
@@ -112,10 +112,6 @@ func main() {
 	wg.Wait()
 }
 ```
-
-## Update
-
-## Reference
 
 ## License
 
