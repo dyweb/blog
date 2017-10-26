@@ -24,6 +24,10 @@ authors:
       avatar: -/images/avatars/gaocegege.jpg
       intro: MOS 组的小哥哥
       name: gaocegege
+    codeworm96:
+      avatar: https://avatars2.githubusercontent.com/u/8407172
+      intro: 想做 infra
+      name: codeworm96
 #MAGIC
 
 build:

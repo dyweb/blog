@@ -45,10 +45,10 @@
 </script>
 
 
-        <meta name="keywords" content="">
-        <meta name="description" content="关于我们">
-        <meta name="author" content="dongyue">
-        <title>关于我们</title>
+        <meta name="keywords" content="golang,">
+        <meta name="description" content="Go: tasks repeated at intervals">
+        <meta name="author" content="codeworm96">
+        <title>Go: tasks repeated at intervals</title>
     </head>
     <body>
         <article class="container">
@@ -66,35 +66,136 @@
 </header>
 
             <article class="main article">
-                <h1 class="title">关于我们</h1>
+                <h1 class="title">Go: tasks repeated at intervals</h1>
                 <section class="info">
-                    <span class="avatar" style="background-image: url(/images/avatars/dongyue.png);"></span>
-                    <a class="name" href="/about.dongyue.html">dongyue</a>
+                    <span class="avatar" style="background-image: url(https://avatars2.githubusercontent.com/u/8407172);"></span>
+                    <a class="name" href="/about.codeworm96.html">codeworm96</a>
                     
-                    <span class="date" data-time="0"><span class="from"></span></span>
+                    <span class="date" data-time="1508996101"><span class="from"></span></span>
                     
-                    <span class="tags"></span>
+                    <span class="tags"><a class="tag" href="/tag/golang/index.html">golang</a></span>
                 </section>
-                <article class="content"><h2>东岳</h2>
+                <article class="content"><p>Suppose we would like to perform a task repeatedly at regular intervals with a goroutine.</p>
 
-<p><a href="http://dongyueweb.com/">http://dongyueweb.com/</a></p>
+<p>Here is the first try:</p>
+
+<pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;time&quot;
+)
+
+func main() {
+	go func() {
+		for {
+			fmt.Println(&quot;hello, world!&quot;)
+			time.Sleep(5 * time.Second)
+		}
+	}()
+}
+</code></pre>
+
+<p>Oops, it does not work. The main function terminates immediately after starting the goroutine,
+and the program terminates with the termination of the main function.</p>
+
+<p>We should let the main function wait for the goroutine. Therefore,
+<a href="https://golang.org/pkg/sync/#WaitGroup">WaitGroup</a> is needed.</p>
+
+<pre><code class="language-go">package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+	&quot;time&quot;
+)
+
+type WaitGroupWrapper struct {
+	wg sync.WaitGroup
+}
+
+func (w *WaitGroupWrapper) Spawn(f func()) {
+	w.wg.Add(1)
+	go func() {
+		f()
+		w.wg.Done()
+	}()
+}
+
+func (w *WaitGroupWrapper) Wait() {
+	w.wg.Wait()
+}
+
+func main() {
+	var wg WaitGroupWrapper
+	wg.Spawn(func() {
+		for {
+			fmt.Println(&quot;hello, world!&quot;)
+			time.Sleep(5 * time.Second)
+		}
+	})
+	wg.Wait()
+}
+</code></pre>
+
+<p>Note that I used a wrapper to wrap the WaitGroup to make it easier to use.
+Now the program works, but we can improve it with tickers, which provide by
+Go for doing something repeatedly at regular intervals.</p>
+
+<pre><code class="language-go">ticker := time.NewTicker(5 * time.Second)
+wg.Spawn(func() {
+    for {
+        &lt;-ticker.C
+        fmt.Println(&quot;hello, world!&quot;)
+    }
+})
+</code></pre>
+
+<p>Currently, our goroutine runs forever. We can stop it using another channel.</p>
+
+<pre><code class="language-go">func main() {
+	var wg WaitGroupWrapper
+	done := make(chan struct{})
+	ticker := time.NewTicker(5 * time.Second)
+	wg.Spawn(func() {
+		for {
+			select {
+			case &lt;-ticker.C:
+				fmt.Println(&quot;hello, world!&quot;)
+			case &lt;-done:
+				goto exit
+			}
+		}
+	exit:
+	})
+	time.Sleep(16 * time.Second)
+	close(done)
+	wg.Wait()
+}
+</code></pre>
+
+<h2>Update</h2>
+
+<h2>Reference</h2>
+
+<h2>License</h2>
+
+<ul>
+<li>This article is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</li>
+<li>Please contact <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a> for commerical use.</li>
+</ul>
 </article>
                 <section class="author">
-                    <div class="avatar" style="background-image: url(/images/avatars/dongyue.png);"></div>
-                    <a class="name" href="/about.dongyue.html">dongyue</a>
-                    <div class="intro">东岳网络工作室团队</div>
+                    <div class="avatar" style="background-image: url(https://avatars2.githubusercontent.com/u/8407172);"></div>
+                    <a class="name" href="/about.codeworm96.html">codeworm96</a>
+                    <div class="intro">想做 infra</div>
                 </section>
                 <section class="recommend">
                     
-                    <section class="nav prev more">
-                        <div class="head">上篇文章</div>
-                        <a class="link" href="/about.codeworm96.html">关于codeworm96</a>
-                    </section>
                     
-                    
-                    <section class="nav next more">
+                    <section class="nav next">
                         <div class="head">下篇文章</div>
-                        <a class="link" href="/about.gaocegege.html">关于 gaocegege</a>
+                        <a class="link" href="/go_hack_17_%e5%8f%82%e8%b5%9b%e6%97%a5%e8%ae%b0.html">Go Hack 17 参赛日记</a>
                     </section>
                     
                 </section>
