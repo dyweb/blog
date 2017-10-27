@@ -5,7 +5,7 @@ author: at15
 # NOTE: the image locate in `source` folder
 # cover: "-/images/posts/example.png"
 tags:
-    - golang
+    - Go
 preview: Ayi 跨平台的命令行工具(库)
 
 ---

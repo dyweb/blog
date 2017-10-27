@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2017-10-24T17:15:32+08:00</updated>
+  <updated>2017-10-26T16:18:24+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>Go: tasks repeated at intervals</title>
+    <updated>2017-10-26T05:35:01Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-10-26:/go:_tasks_repeated_at_intervals.html</id>
+    <content type="html">&lt;p&gt;Use Go to run tasks at intervals.&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/go:_tasks_repeated_at_intervals.html"></link>
+    <author>
+      <name>codeworm96</name>
+    </author>
+  </entry>
   <entry>
     <title>Go Hack 17 参赛日记</title>
     <updated>2017-10-24T07:30:10Z</updated>
@@ -95,16 +105,6 @@
     <link href="http://blog.dongyueweb.com/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html"></link>
     <author>
       <name>gaocegege</name>
-    </author>
-  </entry>
-  <entry>
-    <title>Ayi</title>
-    <updated>2016-12-24T08:18:08Z</updated>
-    <id>tag:blog.dongyueweb.com,2016-12-24:/ayi.html</id>
-    <content type="html">&lt;p&gt;Ayi 跨平台的命令行工具(库)&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/ayi.html"></link>
-    <author>
-      <name>at15</name>
     </author>
   </entry>
 </feed>
