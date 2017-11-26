@@ -5,8 +5,9 @@ author: gaocegege
 # NOTE: the image locate in `source` folder
 # cover: "-/images/posts/example.png"
 tags:
-    - "TODO: write your tag here"
-preview: "TODO: write your blog abstract here"
+    - "持续集成"
+    - "网站"
+preview: "这篇文章主要介绍了 Netlify, 一个可以用来做静态网站的持续集成与持续部署的工具. 通过 Netlify, 用户可以非常简单地为其静态网站项目引入持续集成, 并且允许其他成员对静态网站进行 UI 层面的 review."
 
 ---
 
@@ -47,13 +48,13 @@ preview: "TODO: write your blog abstract here"
 首先最重要的是为 repository 启用 [Netlify][], 这一部分与其他持续集成工具并无二致. 这一环节最主要的是让 [Netlify][] 在 GitHub 中建立 web hook, 使得它可以监听到整个 repository 的事件. 当然这是自动的, 对于用户而言是不感知的. 随后 [Netlify][] 会要求用户去设置构建的命令以及发布的目录.
 
 <figure>
-	<img src="http://gaocegege.com/Blog/images/netlify/start.png" alt="在 Netlify 中启用功能" height="500" width="500">
+	<img src="http://gaocegege.com/Blog/images/netlify/start.png" alt="在 Netlify 中启用功能" width="500">
 </figure>
 
 对于我们的博客来说, 因为我们的博客会被编译好放置在 docs/ 目录下, 因此不需要 [Netlify][] 为我们进行构建, 如果你的项目并不是这样操作的, 比如只是有源文件而没有提交构建后的静态网站, 那你可以利用它的这一功能进行远端的构建. [Netlify][] 默认支持 [Jekyll](https://jekyllrb.com/) 等等静态博客生成工具的命令, 因此可以满足绝大多数的应用场景.
 
 <figure>
-	<img src="http://gaocegege.com/Blog/images/netlify/netlify.png" alt="使用" height="500" width="500">
+	<img src="http://gaocegege.com/Blog/images/netlify/netlify.png" alt="使用" width="500">
 </figure>
 
 在配置结束后, 就可以利用 [Netlify][] 来进行持续集成了. 在大多数情况下, 用户甚至不需要像 [Travis CI][] 那样在 repository 里放置配置文件, 直接通过网页操作来搭建起对一个 repository 的持续集成.
@@ -61,7 +62,7 @@ preview: "TODO: write your blog abstract here"
 每当一个新的 Pull Request 被创建的时候, [Netlify][] 会为这个请求运行一个构建任务, 这个任务最终会生成一个预览, 通过 URL 可以访问到基于这一 Pull Request 的构建结果.
 
 <figure>
-	<img src="http://gaocegege.com/Blog/images/netlify/github.png" alt="使用" height="500" width="500">
+	<img src="http://gaocegege.com/Blog/images/netlify/github.png" alt="使用" width="500">
 </figure>
 
 而 URL 是可以自定义的, 比如 [https://deploy-preview-26--blog-dongyueweb.netlify.com](https://deploy-preview-26--blog-dongyueweb.netlify.com/%E5%B0%8F%E8%AE%AE%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7%E6%A8%A1%E5%9E%8B). 不同 Pull Request 会有不同的 URL, 因此基于此还可以去做 Split Testing. 目前 [Netlify][] 支持两个 branch 之间的 Split Testing, 但还是 beta 阶段, 我们没有进行过尝试.
