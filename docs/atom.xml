@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2018-02-04T21:50:46+08:00</updated>
+  <updated>2018-05-07T20:19:55+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>Katib: Kubernetes Native 的超参数训练系统</title>
+    <updated>2018-05-07T12:17:59Z</updated>
+    <id>tag:blog.dongyueweb.com,2018-05-07:/katib:_kubernetes_native_的超参数训练系统.html</id>
+    <content type="html">&lt;p&gt;这篇文章主要介绍了 Katib，一个由 NTT 贡献到 Kubeflow 社区的超参数训练系统。面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/katib:_kubernetes_native_的超参数训练系统.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Kubeflow 安利：在 Kubernetes 上进行机器学习</title>
     <updated>2018-02-04T13:46:42Z</updated>
@@ -95,16 +105,6 @@
     <link href="http://blog.dongyueweb.com/google_summer_of_code_申请指南.html"></link>
     <author>
       <name>gaocegege</name>
-    </author>
-  </entry>
-  <entry>
-    <title>时间序列数据库漫谈</title>
-    <updated>2017-07-09T01:12:45Z</updated>
-    <id>tag:blog.dongyueweb.com,2017-07-09:/时间序列数据库漫谈.html</id>
-    <content type="html">&lt;p&gt;时间序列数据库基本概念和热点话题&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/时间序列数据库漫谈.html"></link>
-    <author>
-      <name>at15</name>
     </author>
   </entry>
 </feed>
