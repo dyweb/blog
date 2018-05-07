@@ -40,9 +40,7 @@ Katib 也是对 Google Vizier 的开源实现，因此也遵循其中对问题�
 
 Trial 代表着一个由超参数的取值组成的列表，每个 Trial 都需要一次运行来得到这些超参数取值对应的结果。这里提到的运行就是一次训练的过程。Study 代表着在可行空间上运行的单个优化。每个 Study 都有一个配置，来描述可能取值的空间，超参数推荐算法等。此外，Study 包含一组 Trial，代表着算法在超参数集合中选取推荐值的多次尝试。如图所示，是创建一次 Study 并且进行 Trial 的验证的过程。
 
-<figure>
-	<img src="{{ site.url }}/images/katib/katib.png" height="500" width="500">
-</figure>
+![](-/images/posts/katib/katib.png)
 
 首先，用户会通过 katib-cli 创建一个新的 Study，这需要用户提供一份配置，下面是一个样例配置。目前配置中主要有两类参数，一类是 Study 本身需要的参数，比如使用的 Suggestion 算法，在此例中就是 random。另一类是运行时需要的一些参数，比如其中的 scheduler，就是在使用 Kubernetes 运行 Trial 时的一个参数，它决定这一 Trial 会被哪个调度器调度。
 
@@ -112,9 +110,7 @@ katib-cli，katib-manager 以及不同的 suggestion 算法服务，都是运行
 
 Katib 使用 modeldb 存储模型，Trail 与模型一一对应。Katib 将所有从 Trail 训练得到的模型存储在 modeldb，以方便管理和查看不同超参数训练出来的模型效果。这里有一个 demo，可以一观。
 
-<figure>
-	<img src="{{ site.url }}/images/katib/katib.gif" height="836" width="836">
-</figure>
+![](-/images/posts/katib/katib.gif)
 
 ## 未来的工作与计划
 
