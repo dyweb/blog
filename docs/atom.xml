@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2018-05-07T20:37:06+08:00</updated>
+  <updated>2018-05-31T23:13:16+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
@@ -11,7 +11,7 @@
     <title>Google Summer of Code, A Mentor&#39;s Perspective</title>
     <updated>2018-05-07T12:33:23Z</updated>
     <id>tag:blog.dongyueweb.com,2018-05-07:/google_summer_of_code,_a_mentor&#39;s_perspective.html</id>
-    <content type="html">&lt;p&gt;TODO: write your blog abstract here&lt;/p&gt;&#xA;</content>
+    <content type="html">&lt;p&gt;这篇文章的受众是想更加深入了解 Google Summer of Code 这一活动，或者有志于担任某一开源社区 mentor 的同学。由于有些背景知识没有介绍，因此配合 Google Summer of Code 学生申请指南阅读更佳。&lt;/p&gt;&#xA;</content>
     <link href="http://blog.dongyueweb.com/google_summer_of_code,_a_mentor&#39;s_perspective.html"></link>
     <author>
       <name>gaocegege</name>
@@ -105,6 +105,66 @@
     <link href="http://blog.dongyueweb.com/unikernel:_从不入门到入门.html"></link>
     <author>
       <name>gaocegege</name>
+    </author>
+  </entry>
+  <entry>
+    <title>Google Summer of Code 申请指南</title>
+    <updated>2017-07-11T09:02:34Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-07-11:/google_summer_of_code_申请指南.html</id>
+    <content type="html">&lt;p&gt;本文的受众主要是想在暑假找点事情做，挣点外快的同学，亦或是想积累一下参与真实软件开发经验的同学。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/google_summer_of_code_申请指南.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
+  <entry>
+    <title>时间序列数据库漫谈</title>
+    <updated>2017-07-09T01:12:45Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-07-09:/时间序列数据库漫谈.html</id>
+    <content type="html">&lt;p&gt;时间序列数据库基本概念和热点话题&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/时间序列数据库漫谈.html"></link>
+    <author>
+      <name>at15</name>
+    </author>
+  </entry>
+  <entry>
+    <title>Introduction to Time Series Database</title>
+    <updated>2017-07-09T01:03:27Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-07-09:/introduction_to_time_series_database.html</id>
+    <content type="html">&lt;p&gt;An introduction to time series database basic concepts and hot topics&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/introduction_to_time_series_database.html"></link>
+    <author>
+      <name>at15</name>
+    </author>
+  </entry>
+  <entry>
+    <title>Google SRE 阅读笔记(1)-监控</title>
+    <updated>2017-01-02T08:27:04Z</updated>
+    <id>tag:blog.dongyueweb.com,2017-01-02:/google_sre_阅读笔记(1)-监控.html</id>
+    <content type="html">&lt;p&gt;SRE，全称是 Site Reilability Engineer，是一个类似于运维，但是跟传统运维不一样的职业，更加偏向于 DevOps。谷歌在 &lt;a href=&#34;https://book.douban.com/subject/26875239/&#34;&gt;SRE-谷歌运维解密&lt;/a&gt; 一书中分享了 SRE 的工作职责，以及谷歌在自己的运维工作中的一些经验。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/google_sre_阅读笔记(1)-监控.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
+  <entry>
+    <title>在32位 Ubuntu 16.04.1 LTS 上安装饥荒服务器</title>
+    <updated>2016-12-28T03:33:15Z</updated>
+    <id>tag:blog.dongyueweb.com,2016-12-28:/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html</id>
+    <content type="html">&lt;p&gt;今天为东岳搭建了一个饥荒的服务器，并不是特别复杂。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
+  <entry>
+    <title>Ayi</title>
+    <updated>2016-12-24T08:18:08Z</updated>
+    <id>tag:blog.dongyueweb.com,2016-12-24:/ayi.html</id>
+    <content type="html">&lt;p&gt;Ayi 跨平台的命令行工具(库)&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/ayi.html"></link>
+    <author>
+      <name>at15</name>
     </author>
   </entry>
 </feed>
