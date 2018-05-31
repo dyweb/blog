@@ -1,7 +1,7 @@
 site:
     title: "东岳网络工作室团队博客"
     subtitle: "分享我们所得"
-    limit: 10
+    limit: 20
     theme: theme
     lang: zh
     url: "http://blog.dongyueweb.com"

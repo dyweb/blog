@@ -6,7 +6,7 @@ author: gaocegege
 # cover: "-/images/posts/example.png"
 tags:
     - "Google Summer of Code"
-preview: "TODO: write your blog abstract here"
+preview: "这篇文章的受众是想更加深入了解 Google Summer of Code 这一活动，或者有志于担任某一开源社区 mentor 的同学。由于有些背景知识没有介绍，因此配合 Google Summer of Code 学生申请指南阅读更佳。"
 
 ---
 
