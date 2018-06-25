@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2018-05-31T23:13:16+08:00</updated>
+  <updated>2018-06-25T16:06:07+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>Kubernetes CRD Operator 实现指南</title>
+    <updated>2018-06-25T08:04:31Z</updated>
+    <id>tag:blog.dongyueweb.com,2018-06-25:/kubernetes_crd_operator_实现指南.html</id>
+    <content type="html">&lt;p&gt;8012 年了，Kubernetes 已经成为了集群调度领域最炙手可热的开源项目之一。而多工作负载支持，是讨论到集群调度时不得不谈的一个话题。CRD 是 Kubernetes 的一个特性，通过它，集群可以支持自定义的资源类型，这是在 Kubernetes 集群上支持多工作负载的方式之一。本文希望讨论在实现一个 Kubernetes CRD Operator 时可能遇到的问题以及解决方案，抛砖引玉，探索实现的最佳实践。文章其余部分如下安排：首先在“导论”中，讨论了多工作负载的意义以及不同架构的调度系统的支持方式。其次在“预热”一节详细介绍了在 Kubernetes 上对多工作负载的不同支持方案，进一步划定本文的讨论范围。最后在“正文”一节介绍实现 CRD Operator 的注意事项。本文主要内容来自笔者在实现 kubeflow/tf-operator 时的经验教训。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/kubernetes_crd_operator_实现指南.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Google Summer of Code, A Mentor&#39;s Perspective</title>
     <updated>2018-05-07T12:33:23Z</updated>
