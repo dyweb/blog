@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2018-06-25T16:06:07+08:00</updated>
+  <updated>2018-09-03T11:00:26+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>机器学习平台漫谈</title>
+    <updated>2018-09-03T02:53:15Z</updated>
+    <id>tag:blog.dongyueweb.com,2018-09-03:/机器学习平台漫谈.html</id>
+    <content type="html">&lt;p&gt;随着深度学习的兴起，机器学习在最近几年以星火燎原之势席卷了整个科技行业。而在整个机器学习的工作流中，模型训练的代码只是其中的一小部分。除此之外，训练任务的监控，日志的回收，超参数的选择与优化，模型的发布与集成，数据清洗，特征提取等等，都是流程中不可或缺的部分。因此，有一些工具和公司的产品，致力于为机器学习从业者提供一个统一的平台，帮助用户更好地完成其机器学习业务的落地。这篇文章是关于机器学习平台产品的分析对比，由于利益相关性只放出国外的产品，如有遗漏或错误还请指出。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/机器学习平台漫谈.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>Kubernetes CRD Operator 实现指南</title>
     <updated>2018-06-25T08:04:31Z</updated>
