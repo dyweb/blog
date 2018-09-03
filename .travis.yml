@@ -2,8 +2,8 @@ language: go
 sudo: false
 
 go:
-  - 1.7
   - 1.8
+  - 1.9
   - tip
 
 install:
@@ -14,4 +14,3 @@ script:
 
 notifications:
   email: false
-
