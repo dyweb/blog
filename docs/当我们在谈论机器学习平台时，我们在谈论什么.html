@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="东岳网络工作室团队博客">
+<meta name="twitter:description" content="分享我们所得">
+<meta name="twitter:image:src" content="http://blog.dongyueweb.com/images/logo.png">
+
+<meta property="og:url" content="http://blog.dongyueweb.com">
+<meta property="og:title" content="东岳网络工作室团队博客">
+<meta property="og:description" content="分享我们所得">
+<meta property="og:site_name" content="东岳网络工作室团队博客">
+<meta property="og:image" content="http://blog.dongyueweb.com/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="东岳网络工作室团队博客">
+<meta itemprop="description" content="分享我们所得">
+<meta itemprop="image" content="http://blog.dongyueweb.com/images/logo.png">
+
+<link rel="canonical" href="http://blog.dongyueweb.com">
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-itouch-icon" href="/favicon.png">
+<link rel="stylesheet" href="/bundle/index.css">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+
+        <meta name="keywords" content="机器学习,">
+        <meta name="description" content="当我们在谈论机器学习平台时，我们在谈论什么">
+        <meta name="author" content="gaocegege">
+        <title>当我们在谈论机器学习平台时，我们在谈论什么</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    <img class="logo" src="/images/logo.png" />
+    东岳网络工作室
+  </a>
+  <ul class="menu">
+      <li class="menu-item"><a href="/archive.html">归档</a></li>
+      <li class="menu-item"><a href="/tag.html">标签</a></li>
+      <li class="menu-item"><a href="/atom.xml">订阅</a></li>
+  </ul>
+</header>
+
+            <article class="main article">
+                <h1 class="title">当我们在谈论机器学习平台时，我们在谈论什么</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></span>
+                    <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                    
+                    <span class="date" data-time="1558835863"><span class="from"></span></span>
+                    
+                    <span class="tags"><a class="tag" href="/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0/index.html">机器学习</a></span>
+                </section>
+                <article class="content"><p>机器学习平台对于不同的工程师角色而言，有着不同的意涵。随着之前几篇关于 <a href="https://github.com/kubeflow/kubeflow">Kubeflow</a> 的文章发布后，有不少的网友私下询问到底什么是机器学习平台，它与机器学习框架有何不同等问题。这篇文章希望能够从不同的维度来介绍一下，我们一直谈论的机器学习平台，到底是什么。首先给大家讲个故事：</p>
+
+<p>小咩是 TooYoung 科技的算法工程师，最近他正在为公司实现一个图像识别的模型。为了支持他的工作，公司的 Infra 团队的工程师小婶给了他四台每台带有 4 块英伟达显卡的机器，告诉他在接下来的一个月，他可以完全占有这几台机器。小咩表面风轻云淡，心里其实已经乐开了花，他已经很久没有在这么多显卡的机器上放飞过自我了。</p>
+
+<p>小咩拿到机器后，需要做的第一件事就是先配环境。经过简单的权衡后，小咩决定使用自己熟悉的 TensorFlow 来进行模型的开发工作。尽管 TensorFlow 已经发布了 2.0，但小咩是一个恋旧的人，他还是习惯使用经典的 1.4 版本。小咩登录到了机器上，他发现问题并不简单。四台机器中，机器 A 的 TensorFlow 只支持 CPU；机器 B 的 TensorFlow 的版本是 1.13；机器 C 之前是给公司里的算法科学家小莎在投稿 NIPS 时做实验用的，只安装了 PyTorch。</p>
+
+<p>小咩叹了一口气，飞快地下楼买了一瓶快乐水，撸起了袖子，开始了环境的配置之旅。他熟练地卸载了机器 A 的环境，首先确认了机器 A 上没有安装开源的英伟达驱动 nouveau。然后小咩开始安装英伟达的官方驱动以及 cudnn，最后安装了支持 GPU 的 TensorFlow 版本。看着屏幕上打出的 Hello World，小咩嘴角扬起了微笑。第二台机器的问题在于 TensorFlow 的版本太新了，于是小咩按图索骥，同样卸载了新的版本，安装了旧的版本，但发现 TensorFlow 1.4 不支持机器 B 上的 CUDA 9.0。小咩不情愿地打开了谷歌，熟练地键入了 &ldquo;Remove CUDA 9.0 and install CUDA 8.0&rdquo;。按照网友的指示，他终于解决了这个问题。第三台机器问题比较少，小咩很快就处理好了。</p>
+
+<p>接下来，小咩开始了自己的算法实验。小咩为了方便，先在自己的笔记本电脑上建立了一个 Jupyter Notebook，将数据下载到了电脑上，进行了小规模的实验。经过一天的努力后，小咩觉得自己的算法效果还算不错，可以放到服务器上进行分布式训练，以期更快的训练速度。小咩利用 /etc/hosts 给四个服务器做了一个简单的服务发现，利用 TensorFlow 的分布式训练功能进行了分布式的训练。</p>
+
+<p>小咩又进行了数天的调参后，模型的各项 metrics 都达到了公司的要求，于是准备将模型发布到公司的生产环境中。小咩利用了开源项目 TensorFlow Serving，在公司内部的 PaaS 平台上新建了一个服务，将自己训练的模型发布到了公司的生产集群上。小咩看着流量稳定地灌入自己的模型服务，深吸了一口气。</p>
+
+<p>时间很快地过去了，小咩开发的模型不知不觉已经在线上服务了许多个月，小咩也由工程师变成了公司里的 Tech Lead。最近有了关于这一模型的增量模型，但小咩已经没有足够的时间再参与到一线的开发工作中了。小咩团队里的新进工程师小豆接起了这项任务，利用新的数据集重新训练模型并发布出去。</p>
+
+<p>在几个星期之前，Infra 团队利用开源项目 <a href="https://github.com/kubeflow/kubeflow">Kubeflow</a> 为算法工程师和算法科学家们搭建了一个麻雀虽小五脏俱全的机器学习平台。小豆决定利用这一平台对模型进行训练。他首先利用 Infra 团队已经打包好的 TensorFlow 1.4 的 Docker 镜像，利用平台发起了一次分布式的训练。训练中的服务发现，异常处理等都由平台自动完成。小豆在训练的间隙看文档发现平台还有超参数训练的支持，而且使用起来非常简单，只需要指定相应的参数搜索空间即可。于是小豆又发起了一次超参数学习任务，优化了一下模型的超参数选择。</p>
+
+<p>在训练结束后，小豆利用平台上已有的模型服务功能，直接将训练好的模型上传到了分布式存储中，平台根据配置将模型自动地部署了起来，并且针对算法工程师们关注的指标进行了细粒度的监控。</p>
+
+<p>通过这个故事，我们可以了解到，机器学习平台的用户往往是机器学习算法科学家或者工程师。而机器学习平台希望解决的是机器学习工程化落地的问题。在小咩第一次进行模型开发与部署的时候，他遇到了很多来自系统环境和服务发现等原本应该由 Infra 来解决的问题。这其中包括服务器上的显卡驱动问题，TensorFlow 版本的问题，服务发现的问题，训练过程中的跟踪与错误恢复等。而小豆在机器学习平台上进行训练和模型发布时，这些问题都交由平台来处理，他可以专注于业务的开发上。</p>
+
+<p>从机器学习工程师的角度而言，如 TensorFlow，PyTorch 等框架改变的是机器学习的编程范式，而机器学习平台改变的是机器学习的开发与发布流程。而从一个基础架构工程师的角度来讲，机器学习平台是与 PaaS 有一定类似，但又有所不同的新的平台系统。两者相同之处在于都涉及到资源的管理与调度，服务发现等功能，不同之处在于机器学习平台对于 GPU 有极其强烈的需求，与此同时与传统的应用相比，机器学习有着不同的工作流程。举个例子说明，传统的应用可以很好地抽象出持续集成与持续部署工作流，应用的每一次提交都可以触发对应的测试与发布流程。而对于机器学习任务来说，测试往往并不是对代码本身的测试，而是对模型的效果的测试。这样的诸多不同导致了目前的 PaaS 等平台不能很好地处理机器学习这一应用场景的需求。这时候我们需要一个新的平台，它会继承 PaaS 的某些功能，但为了更好地支持机器学习业务，也多了许多新的特性。下面我们来具体地谈谈，这些特性包括什么。</p>
+
+<p>准备数据是一次机器学习任务的起点，但数据准备的平台化，从实现上来说应该是比较困难的。因为数据准备是一个需求差异非常大，很难将其标准化的过程。目前开源领域也有一些针对不同场景的打标工具，如 <a href="https://github.com/wkentaro/labelme">labelme</a> 等，但这一方面的工程实现和研究性工作都不太常见。</p>
+
+<p>训练是机器学习任务中的重中之重。机器学习平台的训练支持指的是，用户通过指定使用的资源数量，分布式模型（AllReduce，ParameterServer 等），分布式配置（ParameterServer 数量等）等，直接在平台上进行模型训练。从平台的角度来看，这一特性主要涉及到对不同类型的框架，不同的分布式模型，不同的硬件的支持，以及分布式训练任务的服务发现，错误处理，不同任务的资源隔离与复用等问题。除此之外，有些场景对于在线训练也有需要，如何支持在线训练，是一个机器学习全流程都需要考虑的问题。</p>
+
+<p>再接下来，就是模型服务。这一特性与传统的 PaaS 比较类似，因为模型服务目前多是以 RESTful API 暴露给外部的，与传统的 Web 服务非常类似。不过从实现角度而言，不同的框架训练的模型往往需要用不同的方式发布出去，而且模型服务关注的度量指标与传统 Web 服务也有较大差别。</p>
+
+<p>回到版本管理，传统的应用往往只涉及配置与代码的管理，而机器学习则多了不少新的维度，如模型，版本等。这一部分的特性虽然比较 dirty work，但是却与用户的使用体验息息相关。除此之外，还有整个过程中的监控问题（训练过程监控，服务过程监控），也是同样性质的工作。</p>
+
+<p>在解决完上面的问题后，机器学习工作流的构建这一特性就水到渠成地摆到台面上了。如何让用户用尽可能少的交互取得他/她想要的效果，以及如何加强这一过程的自动化，是离不开工作流方面的工作的。</p>
+
+<p>而超参数训练与模型结构搜索，是机器学习平台的高级特性。虽然自动机器学习听上去非常有前途，但目前仍主要处于研究阶段。对于超参数训练来说，最难过的一关是性价比问题。最常用的 Random Search 与 Grid Search，和贝叶斯优化方法，寻找到的参数确实可能比人工调参有更好的效果，但与此同时也会需要更多的硬件资源。因此这一特性属于锦上添花性质的功能，而不能起到雪中送炭的作用。至于模型结构搜索，就更遥远了。</p>
+
+<p>上述的介绍是挂一漏万的，一个成熟的平台系统一定有更多的细节值得去讨论，限于篇幅关系不再展开。这里只是大致说明一下，机器学习平台究竟是怎样的一个存在，它可以帮助到用户做到什么事情，提高了哪些方面的效率。</p>
+
+<p>在介绍完之后，再打一个小小的广告。我们团队目前正在招聘中。如果你对构建基于 Kubernetes 的 Cloud Native 的机器学习平台系统感兴趣，可以了解下我司<a href="https://caicloud.io">才云科技</a>的产品 <a href="https://caicloud.io/products/clever">Clever</a>。我们很早以来就一直在做这一方面的工作，目前我司在机器学习平台开源项目 <a href="https://github.com/kubeflow/kubeflow">Kubeflow</a> 上贡献位列全球前三。如果各位读者对<a href="https://www.lagou.com/gongsi/j85122.html">我司的工作职位</a>感兴趣，欢迎投递简历到 gaoce@caicloud.io。</p>
+
+<p>也欢迎各位同行多多指教，共同促进这一领域的进展。</p>
+
+<h2>关于作者</h2>
+
+<p><a href="http://gaocegege.com">高策</a>，<a href="https://caicloud.io">才云科技</a> AI 平台组工程师，东岳 MOS 组前组长。欢迎关注东岳的 <a href="https://github.com/dyweb">GitHub</a> 以及<a href="http://blog.dongyueweb.com/">博客</a> :)</p>
+
+<h2>许可协议</h2>
+
+<ul>
+<li>本文遵守<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/">创作共享CC BY-NC-SA 3.0协议</a></li>
+<li>网络平台转载请联系 <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a></li>
+</ul>
+</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></div>
+                    <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                    <div class="intro">MOS 组的小哥哥</div>
+                </section>
+                <section class="recommend">
+                    
+                    
+                    <section class="nav next">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0%e5%b9%b3%e5%8f%b0%e6%bc%ab%e8%b0%88.html">机器学习平台漫谈</a>
+                    </section>
+                    
+                </section>
+                
+    <section id="disqus_thread"></section>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//dong-yue-gong-zuo-shi-tuan-dui-bo-ke.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        
+        <a href="http://dongyueweb.com" target="_blank">东岳网络工作室</a> ©
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="http://www.chole.io/" target="_blank">Ink</a></span>
+</footer>
+
+        <script src="/bundle/index.js"></script>
+    </body>
+</html>
