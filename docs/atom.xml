@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2018-09-03T11:00:26+08:00</updated>
+  <updated>2019-05-27T10:00:51+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>当我们在谈论机器学习平台时，我们在谈论什么</title>
+    <updated>2019-05-26T01:57:43Z</updated>
+    <id>tag:blog.dongyueweb.com,2019-05-26:/当我们在谈论机器学习平台时，我们在谈论什么.html</id>
+    <content type="html">&lt;p&gt;机器学习平台对于不同的工程师角色而言，有着不同的意涵。随着之前几篇关于 Kubeflow 的文章发布后，有不少的网友私下询问到底什么是机器学习平台，它与机器学习框架有何不同等问题。这篇文章希望能够从不同的维度来介绍一下，我们一直谈论的机器学习平台，到底是什么。&lt;/p&gt;&#xA;</content>
+    <link href="http://blog.dongyueweb.com/当我们在谈论机器学习平台时，我们在谈论什么.html"></link>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
   <entry>
     <title>机器学习平台漫谈</title>
     <updated>2018-09-03T02:53:15Z</updated>
