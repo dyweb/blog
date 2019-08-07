@@ -198,24 +198,25 @@ INFO[0002] Sucessfully cloned to: /home/at15/workspace/src/github.com/at15/at15.
 <ul>
 <li>使用 yaml 而不是 json, json 不支持注释，而且即使使用支持注释的 parser，编辑器也会有提示</li>
 <li>支持一个指令对应一系列命令, 类似 Travis 等 CI 的配置文件</li>
-<li>目前<a href="https://github.com/dyweb/Ayi/pull/64">新的重构</a>可能会把它改成类似 + 的工具</li>
-</ul>
+
+<li><p>目前<a href="https://github.com/dyweb/Ayi/pull/64">新的重构</a>可能会把它改成类似 + 的工具</p>
 
 <pre><code>debug: true
 dep-install:
-    - go get github.com/at15/go.rice/rice
-    - go get github.com/mitchellh/gox
-    - glide install
+- go get github.com/at15/go.rice/rice
+- go get github.com/mitchellh/gox
+- glide install
 install:
-    - go build -o Ayi
-    - rice append -i github.com/dyweb/Ayi/app/web --exec Ayi
-    - sh -c &quot;mv Ayi $GOPATH/bin/Ayi&quot;
+- go build -o Ayi
+- rice append -i github.com/dyweb/Ayi/app/web --exec Ayi
+- sh -c &quot;mv Ayi $GOPATH/bin/Ayi&quot;
 test:
-    - go install
-    - sh -c &quot;go test -v -cover $(glide novendor)&quot;
+- go install
+- sh -c &quot;go test -v -cover $(glide novendor)&quot;
 scripts:
-    build: gox -output=&quot;build/Ayi_{{.OS}}_{{.Arch}}&quot;
-</code></pre>
+build: gox -output=&quot;build/Ayi_{{.OS}}_{{.Arch}}&quot;
+</code></pre></li>
+</ul>
 
 <p>内置指令如<code>install</code>, <code>test</code> 跟 <code>Ayi run &lt;script-name&gt;</code> 都是使用 <code>util/runner</code>。
 目前准备把 runner 做成一个通用的 package，

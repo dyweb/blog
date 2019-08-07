@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2019-05-27T10:00:51+08:00</updated>
+  <updated>2019-08-06T18:21:04+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
   <entry>
+    <title>利用 kubebuilder 优化 Kubernetes Operator 开发体验</title>
+    <updated>2019-08-06T09:20:42Z</updated>
+    <id>tag:blog.dongyueweb.com,2019-08-06:/利用_kubebuilder_优化_kubernetes_operator_开发体验.html</id>
+    <link href="http://blog.dongyueweb.com/利用_kubebuilder_优化_kubernetes_operator_开发体验.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Kubernetes 现在已经成为了容器集群管理，乃至云计算的事实标准。相比于它曾经的竞争对手如 Mesos，Docker Swarm 等，其最大的优势在于扩展性。其扩展性的一个重要的体现，就是 Custom Resource 这一特性。Kubernetes 本身有很多资源类型，被我们熟知的有 Pod，Job，Deployment 等等。而通过 Custom Resource，用户可以定义自己的资源，并实现对应的 Operator（控制器）来处理对资源的请求。用户实现的 Operator 通过与 Kubernetes 的 API server 交互，来实现自身的业务逻辑。&lt;/p&gt;&#xA;</summary>
+    <author>
+      <name>gaocegege</name>
+    </author>
+  </entry>
+  <entry>
     <title>当我们在谈论机器学习平台时，我们在谈论什么</title>
     <updated>2019-05-26T01:57:43Z</updated>
     <id>tag:blog.dongyueweb.com,2019-05-26:/当我们在谈论机器学习平台时，我们在谈论什么.html</id>
-    <content type="html">&lt;p&gt;机器学习平台对于不同的工程师角色而言，有着不同的意涵。随着之前几篇关于 Kubeflow 的文章发布后，有不少的网友私下询问到底什么是机器学习平台，它与机器学习框架有何不同等问题。这篇文章希望能够从不同的维度来介绍一下，我们一直谈论的机器学习平台，到底是什么。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/当我们在谈论机器学习平台时，我们在谈论什么.html"></link>
+    <link href="http://blog.dongyueweb.com/当我们在谈论机器学习平台时，我们在谈论什么.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;机器学习平台对于不同的工程师角色而言，有着不同的意涵。随着之前几篇关于 Kubeflow 的文章发布后，有不少的网友私下询问到底什么是机器学习平台，它与机器学习框架有何不同等问题。这篇文章希望能够从不同的维度来介绍一下，我们一直谈论的机器学习平台，到底是什么。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -21,8 +31,8 @@
     <title>机器学习平台漫谈</title>
     <updated>2018-09-03T02:53:15Z</updated>
     <id>tag:blog.dongyueweb.com,2018-09-03:/机器学习平台漫谈.html</id>
-    <content type="html">&lt;p&gt;随着深度学习的兴起，机器学习在最近几年以星火燎原之势席卷了整个科技行业。而在整个机器学习的工作流中，模型训练的代码只是其中的一小部分。除此之外，训练任务的监控，日志的回收，超参数的选择与优化，模型的发布与集成，数据清洗，特征提取等等，都是流程中不可或缺的部分。因此，有一些工具和公司的产品，致力于为机器学习从业者提供一个统一的平台，帮助用户更好地完成其机器学习业务的落地。这篇文章是关于机器学习平台产品的分析对比，由于利益相关性只放出国外的产品，如有遗漏或错误还请指出。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/机器学习平台漫谈.html"></link>
+    <link href="http://blog.dongyueweb.com/机器学习平台漫谈.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;随着深度学习的兴起，机器学习在最近几年以星火燎原之势席卷了整个科技行业。而在整个机器学习的工作流中，模型训练的代码只是其中的一小部分。除此之外，训练任务的监控，日志的回收，超参数的选择与优化，模型的发布与集成，数据清洗，特征提取等等，都是流程中不可或缺的部分。因此，有一些工具和公司的产品，致力于为机器学习从业者提供一个统一的平台，帮助用户更好地完成其机器学习业务的落地。这篇文章是关于机器学习平台产品的分析对比，由于利益相关性只放出国外的产品，如有遗漏或错误还请指出。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -31,8 +41,8 @@
     <title>Kubernetes CRD Operator 实现指南</title>
     <updated>2018-06-25T08:04:31Z</updated>
     <id>tag:blog.dongyueweb.com,2018-06-25:/kubernetes_crd_operator_实现指南.html</id>
-    <content type="html">&lt;p&gt;8012 年了，Kubernetes 已经成为了集群调度领域最炙手可热的开源项目之一。而多工作负载支持，是讨论到集群调度时不得不谈的一个话题。CRD 是 Kubernetes 的一个特性，通过它，集群可以支持自定义的资源类型，这是在 Kubernetes 集群上支持多工作负载的方式之一。本文希望讨论在实现一个 Kubernetes CRD Operator 时可能遇到的问题以及解决方案，抛砖引玉，探索实现的最佳实践。文章其余部分如下安排：首先在“导论”中，讨论了多工作负载的意义以及不同架构的调度系统的支持方式。其次在“预热”一节详细介绍了在 Kubernetes 上对多工作负载的不同支持方案，进一步划定本文的讨论范围。最后在“正文”一节介绍实现 CRD Operator 的注意事项。本文主要内容来自笔者在实现 kubeflow/tf-operator 时的经验教训。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/kubernetes_crd_operator_实现指南.html"></link>
+    <link href="http://blog.dongyueweb.com/kubernetes_crd_operator_实现指南.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;8012 年了，Kubernetes 已经成为了集群调度领域最炙手可热的开源项目之一。而多工作负载支持，是讨论到集群调度时不得不谈的一个话题。CRD 是 Kubernetes 的一个特性，通过它，集群可以支持自定义的资源类型，这是在 Kubernetes 集群上支持多工作负载的方式之一。本文希望讨论在实现一个 Kubernetes CRD Operator 时可能遇到的问题以及解决方案，抛砖引玉，探索实现的最佳实践。文章其余部分如下安排：首先在“导论”中，讨论了多工作负载的意义以及不同架构的调度系统的支持方式。其次在“预热”一节详细介绍了在 Kubernetes 上对多工作负载的不同支持方案，进一步划定本文的讨论范围。最后在“正文”一节介绍实现 CRD Operator 的注意事项。本文主要内容来自笔者在实现 kubeflow/tf-operator 时的经验教训。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -41,8 +51,8 @@
     <title>Google Summer of Code, A Mentor&#39;s Perspective</title>
     <updated>2018-05-07T12:33:23Z</updated>
     <id>tag:blog.dongyueweb.com,2018-05-07:/google_summer_of_code,_a_mentor&#39;s_perspective.html</id>
-    <content type="html">&lt;p&gt;这篇文章的受众是想更加深入了解 Google Summer of Code 这一活动，或者有志于担任某一开源社区 mentor 的同学。由于有些背景知识没有介绍，因此配合 Google Summer of Code 学生申请指南阅读更佳。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/google_summer_of_code,_a_mentor&#39;s_perspective.html"></link>
+    <link href="http://blog.dongyueweb.com/google_summer_of_code,_a_mentor&#39;s_perspective.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;这篇文章的受众是想更加深入了解 Google Summer of Code 这一活动，或者有志于担任某一开源社区 mentor 的同学。由于有些背景知识没有介绍，因此配合 Google Summer of Code 学生申请指南阅读更佳。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -51,8 +61,8 @@
     <title>Katib: Kubernetes Native 的超参数训练系统</title>
     <updated>2018-05-07T12:17:59Z</updated>
     <id>tag:blog.dongyueweb.com,2018-05-07:/katib:_kubernetes_native_的超参数训练系统.html</id>
-    <content type="html">&lt;p&gt;这篇文章主要介绍了 Katib，一个由 NTT 贡献到 Kubeflow 社区的超参数训练系统。面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/katib:_kubernetes_native_的超参数训练系统.html"></link>
+    <link href="http://blog.dongyueweb.com/katib:_kubernetes_native_的超参数训练系统.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;这篇文章主要介绍了 Katib，一个由 NTT 贡献到 Kubeflow 社区的超参数训练系统。面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -61,8 +71,8 @@
     <title>Kubeflow 安利：在 Kubernetes 上进行机器学习</title>
     <updated>2018-02-04T13:46:42Z</updated>
     <id>tag:blog.dongyueweb.com,2018-02-04:/kubeflow_安利：在_kubernetes_上进行机器学习.html</id>
-    <content type="html">&lt;p&gt;这篇文章主要介绍了 Kubeflow 的使用，以及未来的计划，面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/kubeflow_安利：在_kubernetes_上进行机器学习.html"></link>
+    <link href="http://blog.dongyueweb.com/kubeflow_安利：在_kubernetes_上进行机器学习.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;这篇文章主要介绍了 Kubeflow 的使用，以及未来的计划，面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -71,8 +81,8 @@
     <title>Case Study: 使用 Netlify 持续集成你的静态网站</title>
     <updated>2017-11-26T06:04:56Z</updated>
     <id>tag:blog.dongyueweb.com,2017-11-26:/case_study:_使用_netlify_持续集成你的静态网站.html</id>
-    <content type="html">&lt;p&gt;这篇文章主要介绍了 Netlify, 一个可以用来做静态网站的持续集成与持续部署的工具. 通过 Netlify, 用户可以非常简单地为其静态网站项目引入持续集成, 并且允许其他成员对静态网站进行 UI 层面的 review.&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/case_study:_使用_netlify_持续集成你的静态网站.html"></link>
+    <link href="http://blog.dongyueweb.com/case_study:_使用_netlify_持续集成你的静态网站.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;这篇文章主要介绍了 Netlify, 一个可以用来做静态网站的持续集成与持续部署的工具. 通过 Netlify, 用户可以非常简单地为其静态网站项目引入持续集成, 并且允许其他成员对静态网站进行 UI 层面的 review.&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -81,8 +91,8 @@
     <title>小议分布式系统的一致性模型</title>
     <updated>2017-11-21T05:21:46Z</updated>
     <id>tag:blog.dongyueweb.com,2017-11-21:/小议分布式系统的一致性模型.html</id>
-    <content type="html">&lt;p&gt;一致性 (Consistency) 一直是分布式系统里一个很重要的话题, 如果要了解一致性, 要从系统模式开始说起.&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/小议分布式系统的一致性模型.html"></link>
+    <link href="http://blog.dongyueweb.com/小议分布式系统的一致性模型.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;一致性 (Consistency) 一直是分布式系统里一个很重要的话题, 如果要了解一致性, 要从系统模式开始说起.&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -91,8 +101,8 @@
     <title>Go: tasks repeated at intervals</title>
     <updated>2017-10-26T05:35:01Z</updated>
     <id>tag:blog.dongyueweb.com,2017-10-26:/go:_tasks_repeated_at_intervals.html</id>
-    <content type="html">&lt;p&gt;Use Go to run tasks at intervals.&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/go:_tasks_repeated_at_intervals.html"></link>
+    <link href="http://blog.dongyueweb.com/go:_tasks_repeated_at_intervals.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Use Go to run tasks at intervals.&lt;/p&gt;&#xA;</summary>
     <author>
       <name>codeworm96</name>
     </author>
@@ -101,8 +111,8 @@
     <title>Go Hack 17 参赛日记</title>
     <updated>2017-10-24T07:30:10Z</updated>
     <id>tag:blog.dongyueweb.com,2017-10-24:/go_hack_17_参赛日记.html</id>
-    <content type="html">&lt;p&gt;2017 年 10 月 21 日，由 Golang Foundation 和 PingCAP 联合举办的 Go Hack 17 在上海心动网络举行，东岳的小哥哥 @gaocegege 和 @codeworm96，以及工作一年的的 Go 工程师 @hawkingrei 一起组成了队伍 ，参加了这次 hackathon，凭借 killy: Play TiDB in Minecraft! 取得了二等奖以及 PingCAP 赞助的专项奖。这篇文章是 @gaocegege 第一人称视角的 hackathon 记录。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/go_hack_17_参赛日记.html"></link>
+    <link href="http://blog.dongyueweb.com/go_hack_17_参赛日记.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;2017 年 10 月 21 日，由 Golang Foundation 和 PingCAP 联合举办的 Go Hack 17 在上海心动网络举行，东岳的小哥哥 @gaocegege 和 @codeworm96，以及工作一年的的 Go 工程师 @hawkingrei 一起组成了队伍 ，参加了这次 hackathon，凭借 killy: Play TiDB in Minecraft! 取得了二等奖以及 PingCAP 赞助的专项奖。这篇文章是 @gaocegege 第一人称视角的 hackathon 记录。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -111,8 +121,8 @@
     <title>浅入了解容器编排框架调度器之 Kubernetes</title>
     <updated>2017-09-27T02:49:49Z</updated>
     <id>tag:blog.dongyueweb.com,2017-09-27:/浅入了解容器编排框架调度器之_kubernetes.html</id>
-    <content type="html">&lt;p&gt;Kubernetes 是由 Google 捐赠给 CNCF 的一个容器编排框架，也是目前应用最为广泛的编排框架之一。这篇文章是对 Kubernetes 1.8 中的 Scheduler（以下称为 kube-scheduler）的介绍，如果要阅读本文，需要对 Kubernetes 的基本概念如 pod, node 等有所了解。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/浅入了解容器编排框架调度器之_kubernetes.html"></link>
+    <link href="http://blog.dongyueweb.com/浅入了解容器编排框架调度器之_kubernetes.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Kubernetes 是由 Google 捐赠给 CNCF 的一个容器编排框架，也是目前应用最为广泛的编排框架之一。这篇文章是对 Kubernetes 1.8 中的 Scheduler（以下称为 kube-scheduler）的介绍，如果要阅读本文，需要对 Kubernetes 的基本概念如 pod, node 等有所了解。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -121,8 +131,8 @@
     <title>安利时间: Processing + R = ?</title>
     <updated>2017-09-10T14:07:05Z</updated>
     <id>tag:blog.dongyueweb.com,2017-09-10:/安利时间:_processing_+_r.html</id>
-    <content type="html">&lt;p&gt;Processing.R 是我在 Jeremy Douglass 指导下，为 Processing 实现的一个 R 语言模式，这是一个 Google Summer of Code 2017 项目。这篇文章会讲一讲它的应用，以及实现。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/安利时间:_processing_+_r.html"></link>
+    <link href="http://blog.dongyueweb.com/安利时间:_processing_+_r.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Processing.R 是我在 Jeremy Douglass 指导下，为 Processing 实现的一个 R 语言模式，这是一个 Google Summer of Code 2017 项目。这篇文章会讲一讲它的应用，以及实现。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -131,8 +141,8 @@
     <title>Unikernel: 从不入门到入门</title>
     <updated>2017-09-04T11:23:26Z</updated>
     <id>tag:blog.dongyueweb.com,2017-09-04:/unikernel:_从不入门到入门.html</id>
-    <content type="html">&lt;p&gt;Unikernels: Beyond Containers to the Next Generation of Cloud 是 Russ Pavlicek 的一本动物书（虽然是 O&amp;rsquo;Reilly 的，但是封面不是动物，是石榴），这本书对 Unikernel 有着比较全面的介绍，而且电子书是免费的，值得一读。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/unikernel:_从不入门到入门.html"></link>
+    <link href="http://blog.dongyueweb.com/unikernel:_从不入门到入门.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Unikernels: Beyond Containers to the Next Generation of Cloud 是 Russ Pavlicek 的一本动物书（虽然是 O&amp;rsquo;Reilly 的，但是封面不是动物，是石榴），这本书对 Unikernel 有着比较全面的介绍，而且电子书是免费的，值得一读。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -141,8 +151,8 @@
     <title>Google Summer of Code 申请指南</title>
     <updated>2017-07-11T09:02:34Z</updated>
     <id>tag:blog.dongyueweb.com,2017-07-11:/google_summer_of_code_申请指南.html</id>
-    <content type="html">&lt;p&gt;本文的受众主要是想在暑假找点事情做，挣点外快的同学，亦或是想积累一下参与真实软件开发经验的同学。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/google_summer_of_code_申请指南.html"></link>
+    <link href="http://blog.dongyueweb.com/google_summer_of_code_申请指南.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;本文的受众主要是想在暑假找点事情做，挣点外快的同学，亦或是想积累一下参与真实软件开发经验的同学。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -151,8 +161,8 @@
     <title>时间序列数据库漫谈</title>
     <updated>2017-07-09T01:12:45Z</updated>
     <id>tag:blog.dongyueweb.com,2017-07-09:/时间序列数据库漫谈.html</id>
-    <content type="html">&lt;p&gt;时间序列数据库基本概念和热点话题&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/时间序列数据库漫谈.html"></link>
+    <link href="http://blog.dongyueweb.com/时间序列数据库漫谈.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;时间序列数据库基本概念和热点话题&lt;/p&gt;&#xA;</summary>
     <author>
       <name>at15</name>
     </author>
@@ -161,8 +171,8 @@
     <title>Introduction to Time Series Database</title>
     <updated>2017-07-09T01:03:27Z</updated>
     <id>tag:blog.dongyueweb.com,2017-07-09:/introduction_to_time_series_database.html</id>
-    <content type="html">&lt;p&gt;An introduction to time series database basic concepts and hot topics&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/introduction_to_time_series_database.html"></link>
+    <link href="http://blog.dongyueweb.com/introduction_to_time_series_database.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;An introduction to time series database basic concepts and hot topics&lt;/p&gt;&#xA;</summary>
     <author>
       <name>at15</name>
     </author>
@@ -171,8 +181,8 @@
     <title>Google SRE 阅读笔记(1)-监控</title>
     <updated>2017-01-02T08:27:04Z</updated>
     <id>tag:blog.dongyueweb.com,2017-01-02:/google_sre_阅读笔记(1)-监控.html</id>
-    <content type="html">&lt;p&gt;SRE，全称是 Site Reilability Engineer，是一个类似于运维，但是跟传统运维不一样的职业，更加偏向于 DevOps。谷歌在 &lt;a href=&#34;https://book.douban.com/subject/26875239/&#34;&gt;SRE-谷歌运维解密&lt;/a&gt; 一书中分享了 SRE 的工作职责，以及谷歌在自己的运维工作中的一些经验。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/google_sre_阅读笔记(1)-监控.html"></link>
+    <link href="http://blog.dongyueweb.com/google_sre_阅读笔记(1)-监控.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;SRE，全称是 Site Reilability Engineer，是一个类似于运维，但是跟传统运维不一样的职业，更加偏向于 DevOps。谷歌在 &lt;a href=&#34;https://book.douban.com/subject/26875239/&#34;&gt;SRE-谷歌运维解密&lt;/a&gt; 一书中分享了 SRE 的工作职责，以及谷歌在自己的运维工作中的一些经验。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -181,8 +191,8 @@
     <title>在32位 Ubuntu 16.04.1 LTS 上安装饥荒服务器</title>
     <updated>2016-12-28T03:33:15Z</updated>
     <id>tag:blog.dongyueweb.com,2016-12-28:/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html</id>
-    <content type="html">&lt;p&gt;今天为东岳搭建了一个饥荒的服务器，并不是特别复杂。&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html"></link>
+    <link href="http://blog.dongyueweb.com/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;今天为东岳搭建了一个饥荒的服务器，并不是特别复杂。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
@@ -191,8 +201,8 @@
     <title>Ayi</title>
     <updated>2016-12-24T08:18:08Z</updated>
     <id>tag:blog.dongyueweb.com,2016-12-24:/ayi.html</id>
-    <content type="html">&lt;p&gt;Ayi 跨平台的命令行工具(库)&lt;/p&gt;&#xA;</content>
-    <link href="http://blog.dongyueweb.com/ayi.html"></link>
+    <link href="http://blog.dongyueweb.com/ayi.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Ayi 跨平台的命令行工具(库)&lt;/p&gt;&#xA;</summary>
     <author>
       <name>at15</name>
     </author>
