@@ -67,25 +67,78 @@
                 <header class="header site">
                     
                         <img class="logo" src="/images/logo.png" />
-                        <h1 class="tag">kubernetes</h1>
-                        <h2 class="tag-sub">1 篇文章</h2>
+                        <h1 class="tag">Kubernetes</h1>
+                        <h2 class="tag-sub">4 篇文章</h2>
                     
                 </header>
                 <ul class="article-list">
                     
                     <li class="article">
-                        <a class="title" href="/%e5%88%a9%e7%94%a8_kubebuilder_%e4%bc%98%e5%8c%96_kubernetes_operator_%e5%bc%80%e5%8f%91%e4%bd%93%e9%aa%8c.html">利用 kubebuilder 优化 Kubernetes Operator 开发体验</a>
+                        <a class="title" href="/kubernetes_crd_operator_%e5%ae%9e%e7%8e%b0%e6%8c%87%e5%8d%97.html">Kubernetes CRD Operator 实现指南</a>
                         
-                        <section class="preview content"><p>Kubernetes 现在已经成为了容器集群管理，乃至云计算的事实标准。相比于它曾经的竞争对手如 Mesos，Docker Swarm 等，其最大的优势在于扩展性。其扩展性的一个重要的体现，就是 Custom Resource 这一特性。Kubernetes 本身有很多资源类型，被我们熟知的有 Pod，Job，Deployment 等等。而通过 Custom Resource，用户可以定义自己的资源，并实现对应的 Operator（控制器）来处理对资源的请求。用户实现的 Operator 通过与 Kubernetes 的 API server 交互，来实现自身的业务逻辑。</p>
+                        <section class="preview content"><p>8012 年了，Kubernetes 已经成为了集群调度领域最炙手可热的开源项目之一。而多工作负载支持，是讨论到集群调度时不得不谈的一个话题。CRD 是 Kubernetes 的一个特性，通过它，集群可以支持自定义的资源类型，这是在 Kubernetes 集群上支持多工作负载的方式之一。本文希望讨论在实现一个 Kubernetes CRD Operator 时可能遇到的问题以及解决方案，抛砖引玉，探索实现的最佳实践。文章其余部分如下安排：首先在“导论”中，讨论了多工作负载的意义以及不同架构的调度系统的支持方式。其次在“预热”一节详细介绍了在 Kubernetes 上对多工作负载的不同支持方案，进一步划定本文的讨论范围。最后在“正文”一节介绍实现 CRD Operator 的注意事项。本文主要内容来自笔者在实现 kubeflow/tf-operator 时的经验教训�</a>
+           
+                
+                            <span class="date" data-time="1565083242"><span class="from"></span></span>
+                            
+               
+                            <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                            
+                            <span class="date" data-time="1529913871"><span class="from"></span></span>
+                            
+                            <span class="tags">
+                            <a class="tag" href="/tag/Kubernetes/index.html">Kubernetes</a>
+                            </span>
+                        </section>
+                    </li>
+                    
+                    <li class="article">
+                        <a class="title" href="/katib:_kubernetes_native_%e7%9a%84%e8%b6%85%e5%8f%82%e6%95%b0%e8%ae%ad%e7%bb%83%e7%b3%bb%e7%bb%9f.html">Katib: Kubernetes Native 的超参数训练系统</a>
+                        
+                        <section class="preview content"><p>这篇文章主要介绍了 Katib，一个由 NTT 贡献到 Kubeflow 社区的超参数训练系统。面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。</p>
 </section>
                         <section class="info">
                             <span class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></span>
                             <a class="name" href="/about.gaocegege.html">gaocegege</a>
                             
-                            <span class="date" data-time="1565083242"><span class="from"></span></span>
+                            <span class="date" data-time="1525695479"><span class="from"></span></span>
                             
                             <span class="tags">
-                            <a class="tag" href="/tag/kubernetes/index.html">kubernetes</a>
+                            <a class="tag" href="/tag/TensorFlow/index.html">TensorFlow</a><a class="tag" href="/tag/Kubernetes/index.html">Kubernetes</a><a class="tag" href="/tag/Hyperparameter%20Tuning/index.html">Hyperparameter Tuning</a>
+                            </span>
+                        </section>
+                    </li>
+                    
+                    <li class="article">
+                        <a class="title" href="/kubeflow_%e5%ae%89%e5%88%a9%ef%bc%9a%e5%9c%a8_kubernetes_%e4%b8%8a%e8%bf%9b%e8%a1%8c%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0.html">Kubeflow 安利：在 Kubernetes 上进行机器学习</a>
+                        
+                        <section class="preview content"><p>这篇文章主要介绍了 Kubeflow 的使用，以及未来的计划，面向人群为对在 Kubernetes 上运行机器学习负载感兴趣的同学。</p>
+</section>
+                        <section class="info">
+                            <span class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></span>
+                            <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                            
+                            <span class="date" data-time="1517752002"><span class="from"></span></span>
+                            
+                            <span class="tags">
+                            <a class="tag" href="/tag/TensorFlow/index.html">TensorFlow</a><a class="tag" href="/tag/Kubernetes/index.html">Kubernetes</a>
+                            </span>
+                        </section>
+                    </li>
+                    
+                    <li class="article">
+                        <a class="title" href="/%e6%b5%85%e5%85%a5%e4%ba%86%e8%a7%a3%e5%ae%b9%e5%99%a8%e7%bc%96%e6%8e%92%e6%a1%86%e6%9e%b6%e8%b0%83%e5%ba%a6%e5%99%a8%e4%b9%8b_kubernetes.html">浅入了解容器编排框架调度器之 Kubernetes</a>
+                        
+                        <section class="preview content"><p>Kubernetes 是由 Google 捐赠给 CNCF 的一个容器编排框架，也是目前应用最为广泛的编排框架之一。这篇文章是对 Kubernetes 1.8 中的 Scheduler（以下称为 kube-scheduler）的介绍，如果要阅读本文，需要对 Kubernetes 的基本概念如 pod, node 等有所了解。</p>
+</section>
+                        <section class="info">
+                            <span class="avatar" style="background-image: url(/images/avatars/gaocegege.jpg);"></span>
+                            <a class="name" href="/about.gaocegege.html">gaocegege</a>
+                            
+                            <span class="date" data-time="1506480589"><span class="from"></span></span>
+                            
+                            <span class="tags">
+                            <a class="tag" href="/tag/Kubernetes/index.html">Kubernetes</a><a class="tag" href="/tag/%e4%ba%91%e8%ae%a1%e7%ae%97/index.html">云计算</a><a class="tag" href="/tag/Docker/index.html">Docker</a>
                             </span>
                         </section>
                     </li>
