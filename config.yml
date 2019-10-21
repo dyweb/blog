@@ -17,6 +17,10 @@ authors:
       avatar: https://avatars1.githubusercontent.com/u/5621298
       intro: 开坑不填的婶婶
       name: at15
+    codeworm96:
+      avatar: https://avatars2.githubusercontent.com/u/8407172
+      intro: 想做 infra
+      name: codeworm96
     dongyue:
       avatar: -/images/avatars/dongyue.png
       intro: 东岳网络工作室团队
@@ -25,10 +29,10 @@ authors:
       avatar: -/images/avatars/gaocegege.jpg
       intro: MOS 组的小哥哥
       name: gaocegege
-    codeworm96:
-      avatar: https://avatars2.githubusercontent.com/u/8407172
-      intro: 想做 infra
-      name: codeworm96
+    hebingchang:
+      avatar: https://avatars3.githubusercontent.com/u/7235968?v=4
+      intro: Learn to code, change the world.
+      name: hebingchang
 #MAGIC
 
 build:
