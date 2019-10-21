@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2019-08-06T18:21:04+08:00</updated>
+  <updated>2019-10-21T17:01:28+08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>同去网停机维护通知</title>
+    <updated>2019-10-21T08:43:22Z</updated>
+    <id>tag:blog.dongyueweb.com,2019-10-21:/同去网停机维护通知.html</id>
+    <link href="http://blog.dongyueweb.com/同去网停机维护通知.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;同去网将于 2019 年 10 月 26 日晚 19:00 至 24:00 停机维护&lt;/p&gt;&#xA;</summary>
+    <author>
+      <name>hebingchang</name>
+    </author>
+  </entry>
   <entry>
     <title>利用 kubebuilder 优化 Kubernetes Operator 开发体验</title>
     <updated>2019-08-06T09:20:42Z</updated>
@@ -195,16 +205,6 @@
     <summary type="html">&lt;p&gt;今天为东岳搭建了一个饥荒的服务器，并不是特别复杂。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
-    </author>
-  </entry>
-  <entry>
-    <title>Ayi</title>
-    <updated>2016-12-24T08:18:08Z</updated>
-    <id>tag:blog.dongyueweb.com,2016-12-24:/ayi.html</id>
-    <link href="http://blog.dongyueweb.com/ayi.html" rel="alternate"></link>
-    <summary type="html">&lt;p&gt;Ayi 跨平台的命令行工具(库)&lt;/p&gt;&#xA;</summary>
-    <author>
-      <name>at15</name>
     </author>
   </entry>
 </feed>
