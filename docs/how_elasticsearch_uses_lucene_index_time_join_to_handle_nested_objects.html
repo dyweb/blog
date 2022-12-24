@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="东岳网络工作室团队博客">
+<meta name="twitter:description" content="分享我们所得">
+<meta name="twitter:image:src" content="http://blog.dongyueweb.com/images/logo.png">
+
+<meta property="og:url" content="http://blog.dongyueweb.com">
+<meta property="og:title" content="东岳网络工作室团队博客">
+<meta property="og:description" content="分享我们所得">
+<meta property="og:site_name" content="东岳网络工作室团队博客">
+<meta property="og:image" content="http://blog.dongyueweb.com/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="东岳网络工作室团队博客">
+<meta itemprop="description" content="分享我们所得">
+<meta itemprop="image" content="http://blog.dongyueweb.com/images/logo.png">
+
+<link rel="canonical" href="http://blog.dongyueweb.com">
+
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="apple-itouch-icon" href="/favicon.png">
+<link rel="stylesheet" href="/bundle/index.css">
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+
+        <meta name="keywords" content="database,search,elasticsearch,lucene,">
+        <meta name="description" content="How Elasticsearch uses Lucene index time join to handle nested objects">
+        <meta name="author" content="at15">
+        <title>How Elasticsearch uses Lucene index time join to handle nested objects</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    <img class="logo" src="/images/logo.png" />
+    东岳网络工作室
+  </a>
+  <ul class="menu">
+      <li class="menu-item"><a href="/archive.html">归档</a></li>
+      <li class="menu-item"><a href="/tag.html">标签</a></li>
+      <li class="menu-item"><a href="/atom.xml">订阅</a></li>
+  </ul>
+</header>
+
+            <article class="main article">
+                <h1 class="title">How Elasticsearch uses Lucene index time join to handle nested objects</h1>
+                <section class="info">
+                    <span class="avatar" style="background-image: url(https://avatars1.githubusercontent.com/u/5621298);"></span>
+                    <a class="name" href="/about.at15.html">at15</a>
+                    
+                    <span class="date" data-time="1671660765"><span class="from"></span></span>
+                    
+                    <span class="tags"><a class="tag" href="/tag/database/index.html">database</a><a class="tag" href="/tag/search/index.html">search</a><a class="tag" href="/tag/elasticsearch/index.html">elasticsearch</a><a class="tag" href="/tag/lucene/index.html">lucene</a></span>
+                </section>
+                <article class="content"><!-- TODO: TOC does not work, the generated HTML does not have id on headers ...-->
+
+<h2>Overview</h2>
+
+<p>Elasticsearch allows indexing nested object/document such as authors of a book <code>{name: Potato Slice, authors: [{name: Victor, dob: 1978}, {name: Sharon, dob: 1987}]</code>.
+Under the hood it is using Lucene&rsquo;s index time join <code>ToParentBlockJoinQuery</code>. This blog talks about why
+and how this work in Lucene and provides <a href="https://github.com/dyweb/blog-code/blob/main/2022-12-21-elasticsearch-lucene-index-time-join-nested-object/src/test/java/lucenejoin/LuceneIndexTimeJoinTest.java">example code that compiles in 2022</a>.</p>
+
+<h2>Why</h2>
+
+<h3>Why write another blog</h3>
+
+<p>There are several blog posts on this topic (see appendix), but most of them have outdated example using deprecated classes.
+Elasticsearch&rsquo;s doc <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html">on nested</a>
+does provide a good explanation on why and how to use but does not mention how lucene does it under the hood,
+which is useful if you want to build a simple solution that cost less than using Elasticsearch.</p>
+
+<h3>Why use nested</h3>
+
+<p>It is common to have a list of documents nested under one document. For example, a book can have several authors,
+a shirt can have multiple color and sizes. When indexing these documents in Elasticsearch, you can send the document
+directly, but the default index flatten the nested array of document/object and the search result is not expected.
+Take shirt <a href="https://blog.mikemccandless.com/2012/01/searching-relational-content-with.html">from Michael&rsquo;s blog</a>  as example:</p>
+
+<p>The document in your application looks like this, one shirt have different sizes. <code>wolf</code> has two sizes, <code>dog</code> has one size.</p>
+
+<pre><code class="language-json">[{ // shirt
+   &quot;name&quot;: &quot;wolf&quot;,
+   &quot;specs&quot;: [ // shirt specs
+      { &quot;color&quot;: &quot;blue&quot;, &quot;size&quot;: &quot;small&quot; },
+      { &quot;color&quot;: &quot;green&quot;, &quot;size&quot;: &quot;medium&quot; }
+   ]
+},
+{ // shirt
+  &quot;name&quot;: &quot;dog&quot;,
+  &quot;specs&quot;: [ // shirt specs
+    { &quot;color&quot;: &quot;blue&quot;, &quot;size&quot;: &quot;small&quot; }
+  ]
+}]
+</code></pre>
+
+<p>Sending this payload to Elasticsearch directly result in flattened document:</p>
+
+<pre><code class="language-json">[{
+  &quot;name&quot;: &quot;wolf&quot;,
+  &quot;specs.color&quot;: [&quot;blue&quot;, &quot;red&quot;],
+  &quot;specs.size&quot;: [&quot;small&quot;, &quot;medium&quot;]
+},
+{
+  &quot;name&quot;: &quot;dog&quot;,
+  &quot;specs.color&quot;: [&quot;blue&quot;],
+  &quot;specs.size&quot;: [&quot;small&quot;]
+}]
+</code></pre>
+
+<p>There are a few interesting things here for people coming from a relational/document database background:</p>
+
+<ul>
+<li><p>One document field can have multiple values, in RDBMS and NoSQL database (e.g. MongoDB),
+each row/document&rsquo;s column/field can only have one value. But if you consider searching text,
+every field is made from tokens broken from a long sentence/paragraph.</p>
+
+<pre><code class="language-json">{
+&quot;title&quot;: [&quot;How&quot;, &quot;to&quot;, &quot;foo&quot;],
+&quot;content&quot;: [&quot;bar&quot;, &quot;boar&quot;]
+}
+</code></pre></li>
+
+<li><p>You cannot nest document directly like other NoSQL databases such as MongoDB.</p></li>
+</ul>
+
+<h3>What happens when searching on flattened document</h3>
+
+<p>Now what happens when you search for <code>name = wolf &amp; color = blue &amp; size = medium</code> with the documents flattened?
+From customer perspective, there should be no result, because the only blue shirt has size small
+while the only medium shirt has color green. However, the first flattened document would match because
+it has both <code>blue</code> and <code>medium</code> pointing to it. Let&rsquo;s check how the query works:</p>
+
+<p>When there is a boolean query on multiple fields, first step is check inverted index of each field
+then do a intersect/union on the result list. The inverted index after inserting flat document looks like this:</p>
+
+<pre><code class="language-text">index on spec.color:
+blue: [0, 1]  green: [0]  
+
+index on spec.size:
+small: [0, 1]  medium: [0]
+</code></pre>
+
+<p><code>blue</code> is the <code>term</code> and <code>[0, 1]</code> is the posting list, <code>0</code> is the id of document that includes the term.
+<code>color = blue</code> returns <code>[0, 1]</code>, <code>size = medium</code> also returns <code>[0]</code>, the intersection is <code>[0]</code>.</p>
+
+<h2>How nested works</h2>
+
+<p>Now we understand flatten does not yield expected search experience. How does the recommended <code>nested</code> works under the hood?
+Elasticsearch&rsquo;s doc <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html">on nested</a> says the following:</p>
+
+<blockquote>
+<p>Internally, nested objects index each object in the array as a separate hidden document, meaning that each nested object can be queried independently of the others with the nested query</p>
+</blockquote>
+
+<p>This causes another confusion for people coming from a relational database background.
+Does Elasticsearch create another &lsquo;table&rsquo; for child document (i.e. normalize), save id of parent in child and do a join at query time?
+The answer is no, <code>nested</code> is using index time join.
+There are actually <a href="https://github.com/apache/lucene/blob/3bc8cd5c20218821a50786b05ecfb0a01a1e3e2a/lucene/join/src/java/org/apache/lucene/search/join/package-info.java#L19">two types of join in Lucene</a>,
+one is index time join, another is query time join.
+<a href="https://stackoverflow.com/questions/49941244/elastic-search-parent-child-vs-nested-document">Parent and child join</a> in ES is using query time join,
+which we skip due to length of the blog post.</p>
+
+<p>Index time join is NOT another &lsquo;table&rsquo; (index file),
+both parent and child live in same index file (Lucene Segment).
+Lucene is schemaless, document in same index file can have different fields, e.g. put a book and a shirt is same index is fine
+(ES used to have <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.17/removal-of-types.html">mapping types</a>).
+Parent and child are written into same index as individual documents in children-parent order
+(why order like this is explained later). To distinguish parent and child in same index, application need to manually add extra field, e.g. <code>docType: shirt</code>,
+Lucene itself does not have any magical types or internal identifiers. The documents and inverted index look like following:</p>
+
+<pre><code class="language-text">0: { color: blue, size: small }
+1: { color: green, size: medium }
+2: { name: wolf, docType: shirt } // parent
+-------- block ------------------
+3: { color: blue, size: small }
+4: { name: dog, docType: shirt } // parent
+-------- block ------------------
+
+index on docType:
+shirt: [2, 4]      
+
+index on name:
+wolf: [2]   dog: [4]     
+
+index on color:
+blue: [0, 3] green: [1]
+
+index on size:
+small: [0, 3]  medium: [1]
+</code></pre>
+
+<p>To get the parent documents in the index, simply run a <code>Query</code> e.g. <code>docType = shirt</code> returns <code>{2, 4}</code>.
+Child query is same, another <code>Query</code> on child specific fields to return list of matched children.
+In the end do a join from child to parent to return the matched parent document via <code>ToParentBlockJoinQuery</code>.
+The full code snippet looks like following:</p>
+
+<pre><code class="language-java">public class LuceneIndexTimeJoinTest {
+    public void testSearchNestedMatch() throws IOException {
+        // ...
+      
+        // Insert docs as block
+        List&lt;Shirt&gt; shirts = makeShirts();
+        for (Shirt shirt : shirts) {
+          List&lt;Document&gt; block = new ArrayList&lt;&gt;();
+          // First insert children
+          for (ShirtSpec spec : shirt.specs) {
+            block.add(spec.toDocument());
+          }
+          // Add parent in the end
+          block.add(shirt.toDocument());
+          // Write children and parent in one transaction
+          indexWriter.addDocuments(block);
+        }
+        indexWriter.commit();
+
+        // ...
+      
+        // Filter out parent document using this query
+        BitSetProducer parentsFilter = new QueryBitSetProducer(new TermQuery(new Term(&quot;docType&quot;, &quot;shirt&quot;)));
+        // Should match some child
+        BooleanQuery childQuery = new BooleanQuery.Builder()
+                .add(new BooleanClause(new TermQuery(new Term(&quot;color&quot;, &quot;blue&quot;)), BooleanClause.Occur.MUST))
+                .add(new BooleanClause(new TermQuery(new Term(&quot;size&quot;, &quot;small&quot;)), BooleanClause.Occur.MUST))
+                .build();
+    
+        // Join matched children to their parent document, search result is parent document, NOT matched children.
+        ToParentBlockJoinQuery childJoinQuery = new ToParentBlockJoinQuery(childQuery, parentsFilter, ScoreMode.Avg);
+        Query parentQuery = new TermQuery(new Term(&quot;name&quot;, &quot;wolf&quot;));
+    
+        BooleanQuery fullQuery = new BooleanQuery.Builder()
+                .add(new BooleanClause(parentQuery, BooleanClause.Occur.MUST))
+                .add(new BooleanClause(childJoinQuery, BooleanClause.Occur.MUST))
+                .build();
+        // ...
+    }
+}
+</code></pre>
+
+<h3>How to find parent id without saving it in child</h3>
+
+<p>Query either parent or child alone is trivial and has no difference with normal queries.
+The hard part is combining query results from both parent and child to get intersection.
+The join <code>ToParentBlockJoinQuery</code> is called index time join because inside child document there is NO parent document id,
+i.e. it is <code>{ color: blue, size: small}</code> NOT <code>{ parentShirtId: 1, color: blue, size: small}</code>.
+So how does Lucene know the parent doc id from a matched child doc?
+The code is <a href="https://github.com/apache/lucene/blob/6cde41c9fd8c40a468fbeb32016a210f696b378e/lucene/join/src/java/org/apache/lucene/search/join/ToParentBlockJoinQuery.java#L236">parentBits.nextSetBit</a>.
+The iterator is looking at a bitset of parents to determine the parent from child doc id.</p>
+
+<pre><code class="language-java">private static class ParentApproximation extends DocIdSetIterator {
+  @Override
+  public int advance(int target) throws IOException {
+    final int firstChildTarget = target == 0 ? 0 : parentBits.prevSetBit(target - 1) + 1;
+    int childDoc = childApproximation.docID();
+    if (childDoc &lt; firstChildTarget) {
+      childDoc = childApproximation.advance(firstChildTarget);
+    }
+    if (childDoc &gt;= parentBits.length() - 1) {
+      return doc = NO_MORE_DOCS;
+    }
+    return doc = parentBits.nextSetBit(childDoc + 1);
+  }
+}
+</code></pre>
+
+<p>Why the next id in parent bitset after child doc id is the parent the child?
+The is explained in the javadoc of <code>ToParentBlockJoinQuery</code>:</p>
+
+<blockquote>
+<p>This query requires that you index children and parent docs as a single block, using the IndexWriter.addDocuments() or IndexWriter.updateDocuments() API.
+In each block, the child documents must appear first, ending with the parent document. At search time you provide a Filter identifying the parents, however this Filter must provide an BitSet per sub-reader.</p>
+</blockquote>
+
+<p>Using the following documents as example. When writing document, first write child then write parent but use single
+<code>addDocuments</code> call instead of calling <code>addDocument</code> in a for loop. Documents got sequential increasing id.</p>
+
+<pre><code class="language-text">0: { color: blue, size: small }
+1: { color: green, size: medium }
+2: { name: wolf, docType: shirt } // parent
+-------- block ------------------
+3: { color: blue, size: small }
+4: { name: dog, docType: shirt } // parent
+-------- block ------------------
+</code></pre>
+
+<p>The parent filter is a (cached) query <code>docType = shirt</code>, it would return matched doc <code>2</code> and <code>4</code> as a bitset <code>[0, 0, 1, 0, 1]</code>.
+The child query is <code>color = blue &amp; size = small</code> that matches doc <code>0</code> and <code>3</code>.
+First child is <code>0</code>, the next set (non-zero) bit in parents is <code>2</code>.</p>
+
+<pre><code class="language-text">docId:   0 1 2 3 4  
+parents: 0 0 1 0 1
+         ^   ^
+matched child parent 
+</code></pre>
+
+<p>Iterator then move on to next child doc <code>3</code>, the next set bit after <code>3</code> is <code>4</code>. The search result is <code>2</code> and <code>4</code>.</p>
+
+<h3>Get matched children instead of parent</h3>
+
+<p>One thing to be aware of is <code>ToParentBlockJoinQuery</code> returns the doc id of parents and does NOT include ids of matched children
+(although that&rsquo;s how we get the parent in the first place). To get the children, you need to do another join for EACH matched parent using <code>ParentChildrenBlockJoinQuery</code>.</p>
+
+<pre><code class="language-java">public class LuceneIndexTimeJoinTest {
+    public void testSearchNestedMatch() throws IOException {
+        TopDocs topDocs = indexSearcher.search(fullQuery, 10);
+        System.out.println(&quot;name=wolf &amp; color=blue &amp; size=small hit on nested &quot; + topDocs.totalHits.value); // 0
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+          Document doc = indexSearcher.doc(scoreDoc.doc);
+          System.out.println(&quot;parent doc=&quot; + scoreDoc.doc + &quot; name=&quot; + doc.get(&quot;name&quot;));
+  
+          // Get the actual child docs that matches under this parent doc
+          ParentChildrenBlockJoinQuery childrenQuery = new ParentChildrenBlockJoinQuery(parentsFilter,
+                  childQuery, scoreDoc.doc);
+          TopDocs matchingChildren = indexSearcher.search(childrenQuery, 10);
+          for (ScoreDoc child : matchingChildren.scoreDocs) {
+            Document childDoc = indexSearcher.doc(child.doc);
+            System.out.println(&quot;child doc=&quot; + child.doc + &quot; color=&quot; + childDoc.get(&quot;color&quot;) + &quot; size=&quot; + childDoc.get(&quot;size&quot;));
+          }
+        }
+        // NOTE: parent doc id is larger than child, it is actually increase from 0, see makeShirts
+        // name=wolf &amp; color=blue &amp; size=small hit on nested 1
+        // parent doc=3 name=wolf
+        // child doc=0 color=blue size=small
+    }
+}
+</code></pre>
+
+<h2>Elasticsearch&rsquo;s nested logic</h2>
+
+<p>TBH I didn&rsquo;t speed too much time on reading ES&rsquo;s code after I found the unit test from lucene join module,
+which is much easier to understand&hellip;</p>
+
+<p>The overall flow of ES is first run query (on multiple nodes&rsquo; multiple shards), then collect the matched result
+after the collector node does some transformation on search result.</p>
+
+<ul>
+<li><a href="https://github.com/elastic/elasticsearch/blob/ddbd7a8263975f52b9244ffa808b29ca226505d4/server/src/main/java/org/elasticsearch/index/query/NestedQueryBuilder.java#L54">NestedQueryBuilder</a>
+generates the lucene query, uses <code>ParentChildrenBlockJoinQuery</code>.</li>
+<li><a href="https://github.com/elastic/elasticsearch/blob/0350307fb1c48a5604dc5d11ce63c03437b0a357/server/src/main/java/org/elasticsearch/index/search/ESToParentBlockJoinQuery.java#L25">ESToParentBlockJoinQuery</a>
+wraps<code>ToParentBlockJoinQuery</code> to save the nested path.</li>
+<li><a href="https://github.com/elastic/elasticsearch/blob/ddbd7a8263975f52b9244ffa808b29ca226505d4/server/src/main/java/org/elasticsearch/search/aggregations/bucket/nested/NestedAggregator.java#L41">NestedAggregator</a>
+collects the matched document.</li>
+</ul>
+
+<h2>Conclusion</h2>
+
+<ul>
+<li><code>nested</code> saves parent and child as seperated document but still in same Lucene index file (Segment).</li>
+<li>Application need to insert extra field (with a constant value e.g. <code>docType: shirt</code>) to mark a parent document as parent.
+This extra field is indexed (does not need to be stored) for getting all parents as a bitset.</li>
+<li>The order of parent children allow getting parent id from child id without saving parent id in child document,
+this order requires writing documents to index writer using the &lsquo;batch&rsquo; <code>addDocuments</code> method.</li>
+</ul>
+
+<h2>Appendix</h2>
+
+<h3>Example Code</h3>
+
+<ul>
+<li>Blog&rsquo;s code <a href="https://github.com/dyweb/blog-code/blob/main/2022-12-21-elasticsearch-lucene-index-time-join-nested-object/src/test/java/lucenejoin/LuceneIndexTimeJoinTest.java">dyweb/blog-code/2022-12-21-elasticsearch-lucene-index-time-join-nested-object</a></li>
+<li>Lucene <a href="https://github.com/apache/lucene/blob/47f8c1baa2e8d25fd60c886ec7ce09a81ee7d668/lucene/join/src/test/org/apache/lucene/search/join/TestBlockJoin.java#L96">unit test</a></li>
+</ul>
+
+<h3>Block Join</h3>
+
+<ul>
+<li><a href="https://blog.mikemccandless.com/2012/01/searching-relational-content-with.html">Searching relational content with Lucene&rsquo;s BlockJoinQuery</a> 2012 when first introduced</li>
+<li><a href="https://www.cnblogs.com/LBSer/p/4417074.html">lucene join解决父子关系索引</a> 2015, in Chinese, good example but sample code uses deprecated classes.</li>
+<li>Solr
+
+<ul>
+<li><a href="https://yonik.com/solr-nested-objects/">Nested objects in Solr</a> 2016</li>
+<li><a href="https://blog.griddynamics.com/how-to-use-block-join-to-improve-search-efficiency-with-nested-documents-in-solr/">How to use Block Join to improve search efficiency with nested documents in Solr</a></li>
+</ul></li>
+</ul>
+
+<h3>Nested vs Parent Child</h3>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/49941244/elastic-search-parent-child-vs-nested-document">Elasticsearch Nested vs Parent Child</a> SO question</li>
+<li><a href="https://learning.oreilly.com/library/view/elasticsearch-the-definitive/9781449358532/part06ch03.html#parent-child-mapping">Chapter 42. Parent-Child Relationship</a> of ES definitive guide</li>
+</ul>
+
+<blockquote>
+<p>The parent-child relationship is similar in nature to the nested model: both allow you to associate one entity with another.
+The difference is that, with nested objects, all entities live within the same document while, with parent-child,
+the parent and children are completely separate documents</p>
+</blockquote>
+
+<h3>Things we didn&rsquo;t cover</h3>
+
+<p>There are some topic I want to cover but does not have time:</p>
+
+<ul>
+<li>The performance of index time join vs query time join.</li>
+<li>How to model your document and query so the join is efficient, e.g. there is also <code>ToChildBlockJoinQuery</code></li>
+<li>How other search index library are solving this problem, there are many new libraries in Go and Rust.</li>
+</ul>
+
+<h2>License</h2>
+
+<ul>
+<li>This article is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>.</li>
+<li>Please contact <a href="mailto:marketing@dongyue.io">marketing@dongyue.io</a> for commercial use.</li>
+</ul>
+</article>
+                <section class="author">
+                    <div class="avatar" style="background-image: url(https://avatars1.githubusercontent.com/u/5621298);"></div>
+                    <a class="name" href="/about.at15.html">at15</a>
+                    <div class="intro">开坑不填的婶婶</div>
+                </section>
+                <section class="recommend">
+                    
+                    
+                    <section class="nav next">
+                        <div class="head">下篇文章</div>
+                        <a class="link" href="/%e5%90%8c%e5%8e%bb%e7%bd%91%e5%81%9c%e6%9c%ba%e7%bb%b4%e6%8a%a4%e9%80%9a%e7%9f%a5.html">同去网停机维护通知</a>
+                    </section>
+                    
+                </section>
+                
+    <section id="disqus_thread"></section>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//dong-yue-gong-zuo-shi-tuan-dui-bo-ke.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        
+        <a href="http://dongyueweb.com" target="_blank">东岳网络工作室</a> ©
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="https://github.com/InkProject/ink" target="_blank">Ink</a></span>
+</footer>
+
+        <script src="/bundle/index.js"></script>
+    </body>
+</html>

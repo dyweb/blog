@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom">
   <title>东岳网络工作室团队博客</title>
   <id>http://blog.dongyueweb.com</id>
-  <updated>2019-10-21T17:01:28+08:00</updated>
+  <updated>2022-12-23T18:06:08-08:00</updated>
   <subtitle>分享我们所得</subtitle>
   <link href="http://blog.dongyueweb.com"></link>
   <author>
     <name>东岳网络工作室团队博客</name>
   </author>
+  <entry>
+    <title>How Elasticsearch uses Lucene index time join to handle nested objects</title>
+    <updated>2022-12-21T22:12:45Z</updated>
+    <id>tag:blog.dongyueweb.com,2022-12-21:/how_elasticsearch_uses_lucene_index_time_join_to_handle_nested_objects.html</id>
+    <link href="http://blog.dongyueweb.com/how_elasticsearch_uses_lucene_index_time_join_to_handle_nested_objects.html" rel="alternate"></link>
+    <summary type="html">&lt;p&gt;Elasticsearch&amp;rsquo;s nested type uses Lucene&amp;rsquo;s index time join to filter on nested objects to avoid invalid result from flattening.&lt;/p&gt;&#xA;</summary>
+    <author>
+      <name>at15</name>
+    </author>
+  </entry>
   <entry>
     <title>同去网停机维护通知</title>
     <updated>2019-10-21T08:43:22Z</updated>
@@ -193,16 +203,6 @@
     <id>tag:blog.dongyueweb.com,2017-01-02:/google_sre_阅读笔记(1)-监控.html</id>
     <link href="http://blog.dongyueweb.com/google_sre_阅读笔记(1)-监控.html" rel="alternate"></link>
     <summary type="html">&lt;p&gt;SRE，全称是 Site Reilability Engineer，是一个类似于运维，但是跟传统运维不一样的职业，更加偏向于 DevOps。谷歌在 &lt;a href=&#34;https://book.douban.com/subject/26875239/&#34;&gt;SRE-谷歌运维解密&lt;/a&gt; 一书中分享了 SRE 的工作职责，以及谷歌在自己的运维工作中的一些经验。&lt;/p&gt;&#xA;</summary>
-    <author>
-      <name>gaocegege</name>
-    </author>
-  </entry>
-  <entry>
-    <title>在32位 Ubuntu 16.04.1 LTS 上安装饥荒服务器</title>
-    <updated>2016-12-28T03:33:15Z</updated>
-    <id>tag:blog.dongyueweb.com,2016-12-28:/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html</id>
-    <link href="http://blog.dongyueweb.com/在32位_ubuntu_16.04.1_lts_上安装饥荒服务器.html" rel="alternate"></link>
-    <summary type="html">&lt;p&gt;今天为东岳搭建了一个饥荒的服务器，并不是特别复杂。&lt;/p&gt;&#xA;</summary>
     <author>
       <name>gaocegege</name>
     </author>
